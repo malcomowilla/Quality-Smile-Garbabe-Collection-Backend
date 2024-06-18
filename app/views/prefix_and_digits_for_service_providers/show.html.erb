@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @prefix_and_digits_for_service_provider %>
+
+<div>
+  <%= link_to "Edit this prefix and digits for service provider", edit_prefix_and_digits_for_service_provider_path(@prefix_and_digits_for_service_provider) %> |
+  <%= link_to "Back to prefix and digits for service providers", prefix_and_digits_for_service_providers_path %>
+
+  <%= button_to "Destroy this prefix and digits for service provider", @prefix_and_digits_for_service_provider, method: :delete %>
+</div>

@@ -1,0 +1,2 @@
+class SubLocation < ApplicationRecord
+end

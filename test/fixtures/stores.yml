@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  amount_of_bags: MyString
+  status: MyString
+  from_store: false
+  location: MyString
+
+two:
+  amount_of_bags: MyString
+  status: MyString
+  from_store: false
+  location: MyString
