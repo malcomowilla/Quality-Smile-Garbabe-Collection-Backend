@@ -30,21 +30,20 @@ Rails.application.configure do
   config.assets.compile = false
 
 
-  config.action_mailer.delivery_method = :mailtrap
-  config.action_mailer.mailtrap_api_key = 'f17620673c51e537ef268dea49025da8'
+#   config.action_mailer.delivery_method = :mailtrap
 
-config.action_mailer.smtp_settings = {
-  :user_name => ENV['MAIL_TRAP_USERNAME'],
-  :password => ENV['MAIL_TRAP_PASSWORD'],
-  :address => 'live.smtp.mailtrap.io',
-  :domain => ENV['MAIL_TRAP_DOMAIN'],
-  :port => '587',
-  :authentication => 'plain',
-  :enable_starttls_auto => true   # Enable TLS
+# config.action_mailer.smtp_settings = {
+#   :user_name => ENV['MAIL_TRAP_USERNAME'],
+#   :password => ENV['MAIL_TRAP_PASSWORD'],
+#   :address => 'live.smtp.mailtrap.io',
+#   :domain => ENV['MAIL_TRAP_DOMAIN'],
+#   :port => '587',
+#   :authentication => 'plain',
+#   :enable_starttls_auto => true   # Enable TLS
 
-}
-  config.enable_reloading = true
-  config.action_mailer.perform_deliveries = true
+# }
+#   config.enable_reloading = true
+#   config.action_mailer.perform_deliveries = true
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"

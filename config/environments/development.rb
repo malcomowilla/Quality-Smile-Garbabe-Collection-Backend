@@ -9,20 +9,20 @@ Rails.application.configure do
 
   Rails.application.routes.default_url_options[:host] = 'localhost:4000'
   
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.raise_delivery_errors = true
+#   config.action_mailer.delivery_method = :smtp
+#   config.action_mailer.raise_delivery_errors = true
 
-config.action_mailer.smtp_settings = {
-  :user_name => ENV['MAIL_TRAP_USERNAME'],
-  :password => ENV['MAIL_TRAP_PASSWORD'],
-  :address => 'live.smtp.mailtrap.io',
-  :domain => ENV['MAIL_TRAP_DOMAIN'],
-  :port => '587',
-  :authentication => :login,
+# config.action_mailer.smtp_settings = {
+#   :user_name => ENV['MAIL_TRAP_USERNAME'],
+#   :password => ENV['MAIL_TRAP_PASSWORD'],
+#   :address => 'live.smtp.mailtrap.io',
+#   :domain => ENV['MAIL_TRAP_DOMAIN'],
+#   :port => '587',
+#   :authentication => :login,
 
-  :enable_starttls_auto => true   # Enable TLS
+#   :enable_starttls_auto => true   # Enable TLS
 
-}
+# }
   config.enable_reloading = true
   config.action_mailer.perform_deliveries = true
   # Do not eager load code on boot.
