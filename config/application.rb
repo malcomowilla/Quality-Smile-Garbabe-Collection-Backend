@@ -15,6 +15,12 @@ module QualitySmilesBackend
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
     config.middleware.use ActionDispatch::Cookies
+    # rack attack middleware
+    config.middleware.use Rack::Attack
+    config.autoload_paths += %W(#{config.root}/app/services)
+    Dotenv::Railtie.load
+    config.jwt_secret = ENV['JWT_SECRET']
+
     config.middleware.use ActionDispatch::Session::CookieStore, key: '__quality_smiles_session'
     # Configuration for the application, engines, and railties goes here.
     #

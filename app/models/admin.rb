@@ -1,8 +1,38 @@
 class Admin < ApplicationRecord
-  
     has_secure_password
+    has_secure_token :reset_password_token
     has_many :prefix_and_digits, dependent: :destroy
     has_many :prefix_and_digits_for_service_providers,  dependent: :destroy
+    has_many :prefix_and_digits_for_stores, dependent: :destroy
+has_many :prefix_and_digits_for_store_managers, dependent: :destroy
+
+
+def generate_password_reset_token
+    self.reset_password_token = generate_token
+    self.reset_password_sent_at = Time.now.utc
+    save!
+end
+
+def reset_password(password)
+    update(password: password, reset_password_token: nil)
+end
+
+def password_token_valid?
+    (reset_password_sent_at + 4.hours) > Time.now.utc
+end
+
+def generate_otp
+    self.otp = rand(100000..999999).to_s
+    save!
+end
+
+
+
+def verify_otp(submitted_otp)
+    self.otp == submitted_otp
+  end
+
+
     
     validates :password_confirmation, confirmation: { case_sensitive: true}
 
@@ -34,4 +64,12 @@ class Admin < ApplicationRecord
     
           end
     end
+end
+
+
+private
+
+def generate_token
+    # SecureRandom.hex(10)
+    SecureRandom.base64(16)
 end

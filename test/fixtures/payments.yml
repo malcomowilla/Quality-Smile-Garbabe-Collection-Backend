@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  payment_code: MyString
+  phone_number: MyString
+  name: MyString
+  amount_paid: MyString
+  total: MyString
+  remaining_amount: MyString
+
+two:
+  payment_code: MyString
+  phone_number: MyString
+  name: MyString
+  amount_paid: MyString
+  total: MyString
+  remaining_amount: MyString

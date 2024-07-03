@@ -1,0 +1,1 @@
+json.partial! "prefix_and_digits_for_stores/prefix_and_digits_for_store", prefix_and_digits_for_store: @prefix_and_digits_for_store

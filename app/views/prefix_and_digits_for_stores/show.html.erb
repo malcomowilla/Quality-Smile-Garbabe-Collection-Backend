@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @prefix_and_digits_for_store %>
+
+<div>
+  <%= link_to "Edit this prefix and digits for store", edit_prefix_and_digits_for_store_path(@prefix_and_digits_for_store) %> |
+  <%= link_to "Back to prefix and digits for stores", prefix_and_digits_for_stores_path %>
+
+  <%= button_to "Destroy this prefix and digits for store", @prefix_and_digits_for_store, method: :delete %>
+</div>

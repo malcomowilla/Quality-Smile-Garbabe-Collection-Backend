@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Prefix and digits for stores</h1>
+
+<div id="prefix_and_digits_for_stores">
+  <% @prefix_and_digits_for_stores.each do |prefix_and_digits_for_store| %>
+    <%= render prefix_and_digits_for_store %>
+    <p>
+      <%= link_to "Show this prefix and digits for store", prefix_and_digits_for_store %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New prefix and digits for store", new_prefix_and_digits_for_store_path %>

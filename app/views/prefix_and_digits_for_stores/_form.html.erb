@@ -1,0 +1,27 @@
+<%= form_with(model: prefix_and_digits_for_store) do |form| %>
+  <% if prefix_and_digits_for_store.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(prefix_and_digits_for_store.errors.count, "error") %> prohibited this prefix_and_digits_for_store from being saved:</h2>
+
+      <ul>
+        <% prefix_and_digits_for_store.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :prefix, style: "display: block" %>
+    <%= form.text_field :prefix %>
+  </div>
+
+  <div>
+    <%= form.label :minimum_digits, style: "display: block" %>
+    <%= form.text_field :minimum_digits %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

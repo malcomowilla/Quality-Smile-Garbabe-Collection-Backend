@@ -1,0 +1,2 @@
+module StoreManagersHelper
+end

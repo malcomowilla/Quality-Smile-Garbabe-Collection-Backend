@@ -1,0 +1,2 @@
+module PrefixAndDigitsForStoresHelper
+end
