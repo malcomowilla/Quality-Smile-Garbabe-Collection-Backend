@@ -5,7 +5,7 @@ class ResetPasswordMailer < ApplicationMailer
 
 def password_forgotten(admin)
     @admin = admin
-    MailtrapService.new(ENV['MAIL_TRAP_API_KEY']).send_template_email(
+    MailtrapService.new('f17620673c51e537ef268dea49025da8').send_template_email(
       to: @admin.email,
       template_uuid: ENV['MAIL_TRAP_TEMPLATE_UUID2'],
       template_variables: {
