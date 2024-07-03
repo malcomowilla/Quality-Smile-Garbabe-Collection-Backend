@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: quality_smiles_backend_production
-  username: quality_smiles_backend
-  password: <%= ENV["QUALITY_SMILES_BACKEND_DATABASE_PASSWORD"] %>
+  # database: quality_smiles_backend_production
+  url: <%= ENV['DATABASE_URL'] %>
+  # username: quality_smiles_backend
+  # password: <%= ENV["QUALITY_SMILES_BACKEND_DATABASE_PASSWORD"] %>
