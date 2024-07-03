@@ -18,7 +18,7 @@ module QualitySmilesBackend
     # rack attack middleware
     config.middleware.use Rack::Attack
     config.autoload_paths += %W(#{config.root}/app/services)
-    Dotenv::Railtie.load
+    # Dotenv::Railtie.load
     config.jwt_secret = ENV['JWT_SECRET']
 
     config.middleware.use ActionDispatch::Session::CookieStore, key: '__quality_smiles_session'
