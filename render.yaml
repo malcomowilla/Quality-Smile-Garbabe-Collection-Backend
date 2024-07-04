@@ -18,6 +18,8 @@ services:
         fromDatabase:
           name: quality_smiles
           property: connectionString
+           postDeploy:
+      - bundle exec rails db:migrate
       - key: RAILS_MASTER_KEY
         sync: false
       - key: WEB_CONCURRENCY
