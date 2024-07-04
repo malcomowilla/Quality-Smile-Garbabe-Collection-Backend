@@ -1,4 +1,32 @@
 
+# databases:
+#   - name: quality_smiles
+#     databaseName: quality_smiles
+#     user: quality_smiles_user
+#     plan: free
+
+# services:
+#   - type: web
+#     name: mysite
+#     runtime: ruby
+#     plan: free
+#     buildCommand: "./bin/render-build.sh "
+#     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+#     startCommand: "./bin/rails server"
+#     envVars:
+#       - key: DATABASE_URL
+#         fromDatabase:
+#           name: quality_smiles
+#           property: connectionString
+#            postDeploy:
+#       - bundle exec rails db:migrate
+#       - key: RAILS_MASTER_KEY
+#         sync: false
+#       - key: WEB_CONCURRENCY
+#         value: 2 # sensible default
+
+
+
 databases:
   - name: quality_smiles
     databaseName: quality_smiles
@@ -10,23 +38,19 @@ services:
     name: mysite
     runtime: ruby
     plan: free
-    buildCommand: "./bin/render-build.sh"
-    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+    buildCommand: |
+      bundle install
+      bundle exec rails db:migrate
     startCommand: "./bin/rails server"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: quality_smiles
           property: connectionString
-           postDeploy:
-      - bundle exec rails db:migrate
       - key: RAILS_MASTER_KEY
         sync: false
       - key: WEB_CONCURRENCY
         value: 2 # sensible default
-
-
-
 
 
 
