@@ -1,5 +1,4 @@
 class PrefixAndDigitsForServiceProvidersController < ApplicationController
-
   # GET /prefix_and_digits_for_service_providers or /prefix_and_digits_for_service_providers.json
   def index
     @prefix_and_digits_for_service_providers = PrefixAndDigitsForServiceProvider.all

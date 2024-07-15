@@ -37,7 +37,7 @@ gem "redis", ">= 4.0.1"
 gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
-
+gem 'truemail'
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 gem 'rack-attack'
@@ -53,12 +53,16 @@ gem 'securerandom'
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 gem 'net-http', '~> 0.4.1'
+
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
     gem 'byebug'
 
 end
+
+
 # gem 'dotenv-rails', '~> 2.1', '>= 2.1.1'
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
@@ -75,7 +79,7 @@ end
 gem 'dotenv-rails', groups: [:development, :test]
 
 
-
+gem 'cancancan'
 gem 'mailtrap'
 
 gem 'jwt'
@@ -87,3 +91,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "sidekiq", "~> 7.3"
+gem "sidekiq-scheduler", "~> 5.0"

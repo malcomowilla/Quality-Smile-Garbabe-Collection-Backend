@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module QualitySmilesBackend
   class Application < Rails::Application
+    Sidekiq.strict_args!(false)
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
     # Please, add to the `ignore` list any other `lib` subdirectories that do
@@ -18,7 +19,8 @@ module QualitySmilesBackend
     # rack attack middleware
     config.middleware.use Rack::Attack
     config.autoload_paths += %W(#{config.root}/app/services)
-    # Dotenv::Railtie.load
+    config.autoload_paths << "#{root}app/lib"
+    Dotenv::Railtie.load
     config.jwt_secret = ENV['JWT_SECRET']
 
     config.middleware.use ActionDispatch::Session::CookieStore, key: '__quality_smiles_session'

@@ -1,6 +1,9 @@
 class LocationsController < ApplicationController
   before_action :set_location, only: %i[   update destroy ]
 
+
+  load_and_authorize_resource
+
   # GET /locations or /locations.json
   def index
     @locations = Location.all

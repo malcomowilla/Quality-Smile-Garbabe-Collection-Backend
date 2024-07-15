@@ -1,5 +1,9 @@
+
+
 Rails.application.routes.draw do
-  resources :payments
+  resources :sms_templates
+  resources :finances_and_accounts
+  mount ActionCable.server => '/cable'
   post '/update_customer_settings', to: 'general_settings#create_for_customer'
   get '/get_customer_settings', to: 'general_settings#get_settings_for_customer' 
 post '/update_provider_settings', to: 'general_settings#create_for_provider'
@@ -12,18 +16,31 @@ post '/admin_settings', to: 'general_settings#create_admin_settings'
 get 'get_settings_for_admin', to: 'general_settings#get_admin_settings'
 
 
+
+
+post '/save_sms_template', to: 'sms_templates#create'
+get '/get_sms_templates', to: 'sms_templates#index'
+
+
+
+
 get '/stores', to: 'stores#index'
 post '/create_store', to: 'stores#create'
 patch '/update_store', to: 'stores#update'
 delete '/delete_store/:id', to: 'stores#destroy'
 
+get '/make_mpesa_payment', to: 'payments#make_mpesa_payment'
+get '/confirmation', to: 'payments#confirm'
+get '/validation', to: 'payments#validate'
 
 
 
 
 
 
-
+get '/your_sms_balance', to: 'sms#get_sms_balance'
+post '/sms_status_message', to: 'sms#status_message'
+get '/all_sms', to: 'sms#index'
 
 
   post '/create_sub_location', to: 'sub_locations#create'
@@ -96,6 +113,12 @@ delete '/delete_service_providers/:id', to: 'service_providers#destroy'
   post '/otp-verification', to: 'admins#verify_otp'
   post '/password_forgotten', to: 'admins#forgot_password'
   post '/password_reset', to: 'admins#reset_password'
+  post '/user_roles', to: 'admins#create_admins'
+  delete '/delete_user_roles/:id', to: 'admins#delete_user'
+  patch 'update_user_roles/:id', to: 'admins#update_user'
+  patch 'update_admin', to: 'admins#update_admin'
+  get '/get_admins', to: 'admins#index'
+  get '/current_user', to: 'admins#user'
    
   
 

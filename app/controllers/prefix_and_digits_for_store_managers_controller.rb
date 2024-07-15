@@ -1,6 +1,5 @@
 class PrefixAndDigitsForStoreManagersController < ApplicationController
   before_action :set_prefix_and_digits_for_store_manager, only: %i[ show edit update destroy ]
-
   # GET /prefix_and_digits_for_store_managers or /prefix_and_digits_for_store_managers.json
   def index
     @prefix_and_digits_for_store_managers = PrefixAndDigitsForStoreManager.all

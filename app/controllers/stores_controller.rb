@@ -2,6 +2,13 @@ class StoresController < ApplicationController
   before_action :set_store, only: %i[ show edit update destroy ]
 before_action :set_admin, only: %i[ create show edit update destroy ]
 
+
+load_and_authorize_resource
+
+
+
+
+
   # GET /stores or /stores.json
   def index
 

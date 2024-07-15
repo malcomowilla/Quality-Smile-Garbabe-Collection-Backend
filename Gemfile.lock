@@ -93,6 +93,7 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
+    cancancan (3.6.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -117,10 +118,15 @@ GEM
       railties (>= 3.2)
     drb (2.2.1)
     erubi (1.12.0)
+    et-orbi (1.2.11)
+      tzinfo
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
+    fugit (1.11.0)
+      et-orbi (~> 1, >= 1.2.11)
+      raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.5)
@@ -139,6 +145,7 @@ GEM
     jsonapi-renderer (0.2.2)
     jwt (2.8.2)
       base64
+    logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -185,6 +192,7 @@ GEM
     public_suffix (5.0.5)
     puma (6.4.2)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.8.0)
     rack (3.0.11)
     rack-attack (6.7.0)
@@ -240,12 +248,25 @@ GEM
     rexml (3.2.8)
       strscan (>= 3.0.9)
     rubyzip (2.3.2)
+    rufus-scheduler (3.9.1)
+      fugit (~> 1.1, >= 1.1.6)
     securerandom (0.3.1)
     selenium-webdriver (4.21.1)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sidekiq (7.3.0)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      logger
+      rack (>= 2.2.4)
+      redis-client (>= 0.22.2)
+    sidekiq-scheduler (5.0.5)
+      rufus-scheduler (~> 3.2)
+      sidekiq (>= 6, < 8)
+      tilt (>= 1.4.0, < 3)
+    simpleidn (0.2.3)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -258,7 +279,10 @@ GEM
     stringio (3.1.0)
     strscan (3.1.0)
     thor (1.3.1)
+    tilt (2.4.0)
     timeout (0.4.1)
+    truemail (3.3.1)
+      simpleidn (~> 0.2.1)
     turbo-rails (2.0.5)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
@@ -298,6 +322,7 @@ DEPENDENCIES
   bcrypt (~> 3.1, >= 3.1.12)
   bootsnap
   byebug
+  cancancan
   capybara
   debug
   dotenv-rails
@@ -315,8 +340,11 @@ DEPENDENCIES
   redis (>= 4.0.1)
   securerandom
   selenium-webdriver
+  sidekiq (~> 7.3)
+  sidekiq-scheduler (~> 5.0)
   sprockets-rails
   stimulus-rails
+  truemail
   turbo-rails
   twilio-ruby (~> 7.2.0)
   tzinfo-data

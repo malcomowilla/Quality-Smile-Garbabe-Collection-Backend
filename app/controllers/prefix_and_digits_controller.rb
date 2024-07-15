@@ -1,5 +1,4 @@
 class PrefixAndDigitsController < ApplicationController
-
   # GET /prefix_and_digits or /prefix_and_digits.json
   def index
     @prefix_and_digits = PrefixAndDigit.all

@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer_confirmation_code_template: MyString
+  service_provider_confirmation_code_template: MyString
+  user_invitation_template: MyString
+  customer_otp_confirmation_template: MyString
+  service_provider_otp_confirmation_template: MyString
+  admin_otp_confirmation_template: MyString
+  payment_reminder_template: MyString
+
+two:
+  customer_confirmation_code_template: MyString
+  service_provider_confirmation_code_template: MyString
+  user_invitation_template: MyString
+  customer_otp_confirmation_template: MyString
+  service_provider_otp_confirmation_template: MyString
+  admin_otp_confirmation_template: MyString
+  payment_reminder_template: MyString

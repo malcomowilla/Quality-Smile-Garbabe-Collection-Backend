@@ -1,10 +1,29 @@
 class Admin < ApplicationRecord
+    attr_accessor :skip_password_validation
     has_secure_password
     has_secure_token :reset_password_token
     has_many :prefix_and_digits, dependent: :destroy
     has_many :prefix_and_digits_for_service_providers,  dependent: :destroy
     has_many :prefix_and_digits_for_stores, dependent: :destroy
 has_many :prefix_and_digits_for_store_managers, dependent: :destroy
+enum :role,  [:super_administrator, :store_manager, :customer, :service_provider, :customer_support,  :administrator]
+
+
+
+# def skip_password_validation
+#     skip_password_validation == '1' || skip_password_validation == true
+#   end
+
+#   def skip_password_validation=(value)
+#     @skip_password_validation = value
+#   end
+
+# def super_administrator_role?
+#     role == 'super_administrator'
+# end
+
+
+
 
 
 def generate_password_reset_token
@@ -21,10 +40,23 @@ def password_token_valid?
     (reset_password_sent_at + 4.hours) > Time.now.utc
 end
 
+
+
 def generate_otp
     self.otp = rand(100000..999999).to_s
     save!
 end
+
+
+def generate_login_password
+    self.password = SecureRandom.base64(8)
+    save!
+end
+
+def skip_password_validation=(value)
+    @skip_password_validation = value
+  end
+
 
 
 
@@ -33,14 +65,18 @@ def verify_otp(submitted_otp)
   end
 
 
-    
-    validates :password_confirmation, confirmation: { case_sensitive: true}
+  
+  validates :password, presence: true,unless: :skip_password_validation
 
-    validate :validate_complex_password
+    validates :password_confirmation, confirmation: { case_sensitive: true},unless: :skip_password_validation
+
+    validate :validate_complex_password, unless: :skip_password_validation
     
-    validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
+    validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true 
     # validate :validate_email_format
     validates :user_name, presence: true, length: {minimum: 6, maximum: 30}, uniqueness: true
+
+    private
     def validate_email_format
         unless email.end_with?('@gmail.com') || email.end_with?('co.ke')
             errors.add(:email, 'must be a valid email adress ending with gmail.com')
@@ -67,7 +103,10 @@ def verify_otp(submitted_otp)
 end
 
 
-private
+
+
+
+
 
 def generate_token
     # SecureRandom.hex(10)

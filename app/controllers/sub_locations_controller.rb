@@ -1,6 +1,10 @@
 class SubLocationsController < ApplicationController
   before_action :set_sub_location, only: %i[ show edit update destroy ]
 
+
+
+  load_and_authorize_resource
+
   # GET /sub_locations or /sub_locations.json
   def index
     @sub_locations = SubLocation.all

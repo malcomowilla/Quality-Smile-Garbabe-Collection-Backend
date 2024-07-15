@@ -2,7 +2,7 @@ class StoreManagersController < ApplicationController
   before_action :set_admin, only: %i[ update destroy create  ]
   before_action :set_store_manager, only: [:update, :destroy ] 
   # before_action :set_admin, except: %i[  create ]
-
+  load_and_authorize_resource
   # GET /store_managers or /store_managers.json
   def index
     @store_managers = StoreManager.all

@@ -1,0 +1,5 @@
+class SmsTemplateSerializer < ActiveModel::Serializer
+  attributes :id, :customer_confirmation_code_template, :service_provider_confirmation_code_template, 
+  :user_invitation_template, :customer_otp_confirmation_template, :service_provider_otp_confirmation_template, 
+  :admin_otp_confirmation_template, :payment_reminder_template
+end

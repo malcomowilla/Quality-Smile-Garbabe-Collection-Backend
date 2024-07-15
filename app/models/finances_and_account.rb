@@ -1,0 +1,4 @@
+class FinancesAndAccount < ApplicationRecord
+
+    
+end

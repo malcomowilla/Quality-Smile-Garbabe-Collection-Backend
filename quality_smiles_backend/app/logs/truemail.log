@@ -1,0 +1,1939 @@
+# Logfile created on 2024-07-11 10:07:00 +0300 by logger.rb/v1.6.0
+E, [2024-07-11T10:07:03.393278 #487947] ERROR -- : Truemail blacklist validation for billing@fyber8.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:07:37.411955 #487947] ERROR -- : Truemail blacklist validation for billing@fyber8.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:07:58.867343 #487947] ERROR -- : Truemail blacklist validation for billing@fyber8.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:08:27.327007 #490876] ERROR -- : Truemail blacklist validation for billing@fyber8.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:16:25.755488 #507401] ERROR -- : Truemail blacklist validation for billing@fyber8.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, fyber.co.ke, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:17:41.879725 #507401] ERROR -- : Truemail blacklist validation for fyber.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, fyber.co.ke, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T10:21:35.212550 #516116]  INFO -- : Truemail regex validation for malcomowilla@fyber.ke was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, fyber.ke, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T10:23:00.478471 #520913]  INFO -- : Truemail regex validation for malcomowilla@fyber.co.ke was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: somedomain1.com, somedomain2.com, gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, fyber.co.ke, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T10:42:43.853488 #562306]  INFO -- : Truemail regex validation for malcomowilla@fyber.co.ke was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, fyber.co.ke, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:43:15.635213 #563751] ERROR -- : Truemail blacklist validation for malcomowilla@fyber.co.ke failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T10:56:32.038980 #589174] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:02:03.569023 #589174] ERROR -- : Truemail blacklist validation for gojo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:03:51.175731 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:06:28.935202 #603892] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:07:07.873497 #603892] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:08:48.760657 #603892] ERROR -- : Truemail blacklist validation for malcomowilla@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:10:22.863630 #603892] ERROR -- : Truemail blacklist validation for malcomowilla@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:12:39.563166 #603892] ERROR -- : Truemail blacklist validation for malcomowilla@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:35:36.000284 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:51:14.853795 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:52:11.034969 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:52:49.025003 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:53:26.821827 #603892] ERROR -- : Truemail blacklist validation for zedo@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:56:59.666642 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:57:08.041236 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:57:27.796061 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:57:46.794024 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:58:03.200993 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T11:59:16.061313 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:00:09.988367 #603892] ERROR -- : Truemail blacklist validation for zeno failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:00:58.572100 #603892] ERROR -- : Truemail blacklist validation for zeno@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:01:08.546428 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:01:17.998672 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:01:51.615171 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:01:53.583432 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:02:15.054294 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:04:18.936587 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:04:52.839980 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:05:09.935916 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:06:28.443713 #603892]  INFO -- : Truemail mx validation for zeno@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:07:33.378146 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:09:40.117549 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:13:30.316860 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:15:45.140367 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:16:13.660175 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:18:23.625437 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:19:26.505329 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:20:32.373897 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:20:34.767727 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:25:53.171670 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:26:35.139941 #731150]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:27:11.621662 #731150]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:27:29.782915 #731150] ERROR -- : Truemail blacklist validation for malcomowilla@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:28:14.539984 #731150] ERROR -- : Truemail blacklist validation for malcomowilla@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:30:13.264316 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:30:22.684056 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:30:34.486024 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T12:31:02.087016 #731150]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:32:33.553856 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:34:06.364132 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T12:35:27.489623 #731150] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:21:27.143030 #61910]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:25:02.931141 #61910]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:38:38.414538 #61910]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:38:50.891848 #61910]  INFO -- : Truemail mx validation for malcomowilla@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:45:11.082225 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:45:43.309710 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:46:01.039339 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:46:13.961211 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:46:26.520624 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:48:32.526379 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:51:46.241460 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:54:10.667503 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T13:54:30.940123 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:54:56.839502 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:55:06.447743 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T13:56:18.554229 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:03:07.366935 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:03:25.755948 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.co failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:04:25.411111 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:05:39.624388 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:06:45.562399 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:13:32.012954 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:15:53.718622 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:17:28.385117 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:17:36.296697 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-11T14:17:53.478889 #61910] ERROR -- : Truemail blacklist validation for sukuna@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:18:01.638192 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:18:54.906484 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-11T14:19:23.192190 #61910]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T07:09:55.310691 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T08:32:41.889525 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T08:33:06.804637 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T08:40:14.053887 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T08:48:20.494530 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T08:49:26.301275 #78361]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T11:19:39.801497 #570771]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T12:06:17.090963 #679177]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T13:44:51.215002 #889654]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-12T13:49:25.838601 #889654]  INFO -- : Truemail mx validation for sukuna@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-13T15:25:26.440780 #550505] ERROR -- : Truemail mx validation for sukuna@gmail.com failed (mx: target host(s) not found)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+E, [2024-07-13T15:26:35.987098 #550505] ERROR -- : Truemail blacklist validation for owillamalcom@gmail.c failed (list match: blacklisted email)
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+
+I, [2024-07-13T15:26:47.849750 #550505]  INFO -- : Truemail mx validation for owillamalcom@gmail.com was successful
+
+CONFIGURATION SETTINGS:
+validation type by domain: 
+somedomain.com: regex
+otherdomain.com: mx
+whitelist validation: true
+whitelisted emails: user@somedomain1.com, user@somedomain2.com
+blacklisted emails: user@somedomain3.com, user@somedomain4.com
+whitelisted domains: gmail.com, outlook.com, hotmail.com, co.ke, live.com, yahoo.com, icloud.com, me.com, mac.com, protonmail.com, zoho.com, aol.com, yandex.com, yandex.ru, mail.com, gmx.com, example.co.ke
+blacklisted domains: somedomain3.com, somedomain4.com
+blacklisted mx ip addresses: 1.1.1.1, 2.2.2.2
+dns: 10.0.0.1, 10.0.0.2:54
+not rfc mx lookup flow: true
+smtp fail fast: true
+smtp safe check: true
+email pattern: (?i-mx:\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z)
+smtp error body pattern: (?-mix:regex_pattern)
+

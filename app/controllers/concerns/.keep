@@ -1,0 +1,20 @@
+  def create_admins
+          @admin = Admin.new(admin_params)
+          @admin.skip_password_validation = true
+          @admin.password = SecureRandom.base64(8)  # Generate a random password if needed
+          @admin.password_confirmation = @admin.password  # Set confirmation to match password
+          
+          # Save initially with validations skipped
+          if @admin.save(validate: false)
+            # Update with validations enabled
+            if @admin.update(admin_update_params)
+              # @admin.generate_login_password
+              send_login_password(@admin.phone_number, @admin.password)
+              render json: @admin, status: :created
+            else
+              render json: { errors: @admin.errors.full_messages }, status: :unprocessable_entity
+            end
+          else
+            render json: { errors: @admin.errors.full_messages }, status: :unprocessable_entity
+          end
+        end

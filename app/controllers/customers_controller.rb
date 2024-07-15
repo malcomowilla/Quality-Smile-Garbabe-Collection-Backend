@@ -1,11 +1,12 @@
 class CustomersController < ApplicationController
   # before_action :set_admin
-  before_action :set_admin, except: [ :login, :verify_otp, :logout,]
+  before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_bag, :confirm_request]
   # before_action :authenticate_customer, except: [:index, :login, :verify_otp, :logout]
-  before_action :authenticate_customer, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
+  # before_action :current_customer, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
+before_action :current_user, only: [:confirm_bag, :confirm_request]
+load_and_authorize_resource
 
   require "twilio-ruby"
-
 
   # GET /customers or /customers.json
   def index
@@ -43,7 +44,6 @@ end
 
 
   def login
-
     @customer = Customer.find_by(customer_code: params[:customer_code])
 
     if @customer
@@ -78,13 +78,8 @@ end
 
   def create
     @customer = Customer.new(customer_params)
-    
-
       if @customer.save
-     
-       
-         if @admin.respond_to?(:prefix_and_digits)
-          @prefix_and_digits = @admin.prefix_and_digits.first
+          @prefix_and_digits = Admin.prefix_and_digits.first
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i
@@ -102,9 +97,8 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
   render json: @customer, message: 'customer created succesfully',  status: :created
-
   if params[:send_sms_and_email] == true
-    send_sms(@customer.phone_number, @customer.customer_code)
+    send_sms(@customer.phone_number, @customer.customer_code, @customer.name)
   # CustomerCodeMailer.customer_code(@customer).deliver_now
 
 
@@ -114,17 +108,14 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
   
 
 
-         else
-          Rails.logger.warn 'prefix and digit relationship not found'
-          render json: { error: 'prefix and digit relationship not found'}, status: :unprocessable_entity
-         end
       else
         render json: { errors: @customer.errors}, status: :unprocessable_entity
        
     end
   end
 
-  # PATCH/PUT /customers/1 or /customers/1.json
+
+
   def update
     customer = set_customer
       if @customer
@@ -141,10 +132,9 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
   def confirm_bag
-
-    if  @current_customer.update(bag_confirmed: true,  confirmation_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    if  current_user.update(bag_confirmed: true,  confirmation_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
       
-      formatted_time = @current_customer.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')
+      formatted_time = current_user.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')
 
       render json: { message: 'Bag confirmed successfully.', confirmation_date: formatted_time }, status: :ok
     else
@@ -157,7 +147,7 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
   def confirm_request
-    if @current_customer.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), bag_confirmed: false) 
+    if current_user.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), bag_confirmed: false) 
       render json: { message: 'Bag confirmed successfully.' }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
@@ -169,7 +159,6 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
 
-  # DELETE /customers/1 or /customers/1.json
   def destroy
     @customer = set_customer
     @customer.destroy!
@@ -189,17 +178,17 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
     end
     
     
-    def send_sms(phone_number, customer_code)
+    def send_sms(phone_number, customer_code, name)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      message = "Hello Welcome To QUALITY SMILES. Use Customer Code #{customer_code} and start using our services"
+      original_message = "Hello Welcome To QUALITY SMILES. Use Customer Code #{customer_code} and start using our services"
       sender_id = "SMS_TEST" # Ensure this is a valid sender ID
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
       params = {
         username: api_key,
         password: api_secret,
-        message: message,
+        message: original_message,
         destination: phone_number,
         source: sender_id
       }
@@ -207,9 +196,31 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
   
       response = Net::HTTP.get_response(uri)
       if response.is_a?(Net::HTTPSuccess)
-        puts "Message sent successfully"
+        sms_data = JSON.parse(response.body)
+    
+        if sms_data['success']
+          sms_recipient = sms_data['recipients'][0]['number']
+          sms_status = sms_data['recipients'][0]['status']
+          
+          puts "Recipient: #{sms_recipient}, Status: #{sms_status}"
+    
+          # Save the original message and response details in your database
+          Sm.create!(
+            user: sms_recipient,
+            message: original_message,
+            status: sms_status,
+            date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+            system_user: 'system'
+          )
+          
+          # Return a JSON response or whatever is appropriate for your application
+          render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+        else
+          render json: { error: "Failed to send message: #{sms_data['message']}" }
+        end
       else
         puts "Failed to send message: #{response.body}"
+        render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 
@@ -220,14 +231,14 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
     def send_otp(phone_number, otp)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      message = "Hello use this #{otp} to continue"
+      original_message = "Hello use this #{otp} to continue"
       sender_id = "SMS_TEST" # Ensure this is a valid sender ID
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
       params = {
         username: api_key,
         password: api_secret,
-        message: message,
+        message: original_message,
         destination: phone_number,
         source: sender_id
       }
@@ -235,35 +246,57 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
   
       response = Net::HTTP.get_response(uri)
       if response.is_a?(Net::HTTPSuccess)
-        puts "Message sent successfully"
+        sms_data = JSON.parse(response.body)
+    
+        if sms_data['success']
+          sms_recipient = sms_data['recipients'][0]['number']
+          sms_status = sms_data['recipients'][0]['status']
+          
+          puts "Recipient: #{sms_recipient}, Status: #{sms_status}"
+    
+          # Save the original message and response details in your database
+          Sm.create!(
+            user: sms_recipient,
+            message: original_message,
+            status: sms_status,
+            date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+            system_user: 'system'
+          )
+          
+          # Return a JSON response or whatever is appropriate for your application
+          render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+        else
+          render json: { error: "Failed to send message: #{sms_data['message']}" }
+        end
       else
         puts "Failed to send message: #{response.body}"
+        render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 
 
 
-  def authenticate_customer
-    token = cookies.signed[:jwt]
-    return render json: { error: 'Unauthorized' }, status: :unauthorized unless token
+  # def authenticate_customer
+  #   token = cookies.signed[:jwt]
+  #   return render json: { error: 'Unauthorized' }, status: :unauthorized unless token
 
-    # byebug 
+  #   # byebug 
 
 
-    decoded_token = JWT.decode(token,  ENV['JWT_SECRET'], true, algorithm: 'HS256')
-    customer_id = decoded_token[0]['customer_id']
-    @current_customer = Customer.find_by(id: customer_id)
+  #   decoded_token = JWT.decode(token,  ENV['JWT_SECRET'], true, algorithm: 'HS256')
+  #   customer_id = decoded_token[0]['customer_id']
+  #   @current_customer = Customer.find_by(id: customer_id)
 
-    return render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_customer
-  rescue JWT::DecodeError, JWT::ExpiredSignature
-    Rails.logger.warn  'Unauthorized'
-    render json: { error: 'Unauthorized' }, status: :unauthorized
-  end
+  #   return render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_customer
+  # rescue JWT::DecodeError, JWT::ExpiredSignature
+  #   Rails.logger.warn  'Unauthorized'
+  #   render json: { error: 'Unauthorized' }, status: :unauthorized
+  # end
 
 
 
     def generate_token(payload)
-      JWT.encode(payload, Rails.application.config.jwt_secret, 'HS256')
+      JWT.encode(payload, ENV['JWT_SECRET'], 'HS256')
     end
 
 

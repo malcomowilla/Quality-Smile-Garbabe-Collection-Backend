@@ -1,0 +1,52 @@
+<%= form_with(model: sms_template) do |form| %>
+  <% if sms_template.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(sms_template.errors.count, "error") %> prohibited this sms_template from being saved:</h2>
+
+      <ul>
+        <% sms_template.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :customer_confirmation_code_template, style: "display: block" %>
+    <%= form.text_field :customer_confirmation_code_template %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_confirmation_code_template, style: "display: block" %>
+    <%= form.text_field :service_provider_confirmation_code_template %>
+  </div>
+
+  <div>
+    <%= form.label :user_invitation_template, style: "display: block" %>
+    <%= form.text_field :user_invitation_template %>
+  </div>
+
+  <div>
+    <%= form.label :customer_otp_confirmation_template, style: "display: block" %>
+    <%= form.text_field :customer_otp_confirmation_template %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_otp_confirmation_template, style: "display: block" %>
+    <%= form.text_field :service_provider_otp_confirmation_template %>
+  </div>
+
+  <div>
+    <%= form.label :admin_otp_confirmation_template, style: "display: block" %>
+    <%= form.text_field :admin_otp_confirmation_template %>
+  </div>
+
+  <div>
+    <%= form.label :payment_reminder_template, style: "display: block" %>
+    <%= form.text_field :payment_reminder_template %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
