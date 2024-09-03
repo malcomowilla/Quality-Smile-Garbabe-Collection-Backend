@@ -49,9 +49,10 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
+  config.active_job.queue_adapter = :sidekiq
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :amazon 
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -81,10 +82,9 @@ Rails.application.configure do
 # config.active_job.queue_adapter = :sidekiq
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
-
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
-config.hosts << "700f-102-68-79-197.ngrok-free.app"
+# config.hosts << "c5b2-102-68-79-197.ngrok-free.app"
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 

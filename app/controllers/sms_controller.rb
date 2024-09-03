@@ -1,8 +1,19 @@
 class SmsController < ApplicationController
-  load_and_authorize_resource
 
+before_action :update_last_activity
+
+
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+
+
+    end
+  end
+  
   # GET /sms or /sms.json
-  def index
+  def get_all_sms
+    authorize! :read, :get_all_sms
     @sms = Sm.all
     render json: @sms
   end
@@ -34,7 +45,8 @@ class SmsController < ApplicationController
 
 
   # POST /sms or /sms.json
-  def create
+  def create_sms
+    authorize :manage, :create_sms
     @sm = Sm.new(sm_params)
 @sm.update(date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
       if @sm.save
@@ -43,12 +55,6 @@ class SmsController < ApplicationController
          render json: @sm.errors, status: :unprocessable_entity 
     end
   end
-
-
-
-
-
-
 
 
 
@@ -72,15 +78,75 @@ class SmsController < ApplicationController
 
   # DELETE /sms/1 or /sms/1.json
   def destroy
-    @sm.destroy!
+    set_sm
+    @sm.destroy
 
-    respond_to do |format|
-      format.html { redirect_to sms_url, notice: "Sm was successfully destroyed." }
-      format.json { head :no_content }
-    end
+       head :no_content 
+    
   end
 
   private
+
+
+
+
+  def send_sms(message, user)
+    api_key = ENV['SMS_LEOPARD_API_KEY']
+    api_secret = ENV['SMS_LEOPARD_API_SECRET']
+    sms_template = message
+   
+    sender_id = "SMS_TEST" 
+
+    uri = URI("https://api.smsleopard.com/v1/sms/send")
+    params = {
+      username: api_key,
+      password: api_secret,
+      message: sms_template,
+      destination: user,
+      source: sender_id
+    }
+    uri.query = URI.encode_www_form(params)
+
+    response = Net::HTTP.get_response(uri)
+    if response.is_a?(Net::HTTPSuccess)
+      sms_data = JSON.parse(response.body)
+  
+      if sms_data['success']
+        sms_recipient = sms_data['recipients'][0]['number']
+        sms_status = sms_data['recipients'][0]['status']
+        
+        puts "Recipient: #{sms_recipient}, Status: #{sms_status}"
+  
+        # Save the original message and response details in your database
+        Sm.create!(
+          user: sms_recipient,
+          message: original_message,
+          status: sms_status,
+          date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+          system_user: 'system'
+        )
+        
+        # Return a JSON response or whatever is appropriate for your application
+        render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+      else
+        render json: { error: "Failed to send message: #{sms_data['message']}" }
+      end
+    else
+      puts "Failed to send message: #{response.body}"
+      render json: { error: "Failed to send message: #{response.body}" }
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
 
   def get_balance
     api_key = ENV['SMS_LEOPARD_API_KEY']

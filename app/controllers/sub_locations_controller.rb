@@ -1,9 +1,23 @@
 class SubLocationsController < ApplicationController
   before_action :set_sub_location, only: %i[ show edit update destroy ]
 
+    before_action :update_last_activity
+
+
 
 
   load_and_authorize_resource
+
+
+
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
+
+
 
   # GET /sub_locations or /sub_locations.json
   def index

@@ -1,13 +1,21 @@
 class SmsTemplatesController < ApplicationController
   before_action :set_sms_template, only: %i[ show edit update destroy ]
   load_and_authorize_resource
-
+before_action :update_last_activity
   # GET /sms_templates or /sms_templates.json
   def index
     @sms_templates = SmsTemplate.all
     render json: @sms_templates
   end
 
+
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+  end
+
+    end
+    
 
   # POST /sms_templates or /sms_templates.json
   def create

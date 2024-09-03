@@ -9,6 +9,10 @@ class Ability
     if admin.role == 'super_administrator'
       can :manage, :all
       can :read, :all
+      
+
+
+
       Rails.logger.info "Super administrator can manage and read all"
     elsif admin.role == 'administrator'  
       can :manage, Payment
@@ -18,12 +22,22 @@ class Ability
       can :manage, Location
       can :manage, SubLocation
       can :manage, ServiceProvider
+      can :manage,  SupportTicket
+      can :manage, CalendarEvent
+
       Rails.logger.info "Administrator can manage specific resources"
       elsif admin.role == 'store_manager'
         can :manage, Store
         can :manage,  StoreManager
         can :manage, Location 
         can :manage, SubLocation
+
+      elsif admin.role == 'agent'
+        can :manage,  SupportTicket
+      elsif admin.role == 'customer'
+        can :manage, CalendarEvent  
+        can :read, CalendarEvent
+
     #     cannot :read, :get_settings_for_store_manager 
     # cannot :read, :get_settings_for_store 
     # cannot :read, :get_settings_for_provider 
@@ -53,12 +67,17 @@ class Ability
     # create_for_store_manager
 
 
-
     can :read, :get_settings_for_store_manager if admin.can_read_settings 
+    can :read, :get_settings_for_tickets if admin.can_read_settings
     can :read, :get_settings_for_store if admin.can_read_settings 
     can :read, :get_settings_for_provider if admin.can_read_settings
     can :read, :get_settings_for_customer if admin.can_read_settings 
     can :read, :get_admin_settings if admin.can_read_settings 
+    can :read, :get_sms_balance if admin.can_read_sms
+    can :read, :get_sms_balance if admin.can_manage_sms
+    can :read, :get_all_sms if admin.can_read_sms
+
+
 
 
 
@@ -67,15 +86,19 @@ class Ability
     can :read, :get_settings_for_provider if admin.can_manage_settings
     can :read, :get_settings_for_customer if admin.can_manage_settings 
     can :read, :get_admin_settings if admin.can_manage_settings 
-
+    can :read, :get_settings_for_tickets if admin.can_manage_settings
+    
 
     can :manage, :create_for_customer if admin.can_manage_settings
     can :manage, :create_for_store if admin.can_manage_settings
     can :manage, :create_for_provider if admin.can_manage_settings
     can :manage, :create_admin_settings if admin.can_manage_settings
     can :manage, :create_for_store_manager if admin.can_manage_settings
-    
+    can :manage, :create_for_tickets if admin.can_manage_settings
 
+
+    # t.string "can_manage_calendar"
+    # t.string "can_read_calendar"
 
 
     Rails.logger.info "can_read_settings: #{admin.can_read_settings}"
@@ -84,9 +107,16 @@ class Ability
     can :read, Payment if admin.can_read_payment
     can :manage, Sm if admin.can_manage_sms
     can :read, Sm if admin.can_read_sms
-    # can :read, :get_sms_balance if admin.admin.can_read_sms
     can :read, SmsTemplate if admin.can_read_sms_templates
     can :manage, SmsTemplate if admin.can_manage_sms_templates
+    can :manage, SupportTicket if admin.can_manage_tickets
+    can :read, SupportTicket if admin.can_read_tickets 
+
+
+can :manage, CalendarEvent if admin.can_manage_calendar
+can :read, CalendarEvent if admin.can_read_calendar
+
+
 
 
     can :manage, GeneralSetting if admin.can_manage_settings
@@ -105,7 +135,7 @@ class Ability
 
     can :manage, Location if admin.can_manage_location
     can :read, Location if admin.can_read_location
-cannot :manage, SubLocation if admin.can_manage_sub_location == false
+    cannot :manage, SubLocation if admin.can_manage_sub_location == false
     can :manage, SubLocation if admin.can_manage_sub_location 
     can :read, SubLocation if admin.can_read_sub_location
 

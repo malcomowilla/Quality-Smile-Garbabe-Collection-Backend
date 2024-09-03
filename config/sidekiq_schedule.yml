@@ -5,3 +5,4 @@ current_user_worker:
   class: CurrentUserWorker
   queue: default
   
+

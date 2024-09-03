@@ -2,11 +2,14 @@ class Admin < ApplicationRecord
     attr_accessor :skip_password_validation
     has_secure_password
     has_secure_token :reset_password_token
-    has_many :prefix_and_digits, dependent: :destroy
-    has_many :prefix_and_digits_for_service_providers,  dependent: :destroy
-    has_many :prefix_and_digits_for_stores, dependent: :destroy
-has_many :prefix_and_digits_for_store_managers, dependent: :destroy
-enum :role,  [:super_administrator, :store_manager, :customer, :service_provider, :customer_support,  :administrator]
+    has_one_attached :profile_image
+
+
+   
+    # has_many :prefix_and_digits_for_ticket_numbers, dependent: :destroy
+has_many :credentials
+
+enum :role,  [:super_administrator, :store_manager, :customer, :service_provider, :customer_support,  :administrator, :agent]
 
 
 
@@ -29,7 +32,7 @@ enum :role,  [:super_administrator, :store_manager, :customer, :service_provider
 def generate_password_reset_token
     self.reset_password_token = generate_token
     self.reset_password_sent_at = Time.now.utc
-    save!
+    
 end
 
 def reset_password(password)
@@ -42,15 +45,19 @@ end
 
 
 
-def generate_otp
-    self.otp = rand(100000..999999).to_s
-    save!
+def generate_otp(admin)
+    otp = self.otp = rand(100000..999999).to_s
+    # self.password = SecureRandom.base64(8)
+    admin.update_column(:otp, otp)
+    # self.password = nil
+    
 end
 
 
 def generate_login_password
     self.password = SecureRandom.base64(8)
-    save!
+    
+    save
 end
 
 def skip_password_validation=(value)
@@ -62,19 +69,20 @@ def skip_password_validation=(value)
 
 def verify_otp(submitted_otp)
     self.otp == submitted_otp
+    
   end
 
 
   
-  validates :password, presence: true,unless: :skip_password_validation
+  validates :password, presence: true,unless: :skip_password_validation?
 
-    validates :password_confirmation, confirmation: { case_sensitive: true},unless: :skip_password_validation
+    validates :password_confirmation, confirmation: { presence: true},unless: :skip_password_validation?
 
     validate :validate_complex_password, unless: :skip_password_validation
     
-    validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true 
+    validates :email,  format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
     # validate :validate_email_format
-    validates :user_name, presence: true, length: {minimum: 6, maximum: 30}, uniqueness: true
+    validates :user_name, presence: true
 
     private
     def validate_email_format
@@ -83,7 +91,10 @@ def verify_otp(submitted_otp)
         end
     end
     
-    
+    def skip_password_validation?
+        skip_password_validation
+      end
+
     # validates :password, presence: true, uniqueness: true
     # validates :password, uniqueness: true, presence: true
     # validate :validate_complex_password

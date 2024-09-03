@@ -3,7 +3,9 @@ class ServiceProvidersController < ApplicationController
 
 # before_action :authenticate_service_provider, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
 before_action :current_user, only: [:confirm_collected, :confirm_delivered]
-load_and_authorize_resource
+
+before_action :update_last_activity, except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered] 
+load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered]
 
 
   def index
@@ -13,6 +15,13 @@ load_and_authorize_resource
 
 
 
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
+  
 
 
   def login
@@ -22,9 +31,28 @@ load_and_authorize_resource
     if @service_provider
       # session[:service_provider_id] = @service_provider.id
       # render json:  {service_provider:   @service_provider} , status: :ok
-      @service_provider.generate_otp
-      send_otp(@service_provider.phone_number, @service_provider.otp)
+      
+      
       render json: {service_provider:  @service_provider.provider_code}, status: :ok
+
+      if params[:enable_2fa_for_service_provider]
+        @service_provider.generate_otp
+        if params[:send_sms_and_email_for_provider] == true || params[:send_sms_and_email_for_provider] == 'true'
+          send_otp(@service_provider.phone_number, @service_provider.otp, @service_provider.name)
+        end
+      
+        if params[:send_email_for_provider] == true || params[:send_email_for_provider] == 'true'
+          
+          ServiceProviderOtpMailer.provider_otp(@service_provider).deliver_now
+
+        end
+
+      else
+        token = generate_token(service_provider_id:  @service_provider.id)
+      cookies.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      
+
+      end
     else
       render json: { error: 'Invalid provider code' }, status: :unauthorized
     end
@@ -36,7 +64,7 @@ load_and_authorize_resource
 
 
   def logout
-    cookies.delete(:jwt)
+    cookies.delete(:service_provider_jwt)
     head :no_content
     # render json: { message: 'Logout successful' }, status: :ok
     # delete =  session.delete :customer_id
@@ -54,7 +82,7 @@ load_and_authorize_resource
     @service_provider = ServiceProvider.find_by(provider_code: params[:provider_code])
     if  @service_provider&.verify_otp(params[:otp])
       token = generate_token(service_provider_id:  @service_provider.id)
-      cookies.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       render json: { message: 'Login successful' }, status: :ok
     else
       render json: { message: 'Invalid OTP' }, status: :unauthorized
@@ -66,7 +94,8 @@ load_and_authorize_resource
 
 
   def confirm_collected
-    if current_user.update(collected: true, date_collected: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), delivered: false) 
+    if current_service_provider.update(collected: true, date_collected: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), delivered: false,
+                 ) 
       render json: { message: 'Bag confirmed successfully.' }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
@@ -77,9 +106,11 @@ load_and_authorize_resource
 
 
 
+
   def confirm_delivered
 
-    if  current_user.update(delivered: true,  date_delivered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    if  current_service_provider.update(delivered: true,  date_delivered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), collected: false,
+      )
       
       render json: { message: 'Bag confirmed successfully.', }, status: :ok
     else
@@ -104,7 +135,7 @@ load_and_authorize_resource
       if @service_provider.save
      
        
-          @prefix_and_digits = Admin.prefix_and_digits_for_service_providers.first
+          @prefix_and_digits = PrefixAndDigitsForServiceProvider.first
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i
@@ -123,11 +154,13 @@ found_digits && found_prefix
 
 
   render json: @service_provider,   status: :created
-
+if params[:send_email_for_provider] == true
+  ServiceProviderMailer.service_provider_code(@service_provider).deliver_now
+end
   
   if params[:send_sms_and_email_for_provider] == true
     send_sms(@service_provider.phone_number, @service_provider.provider_code, @service_provider.name)
-  # CustomerCodeMailer.provider_code(@@service_provider).deliver_now
+  
 
   else
     Rails.logger.info "params not received"
@@ -207,14 +240,19 @@ found_digits && found_prefix
     def send_sms(phone_number, provider_code, name)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      original_message = "Hello Welcome To QUALITY SMILES. Use Service Provider Code #{provider_code} and start using our services"
+      sms_template = SmsTemplate.first
+      service_provider_template = sms_template.service_provider_confirmation_code_template
+      original_message = sms_template ?  MessageTemplate.interpolate(service_provider_template,
+      {provider_code: provider_code, 
+      name: name})  :   "Hello #{name} Welcome To QUALITY SMILES. Use Service Provider Code #{provider_code} and start using our services"
+
       sender_id = "SMS_TEST" # Ensure this is a valid sender ID
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
       params = {
         username: api_key,
         password: api_secret,
-        message: oriiginal_message,
+        message: original_message,
         destination: phone_number,
         source: sender_id
       }
@@ -256,10 +294,15 @@ found_digits && found_prefix
 
 
 
-    def send_otp(phone_number, otp)
+    def send_otp(phone_number, otp, name)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      original_message = "Hello use this #{otp} to continue"
+      sms_template = SmsTemplate.first
+      service_provider_template = sms_template.service_provider_otp_confirmation_template
+      original_message = sms_template ?  MessageTemplate.interpolate(service_provider_template,
+      {otp: otp, 
+      name: name})  :  "Hello #{name} use this #{otp} to continue"
+
       sender_id = "SMS_TEST" 
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
@@ -290,15 +333,15 @@ found_digits && found_prefix
             date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
             system_user: 'system'
           )
-          
+          Rails.logger.info "Message sent successfully"
           # Return a JSON response or whatever is appropriate for your application
-          render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+          # render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
         else
           render json: { error: "Failed to send message: #{sms_data['message']}" }
         end
       else
-        puts "Failed to send message: #{response.body}"
-        render json: { error: "Failed to send message: #{response.body}" }
+        Rails.logger.error "Failed to send message: #{response.body}"
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 

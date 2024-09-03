@@ -1,5 +1,6 @@
 class LocationsController < ApplicationController
   before_action :set_location, only: %i[   update destroy ]
+before_action :update_last_activity
 
 
   load_and_authorize_resource
@@ -11,6 +12,12 @@ class LocationsController < ApplicationController
   end
 
 
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
   
 
   def create

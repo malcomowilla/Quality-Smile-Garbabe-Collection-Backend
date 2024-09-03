@@ -1,9 +1,11 @@
+require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
-  resources :sms_templates
   resources :finances_and_accounts
   mount ActionCable.server => '/cable'
+  mount Sidekiq::Web => '/sidekiq'
+
   post '/update_customer_settings', to: 'general_settings#create_for_customer'
   get '/get_customer_settings', to: 'general_settings#get_settings_for_customer' 
 post '/update_provider_settings', to: 'general_settings#create_for_provider'
@@ -14,7 +16,13 @@ get '/get_store_manager', to: 'general_settings#get_settings_for_store_manager'
 get '/get_store_settings', to: 'general_settings#get_settings_for_store'
 post '/admin_settings', to: 'general_settings#create_admin_settings'
 get 'get_settings_for_admin', to: 'general_settings#get_admin_settings'
+post '/update_ticket_settings', to: 'general_settings#create_for_tickets'
+get '/get_ticket_settings', to: 'general_settings#get_settings_for_tickets'
 
+
+
+
+get '/upload_to_aws', to: 's3_uploaders#create'
 
 
 
@@ -40,8 +48,8 @@ get '/validation', to: 'payments#validate'
 
 get '/your_sms_balance', to: 'sms#get_sms_balance'
 post '/sms_status_message', to: 'sms#status_message'
-get '/all_sms', to: 'sms#index'
-
+get '/all_sms', to: 'sms#get_all_sms'
+delete '/delete_sms/:id', to: 'sms#destroy'
 
   post '/create_sub_location', to: 'sub_locations#create'
   delete '/delete_sub_location/:id', to: 'sub_locations#destroy'
@@ -62,7 +70,8 @@ get '/all_sms', to: 'sms#index'
  delete '/logout_store_manager', to: 'store_managers#logout' 
  post '/store_managers_login', to: 'store_managers#login'
  post '/verify_store_manager_otp', to: 'store_managers#verify_otp'
-
+post '/confirm_deivered_bags_from_store', to: 'store_managers#confirm_delivered'
+post '/confirm_bag_received_from_customer', to: 'store_managers#confirm_received'
 
 
 
@@ -106,7 +115,21 @@ delete '/delete_service_providers/:id', to: 'service_providers#destroy'
 
 
 
+post '/invite_verify_with_webauth', to: 'user_registrations#create_webauthn'
 
+
+get '/get_calendar_events', to: 'calendar_events#index'
+post '/create_calendar_event', to: 'calendar_events#create'
+patch '/update_calendar_event/:id', to: 'calendar_events#update'
+delete '/delete_calendar_event/:id', to: 'calendar_events#destroy'
+
+
+
+post 'webauthn/register', to: 'admins#register_webauthn'
+post '/invite_register_with_webauth', to: 'admins#invite_register_with_webauthn'
+  post 'webauthn/create', to: 'admins#create_webauthn'
+  post 'webauthn/authenticate', to: 'admins#authenticate_webauthn'
+  post 'webauthn/verify', to: 'admins#verify_webauthn'
   post '/signup-admin', to: 'admins#create'
   post '/login-admin', to: 'admins#login'
   delete '/logout-admin', to: 'admins#logout'
@@ -116,11 +139,17 @@ delete '/delete_service_providers/:id', to: 'service_providers#destroy'
   post '/user_roles', to: 'admins#create_admins'
   delete '/delete_user_roles/:id', to: 'admins#delete_user'
   patch 'update_user_roles/:id', to: 'admins#update_user'
-  patch 'update_admin', to: 'admins#update_admin'
+  patch '/update_admin/:id', to: 'admins#update_admin'
   get '/get_admins', to: 'admins#index'
   get '/current_user', to: 'admins#user'
-   
+   post '/save_fcm_token', to: 'admins#create_fcm_token'
+   get '/updated_admin', to: 'admins#get_updated_admin'
   
+
+  get '/get_tickets', to: 'support_tickets#index'
+  post '/create_ticket', to: 'support_tickets#create'
+  patch '/update_ticket/:id', to: 'support_tickets#update'
+  delete '/delete_ticket/:id', to: 'support_tickets#destroy'
 
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

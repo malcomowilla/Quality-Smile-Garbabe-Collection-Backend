@@ -8,9 +8,11 @@ class AdminSerializer < ActiveModel::Serializer
   :can_read_service_provider, :can_manage_service_provider, 
   :can_manage_customers, :can_read_customers, :can_read_settings, 
   :can_manage_settings, :can_manage_payment, :can_read_payment, :can_manage_sms_templates,
-  :can_manage_sms, :can_read_sms_templates, :can_read_sms 
+  :can_manage_sms, :can_read_sms_templates, :can_read_sms, :can_manage_tickets,
+  :can_read_tickets ,:last_activity_active, :formatted_last_activity_active,
+:profile_image,:can_manage_calendar,
+:can_read_calendar
   
-   
 
 # def initialize(object, options = {})
 # super(object, options)
@@ -63,6 +65,12 @@ class AdminSerializer < ActiveModel::Serializer
 
 # end
 # end
+
+
+
+def formatted_last_activity_active
+  object.last_activity_active.strftime('%Y-%m-%d %I:%M:%S %p') if object.last_activity_active.present?
+end
 
 def formatted_registered_date
 object.date_registered.strftime('%Y-%m-%d %I:%M:%S %p') if object.date_registered.present?

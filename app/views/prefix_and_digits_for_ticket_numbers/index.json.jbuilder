@@ -1,0 +1,1 @@
+json.array! @prefix_and_digits_for_ticket_numbers, partial: "prefix_and_digits_for_ticket_numbers/prefix_and_digits_for_ticket_number", as: :prefix_and_digits_for_ticket_number

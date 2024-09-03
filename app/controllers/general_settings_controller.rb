@@ -1,20 +1,67 @@
 class GeneralSettingsController < ApplicationController
-  before_action :set_admin
+  # before_action :set_admi
+  before_action :update_last_activity
+ 
 
 
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
+
+  def create_for_tickets
+    authorize! :manage, :create_for_tickets
+    prefix_and_digits = PrefixAndDigitsForTicketNumber.first_or_initialize(
+      prefix:params[:prefix],
+      minimum_digits:params[:minimum_digits]
+    )
+
+
+    prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
+    if prefix_and_digits.save
+      Rails.logger.info "settings updated successfully"
+      render json: prefix_and_digits, status: :created, serializer: PrefixAndDigitsForTicketNumberSerializer,context:{}
+      
+
+    else
+      Rails.logger.warn "failed to update settings #{prefix_and_digits.errors.full_messages.join(", ")}"
+      render json: {errors: prefix_and_digits.errors }
   
+    end
+  end
+  
+
+  def get_settings_for_tickets
+    authorize! :read, :get_settings_for_tickets
+    prefix_and_digits = PrefixAndDigitsForTicketNumber.all
+  render json: prefix_and_digits ,each_serializer: PrefixAndDigitsForTicketNumberSerializer
+  
+  end
+
 
   def create_for_store_manager
     authorize! :manage, :create_for_store_manager
 @prefix_and_digits = PrefixAndDigitsForStoreManager.first_or_initialize(
      prefix:params[:prefix],
-      minimum_digits:params[:minimum_digits]
+      minimum_digits:params[:minimum_digits],
+      
 )
 
-  @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
+  @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits],
+  
+  send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
+   send_manager_number_via_email: params[:send_manager_number_via_email], 
+   enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
+  )
       if @prefix_and_digits.save
         Rails.logger.info "settings updated successfully"
-        render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForStoreManagerSerializer,context:{}
+        render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForStoreManagerSerializer,context:{
+          send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
+   send_manager_number_via_email: params[:send_manager_number_via_email], 
+   enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
+        }
         
 
       else
@@ -68,21 +115,47 @@ class GeneralSettingsController < ApplicationController
 
 
 
-
-
                   
 def create_admin_settings
   authorize! :manage, :create_admin_settings
-if params[:login_with_otp] == true
-#  
+# if params[:login_with_otp] == true || params[:login_with_otp] == 'true'
+#    params[:login_with_web_auth] == true || params[:login_with_otp_email] == true || params[:login_with_web_auth] == 'true'  ||
+#     params[:login_with_otp_email] == 'true'
 
-admin_settings = AdminSettings.new({ login_with_otp: params[:login_with_otp] }, 
+Rails.logger.info "enale 2fa=>#{params[:enale_2fa_for_admin]}"
+admin_settings = AdminSettings.first_or_initialize(
+check_inactive_days: params[:check_inactive_days],
+check_inactive_hrs: params[:check_inactive_hrs],
+check_inactive_minutes: params[:check_inactive_minutes],
+login_with_otp: to_boolean(params[:login_with_otp]), login_with_web_auth:
+to_boolean(params[:login_with_web_auth]), login_with_otp_email: to_boolean(params[:login_with_otp_email]),
+check_is_inactive: 
+to_boolean(params[:check_is_inactive]),
+send_password_via_email: to_boolean(params[:send_password_via_email]), 
+send_password_via_sms: to_boolean(params[:send_password_via_sms] ),
+enable_2fa_for_admin: to_boolean(params[:enable_2fa_for_admin]) )
+
+
+admin_settings.update(
+  check_inactive_days: params[:check_inactive_days],
+  check_inactive_minutes: params[:check_inactive_minutes],
+check_inactive_hrs: params[:check_inactive_hrs],
+enable_2fa_for_admin: to_boolean(params[:enable_2fa_for_admin]),
+login_with_otp: to_boolean(params[:login_with_otp]), login_with_web_auth:
+to_boolean(params[:login_with_web_auth]), login_with_otp_email: to_boolean(params[:login_with_otp_email]),
+check_is_inactive: 
+to_boolean(params[:check_is_inactive]),
+send_password_via_email: to_boolean(params[:send_password_via_email]), 
+send_password_via_sms: to_boolean(params[:send_password_via_sms] )
 )
-      render json: admin_settings
+if admin_settings.save
+  render json: admin_settings
 else
-  render json: { message: 'settings  updated' }
-
+  render json: { errors: admin_settings.errors.full_messages }, status: :unprocessable_entity
 end
+ 
+
+
 
 end
 
@@ -91,17 +164,17 @@ end
             
 def get_admin_settings
   authorize! :read, :get_admin_settings
-  if params[:login_with_otp] == 'true'
-  #  
   
-  admin_settings = AdminSettings.new( login_with_otp: params[:login_with_otp] , 
-  )
+  admin_settings = AdminSettings.all
+  # admin_settings = AdminSettings.new( login_with_otp: to_boolean(params[:login_with_otp]) , 
+  # login_with_web_auth: to_boolean(params[:login_with_web_auth]), login_with_otp_email: 
+  # to_boolean(params[:login_with_otp_email]), send_password_via_sms: to_boolean(params[:send_password_via_sms] ),
+  # send_password_via_email: to_boolean(params[:send_password_via_email])
+  # )
         render json: admin_settings
-  else
-    Rails.logger.info 'settings not updated'
-    render json: { message: 'settings not updated' }, status: :unprocessable_entity
+       
+
   
-  end
   
   end
 
@@ -114,9 +187,12 @@ def get_admin_settings
   
 
  def create_for_provider
+
+
+  
+
   authorize! :manage, :create_for_provider
-  if params[:use_auto_generated_number_for_service_provider] == true || params[:sms_and_email_for_provider
-  ] == true
+  if params[:use_auto_generated_number_for_service_provider] == true 
 
   @prefix_and_digits = PrefixAndDigitsForServiceProvider.first_or_initialize(
       
@@ -132,7 +208,11 @@ def get_admin_settings
         render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForServiceProviderSerializer,context:
          { use_auto_generated_number_for_service_provider:
         params[:use_auto_generated_number_for_service_provider], 
-        send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider]}
+        send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider],
+        enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
+        send_email_for_provider: params[:send_email_for_provider]
+      
+      }
 
       else
         rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
@@ -249,7 +329,7 @@ def get_admin_settings
  def get_settings_for_store_manager
   authorize! :read, :get_settings_for_store_manager
   @prefix_and_digits = PrefixAndDigitsForStoreManager.all
-  render json: @prefix_and_digits ,each_serializer: PrefixAndDigitsForStoreManagerSerializer,context:{}
+  render json: @prefix_and_digits 
   # if @admin.respond_to?(:prefix_and_digits_for_store_managers)
   #   Rails.logger.info "prefix_and_digits association exists"
   #   @prefix_and_digits =  @admin.prefix_and_digits_for_store_managers.all
@@ -295,7 +375,6 @@ def get_admin_settings
 
 
 
-
  def get_settings_for_provider
   authorize! :read, :get_settings_for_provider
 @prefix_and_digits = PrefixAndDigitsForServiceProvider.all
@@ -304,6 +383,8 @@ def get_admin_settings
 render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,context:
     { use_auto_generated_number_for_service_provider:
    params[:use_auto_generated_number_for_service_provider],
+   send_email_for_provider: params[:send_email_for_provider],
+   enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
   
    send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider]
   }
@@ -337,7 +418,8 @@ render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,conte
 
 
     render json: @prefix_and_digits, each_serializer: GeneralSettingSerializer,  context: {use_auto_generated_number:
-        params[:use_auto_generated_number], send_sms_and_email: params[:send_sms_and_email]
+        params[:use_auto_generated_number], send_sms_and_email: params[:send_sms_and_email], send_email: params[:send_email],
+        enable_2fa:params[:enable_2fa]
         }
 
 
@@ -360,7 +442,7 @@ render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,conte
 def create_for_customer
   authorize! :manage, :create_for_customer
 
-if params[:use_auto_generated_number] == true || params[:send_sms_and_email] == true
+# if params[:use_auto_generated_number] == true || params[:send_sms_and_email] == true
   
 @prefix_and_digits = PrefixAndDigit.first_or_initialize(
 
@@ -375,10 +457,11 @@ prefix: params[:prefix],
   if @prefix_and_digits.save
     Rails.logger.info "settings updated successfully"
     render json: @prefix_and_digits,  status: :created, serializer: PrefixAndDigitSerializer,context: {use_auto_generated_number:
-    params[:use_auto_generated_number], send_sms_and_email: params[:send_sms_and_email]
+    params[:use_auto_generated_number], enable_2fa: params[:enable_2fa], 
+        send_email: params[:send_email], send_sms_and_email: params[:send_sms_and_email]
     }
   else
-    rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
+    Rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
     render json: {error: @prefix_and_digits.errors }
 
   end
@@ -411,9 +494,11 @@ prefix: params[:prefix],
 
 #   # render json: {error: "admin does not have prefix and digits relationship"}, status: :unprocessable_entity
 # end
-else
-render json: {message: "settings updated succesfully"}
-end
+
+
+# else
+# render json: {message: "settings updated succesfully"}
+# end
 
 end
   
@@ -422,6 +507,11 @@ end
   private
 
 
+
+  def to_boolean(value)
+    ActiveModel::Type::Boolean.new.cast(value)
+  end
+  
   def set_admin
     @admin = Admin.find_by(id: session[:admin_id])
   Rails.logger.info "Admin found: #{@admin.inspect}" if @admin

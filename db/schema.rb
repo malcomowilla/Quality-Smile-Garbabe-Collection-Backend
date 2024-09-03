@@ -10,9 +10,54 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_settings", force: :cascade do |t|
+    t.boolean "login_with_otp"
+    t.boolean "login_with_web_auth"
+    t.boolean "login_with_otp_email"
+    t.boolean "send_password_via_sms"
+    t.boolean "send_password_via_email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "check_inactive_days"
+    t.string "check_inactive_hrs"
+    t.boolean "check_is_inactive"
+    t.boolean "enable_2fa_for_admin"
+    t.boolean "check_is_inactivehrs"
+    t.boolean "check_is_inactiveminutes"
+    t.string "check_inactive_minutes"
+  end
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name"
@@ -50,6 +95,44 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.boolean "can_manage_sms_templates"
     t.boolean "can_read_sms"
     t.boolean "can_read_sms_templates"
+    t.boolean "can_manage_tickets"
+    t.boolean "can_read_tickets"
+    t.string "last_login_ip"
+    t.string "last_login_at"
+    t.string "current_device"
+    t.string "last_activity_at"
+    t.jsonb "webauthn_authenticator_attachment"
+    t.string "webauthn_id"
+    t.boolean "inactive", default: false
+    t.datetime "last_activity_active"
+    t.boolean "enable_inactivity_check", default: false
+    t.string "fcm_token"
+    t.boolean "enable_inactivity_check_minutes"
+    t.boolean "enable_inactivity_check_hours"
+    t.string "can_manage_dashboard"
+    t.string "can_read_dashboard"
+    t.boolean "can_manage_calendar"
+    t.boolean "can_read_calendar"
+  end
+
+  create_table "calendar_events", force: :cascade do |t|
+    t.string "event_title"
+    t.datetime "start_date_time"
+    t.datetime "end_date_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title"
+    t.datetime "start"
+    t.datetime "end"
+  end
+
+  create_table "credentials", force: :cascade do |t|
+    t.string "webauthn_id"
+    t.string "public_key"
+    t.integer "sign_count"
+    t.integer "admin_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "customers", force: :cascade do |t|
@@ -112,7 +195,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "admin_id"
   end
 
   create_table "prefix_and_digits_for_service_providers", force: :cascade do |t|
@@ -120,7 +202,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "admin_id"
   end
 
   create_table "prefix_and_digits_for_store_managers", force: :cascade do |t|
@@ -128,7 +209,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "admin_id"
+    t.boolean "send_manager_number_via_sms"
+    t.boolean "send_manager_number_via_email"
+    t.boolean "enable_2fa_for_store_manager"
   end
 
   create_table "prefix_and_digits_for_stores", force: :cascade do |t|
@@ -136,11 +219,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "admin_id"
+  end
+
+  create_table "prefix_and_digits_for_ticket_numbers", force: :cascade do |t|
+    t.string "prefix"
+    t.string "minimum_digits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "prefixes", force: :cascade do |t|
     t.string "minimum_digits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "s3_uploaders", force: :cascade do |t|
+    t.string "region"
+    t.string "access_key_id"
+    t.string "secret_access_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -202,6 +299,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.serial "sequence_number"
     t.string "manager_number"
     t.string "otp"
+    t.boolean "delivered_bags", default: false
+    t.boolean "received_bags", default: false
   end
 
   create_table "stores", force: :cascade do |t|
@@ -225,4 +324,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_070324) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "support_tickets", force: :cascade do |t|
+    t.string "issue_description"
+    t.string "status"
+    t.string "priority"
+    t.string "agent"
+    t.string "ticket_number"
+    t.string "customer"
+    t.string "name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "date_created"
+    t.string "ticket_category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "date_of_creation"
+    t.serial "sequence_number"
+    t.datetime "date_closed"
+    t.string "agent_review"
+    t.string "agent_response"
+  end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
 end

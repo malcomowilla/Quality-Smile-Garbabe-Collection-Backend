@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @prefix_and_digits_for_ticket_number %>
+
+<div>
+  <%= link_to "Edit this prefix and digits for ticket number", edit_prefix_and_digits_for_ticket_number_path(@prefix_and_digits_for_ticket_number) %> |
+  <%= link_to "Back to prefix and digits for ticket numbers", prefix_and_digits_for_ticket_numbers_path %>
+
+  <%= button_to "Destroy this prefix and digits for ticket number", @prefix_and_digits_for_ticket_number, method: :delete %>
+</div>

@@ -1,15 +1,33 @@
 Sidekiq.configure_server do |config|
+
+  config.redis = { url: 'redis://localhost:6379/0' }
+  config.redis = { url: 'redis://localhost:6379/0' }
   config.on(:startup) do
+
+
+
     Sidekiq.schedule = {
-      'current_user_worker' => {
-        'class' => 'CurrentUserWorker',
-        'cron' => '*/8 * * * * *' ,
-      }
+     
+
+'inactivity_check_job' => {
+        'class' => 'InactivityCheckJob',
+        'cron' => "*/3 * * * * *", # Runs every 3 hours
+
+      },
+      
+      # 'generate_web_authn_options_job' => {
+      #   'class' => 'GenerateWebAuthnOptionsJob',
+      #   'concurrency' => 5,
+      #   'queues' => 'default'
+
+      # }
+
+
     }
     Sidekiq::Scheduler.reload_schedule!
-    Sidekiq.strict_args!(false)
+    # Sidekiq.strict_args!(false)
 
-
+    # InactivityCheckJob
   end
 end
 
@@ -28,3 +46,5 @@ end
 #     Sidekiq::Scheduler.reload_schedule!
 #   end
 # end
+# 
+

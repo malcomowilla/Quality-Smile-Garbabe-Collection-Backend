@@ -1,0 +1,1 @@
+json.partial! "prefix_and_digits_for_ticket_numbers/prefix_and_digits_for_ticket_number", prefix_and_digits_for_ticket_number: @prefix_and_digits_for_ticket_number

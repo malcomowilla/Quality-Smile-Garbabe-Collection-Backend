@@ -1,8 +1,9 @@
 class StoreManagersController < ApplicationController
-  before_action :set_admin, only: %i[ update destroy create  ]
+  # before_action :set_admin, only: %i[ update destroy create  ]
   before_action :set_store_manager, only: [:update, :destroy ] 
   # before_action :set_admin, except: %i[  create ]
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:verify_otp,  :login, :logout, :confirm_delivered, :confirm_delivered]
+  before_action :update_last_activity, except: [:verify_otp, :logout, :login, :confirm_delivered, :confirm_received] 
   # GET /store_managers or /store_managers.json
   def index
     @store_managers = StoreManager.all
@@ -10,6 +11,12 @@ class StoreManagersController < ApplicationController
   end
 
 
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
 
 
   def verify_otp
@@ -18,7 +25,7 @@ class StoreManagersController < ApplicationController
       token = generate_token(store_manager_id:  @store_manager.id)
       expires_at = 24.hours.from_now.utc
 
-      cookies.signed[:jwt] = { value: token, httponly: true, secure: true , expires: expires_at , sameSite: 'strict'}
+      cookies.signed[:jwt_store_manager] = { value: token, httponly: true, secure: true , expires: expires_at , sameSite: 'strict'}
       render json: { message: 'Login successful' }, status: :ok
     else
       render json: { message: 'Invalid OTP' }, status: :unauthorized
@@ -27,7 +34,7 @@ class StoreManagersController < ApplicationController
 
 
   def logout
-    cookies.delete(:jwt)
+    cookies.delete(:jwt_store_manager)
     head :no_content
     # render json: { message: 'Logout successful' }, status: :ok
     # delete =  session.delete :customer_id
@@ -41,6 +48,21 @@ class StoreManagersController < ApplicationController
 
 
 
+
+
+def  confirm_delivered
+  current_store_manager.update(delivered_bags: true, date_delivered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), 
+received_bags: false,
+number_of_bags_delivered: params[:number_of_bags_delivered] )
+end
+
+
+
+def  confirm_received
+  current_store_manager.update(received_bags: true, date_received: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+  delivered_bags: false,
+  number_of_bags_received: params[:number_of_bags_received] )
+  end
 
 
 
@@ -59,10 +81,25 @@ class StoreManagersController < ApplicationController
     if @store_manager
       # session[:customer_id] = @customer.id
       # render json:  {customer:  @customer} , status: :ok
-      @store_manager.generate_otp
-      send_otp(@store_manager.phone_number, @store_manager.otp)
-      render json: {store_manager:  @store_manager.manager_number}, status: :ok
-      send_otp(@store_manager.phone_number, @store_manager.otp)
+      if params[:enable_2fa_for_store_manager] == true
+        @store_manager.generate_otp
+        if params[:send_manager_number_via_sms] == true
+          send_otp(@store_manager.phone_number, @store_manager.otp)
+
+        elsif params[:send_manager_number_via_email] == true
+
+          StoreManagerOtpMailer.store_manager_otp(@store_manager).deliver_now
+        end
+      
+      elsif  params[:enable_2fa_for_store_manager] == false
+        token = generate_token(store_manager_id:  @store_manager.id)
+        expires_at = 24.hours.from_now.utc
+  
+        cookies.signed[:jwt_store_manager] = { value: token, httponly: true, secure: true , expires: expires_at }
+
+      end
+      
+      render json: {store_manager:  @store_manager}, status: :ok
 
     else
       render json: { error: 'Invalid manager number' }, status: :unauthorized
@@ -76,28 +113,28 @@ class StoreManagersController < ApplicationController
     @store_manager = StoreManager.create(store_manager_params)
   
     if  @store_manager.save
-      if @admin.respond_to?(:prefix_and_digits_for_store_managers)
-        @prefix_and_digits = @admin.prefix_and_digits_for_store_managers.first
+        @prefix_and_digits = PrefixAndDigitsForStoreManager.first
   
-        if @prefix_and_digits.present?
           found_prefix = @prefix_and_digits.prefix
           found_digits = @prefix_and_digits.minimum_digits.to_i
           Rails.logger.info "Prefix and digit relationship found"
   
           auto_generated_number = "#{found_prefix}#{@store_manager.sequence_number.to_s.rjust(found_digits, '0')}"
           @store_manager.update(manager_number: auto_generated_number)
-  
-          render json:  @store_manager, status: :created
-          send_sms(@store_manager.phone_number, @store_manager.manager_number)
+          if params[:send_manager_number_via_email] == true 
+            StoreManagerMailer.store_manager_send(@store_manager).deliver_now
+          end
+          
+          if params[:send_manager_number_via_sms] == true
+            send_sms(@store_manager.phone_number, @store_manager.manager_number)
+          end
 
-        else
-          Rails.logger.info "Prefix and digit relationship not found"
-          render json: { error: "Prefix and digit not found for the account" }, status: :unprocessable_entity
-        end
-      else
-        Rails.logger.info "Admin does not respond to prefix_and_digits_for_stores"
-        render json: { error: "Admin does not have prefix and digits for stores" }, status: :unprocessable_entity
-      end
+          render json:  @store_manager, status: :created
+          
+        
+          
+
+        
     else
       render json:  @store_manager.errors, status: :unprocessable_entity
     end
@@ -151,7 +188,7 @@ class StoreManagersController < ApplicationController
       params = {
         username: api_key,
         password: api_secret,
-        message: message,
+        message: original_message,
         destination: phone_number,
         source: sender_id
       }
@@ -159,10 +196,34 @@ class StoreManagersController < ApplicationController
   
       response = Net::HTTP.get_response(uri)
       if response.is_a?(Net::HTTPSuccess)
-        puts "Message sent successfully"
+        sms_data = JSON.parse(response.body)
+    
+        if sms_data['success']
+          sms_recipient = sms_data['recipients'][0]['number']
+          sms_status = sms_data['recipients'][0]['status']
+          
+          puts "Recipient: #{sms_recipient}, Status: #{sms_status}"
+    
+          # Save the original message and response details in your database
+          Sm.create!(
+            user: sms_recipient,
+            message: original_message,
+            status: sms_status,
+            date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+            system_user: 'system'
+          )
+          
+          # Return a JSON response or whatever is appropriate for your application
+          # render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+        else
+          # render json: { error: "Failed to send message: #{sms_data['message']}" }
+           puts  "Failed to send message: #{sms_data['message']}"
+        end
       else
         puts "Failed to send message: #{response.body}"
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
+
     end
 
 
@@ -185,14 +246,46 @@ class StoreManagersController < ApplicationController
         destination: phone_number,
         source: sender_id
       }
+      uri = URI("https://api.smsleopard.com/v1/sms/send")
+      params = {
+        username: api_key,
+        password: api_secret,
+        message: original_message,
+        destination: phone_number,
+        source: sender_id
+      }
       uri.query = URI.encode_www_form(params)
   
       response = Net::HTTP.get_response(uri)
       if response.is_a?(Net::HTTPSuccess)
-        puts "Message sent successfully"
+        sms_data = JSON.parse(response.body)
+    
+        if sms_data['success']
+          sms_recipient = sms_data['recipients'][0]['number']
+          sms_status = sms_data['recipients'][0]['status']
+          
+          puts "Recipient: #{sms_recipient}, Status: #{sms_status}"
+    
+          # Save the original message and response details in your database
+          Sm.create!(
+            user: sms_recipient,
+            message: original_message,
+            status: sms_status,
+            date:Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+            system_user: 'system'
+          )
+          
+          # Return a JSON response or whatever is appropriate for your application
+          # render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+        else
+          # render json: { error: "Failed to send message: #{sms_data['message']}" }
+           puts  "Failed to send message: #{sms_data['message']}"
+        end
       else
         puts "Failed to send message: #{response.body}"
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
+
     end
 
 

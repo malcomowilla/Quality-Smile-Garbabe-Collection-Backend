@@ -1,0 +1,2 @@
+class PrefixAndDigitsForTicketNumber < ApplicationRecord
+end

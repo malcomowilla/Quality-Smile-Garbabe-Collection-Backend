@@ -1,11 +1,18 @@
 class CustomersController < ApplicationController
   # before_action :set_admin
-  before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_bag, :confirm_request]
+        # before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_bag, :confirm_request]
   # before_action :authenticate_customer, except: [:index, :login, :verify_otp, :logout]
   # before_action :current_customer, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
-before_action :current_user, only: [:confirm_bag, :confirm_request]
-load_and_authorize_resource
+      before_action :current_user, except: [:confirm_bag, :confirm_request]
 
+
+      before_action :update_last_activity, except: [:logout, :login, :verify_otp, :confirm_bag, :confirm_request, 
+    ]
+
+        load_and_authorize_resource except: [:verify_otp,  :login, :logout, :confirm_bag, :confirm_request]
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'message_template'
   require "twilio-ruby"
 
   # GET /customers or /customers.json
@@ -15,12 +22,19 @@ load_and_authorize_resource
   end
 
 
+  def update_last_activity
+    if current_user.instance_of?(Admin)
+      current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    end
+    
+  end
+       
 
 
 
 
   def logout
-    cookies.delete(:jwt)
+    cookies.delete(:customer_jwt)
     head :no_content
     # render json: { message: 'Logout successful' }, status: :ok
     # delete =  session.delete :customer_id
@@ -40,7 +54,7 @@ render json: {customer_login: @customer_login}
 end
 
 
-
+# CustomerOtpMailer
 
 
   def login
@@ -49,8 +63,22 @@ end
     if @customer
       # session[:customer_id] = @customer.id
       # render json:  {customer:  @customer} , status: :ok
-      @customer.generate_otp
-      send_otp(@customer.phone_number, @customer.otp)
+      
+      if params[:enable_2fa] == true || params[:enable_2fa] == 'true'
+        @customer.generate_otp
+      if params[:send_email] == true || params[:send_email] == 'true'
+        CustomerOtpMailer.customers_otp(@customer).deliver_now
+      end
+
+      if params[:send_sms_and_email] == true || params[:send_sms_and_email] == 'true'
+        @customer.generate_otp
+        send_otp(@customer.phone_number, customer.name, @customer.otp)
+      end
+      else
+        token = generate_token(customer_id:  @customer.id)
+      cookies.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      end
+      
       render json: {customer:  @customer.customer_code}, status: :ok
     else
       render json: { error: 'Invalid customer code' }, status: :unauthorized
@@ -64,7 +92,7 @@ end
     @customer = Customer.find_by(customer_code: params[:customer_code])
     if  @customer&.verify_otp(params[:otp])
       token = generate_token(customer_id:  @customer.id)
-      cookies.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       render json: { message: 'Login successful' }, status: :ok
     else
       render json: { message: 'Invalid OTP' }, status: :unauthorized
@@ -79,7 +107,8 @@ end
   def create
     @customer = Customer.new(customer_params)
       if @customer.save
-          @prefix_and_digits = Admin.prefix_and_digits.first
+          # @prefix_and_digits = Admin.prefix_and_digits.first
+          @prefix_and_digits = PrefixAndDigit.first
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i
@@ -97,13 +126,17 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
   render json: @customer, message: 'customer created succesfully',  status: :created
-  if params[:send_sms_and_email] == true
+
+
+if params[:send_email] == true || params[:send_email] == 'true'
+  CustomerCodeMailer.customer_code(@customer).deliver_now
+end
+
+
+  if params[:send_sms_and_email] == true || params[:send_email] == 'true'
     send_sms(@customer.phone_number, @customer.customer_code, @customer.name)
-  # CustomerCodeMailer.customer_code(@customer).deliver_now
 
 
-  else
-    Rails.logger.info "params not received"
   end
   
 
@@ -130,11 +163,10 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
 
-
   def confirm_bag
-    if  current_user.update(bag_confirmed: true,  confirmation_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    if  current_customer.update(bag_confirmed: true,  confirmation_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
       
-      formatted_time = current_user.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')
+      formatted_time = current_customer.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')
 
       render json: { message: 'Bag confirmed successfully.', confirmation_date: formatted_time }, status: :ok
     else
@@ -147,7 +179,7 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
   def confirm_request
-    if current_user.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), bag_confirmed: false) 
+    if current_customer.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), bag_confirmed: false) 
       render json: { message: 'Bag confirmed successfully.' }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
@@ -181,7 +213,10 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
     def send_sms(phone_number, customer_code, name)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      original_message = "Hello Welcome To QUALITY SMILES. Use Customer Code #{customer_code} and start using our services"
+      sms_template = SmsTemplate.first
+      customer_template = sms_template.customer_confirmation_code_template
+      original_message = sms_template ?  MessageTemplate.interpolate(customer_template,{customer_code: customer_code, 
+      name: name})  :   "Hello Welcome To QUALITY SMILES. Use Customer Code #{customer_code} and start using our services"
       sender_id = "SMS_TEST" # Ensure this is a valid sender ID
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
@@ -228,10 +263,14 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
 
-    def send_otp(phone_number, otp)
+    def send_otp(phone_number, otp, name)
       api_key = ENV['SMS_LEOPARD_API_KEY']
       api_secret = ENV['SMS_LEOPARD_API_SECRET']
-      original_message = "Hello use this #{otp} to continue"
+      sms_template = SmsTemplate.first
+      customer_template = sms_template.customer_otp_confirmation_template
+      original_message = sms_template ?  MessageTemplate.interpolate(customer_template,{otp: otp, 
+      name: name})  :   "Hello, #{name} use this #{otp} as your password 
+       and start using our services"
       sender_id = "SMS_TEST" # Ensure this is a valid sender ID
   
       uri = URI("https://api.smsleopard.com/v1/sms/send")
@@ -301,16 +340,17 @@ auto_generated_number = @customer.customer_code = "#{found_prefix}#{@customer.se
 
 
 
-  def set_admin
-    @admin = Admin.find_by(id: session[:admin_id])
-  Rails.logger.info "Admin found: #{@admin.inspect}" if @admin
-  Rails.logger.warn "Admin not found" unless @admin
-  end
+  # def set_admin
+  #   @admin = Admin.find_by(id: session[:admin_id])
+  # Rails.logger.info "Admin found: #{@admin.inspect}" if @admin
+  # Rails.logger.warn "Admin not found" unless @admin
+  # end
 
 
 
     def customer_params
-      params.require(:customer).permit(:name, :email, :phone_number, :location, :customer_code, :amount_paid, :date, 
+      params.require(:customer).permit(:name, :email, :phone_number, 
+      :location, :customer_code, :amount_paid, :date, 
       :date_registered, :request_date, :confirmation_date
       )
     end

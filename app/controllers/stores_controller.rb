@@ -1,11 +1,19 @@
 class StoresController < ApplicationController
   before_action :set_store, only: %i[ show edit update destroy ]
-before_action :set_admin, only: %i[ create show edit update destroy ]
-
+# before_action :set_admin, only: %i[ create show edit update destroy ]
+before_action :update_last_activity
 
 load_and_authorize_resource
 
 
+
+
+def update_last_activity
+  if current_user.instance_of?(Admin)
+    current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+  end
+  
+end
 
 
 
@@ -24,10 +32,8 @@ load_and_authorize_resource
     @store = Store.new(store_params)
   
     if @store.save
-      if @admin.respond_to?(:prefix_and_digits_for_stores)
-        @prefix_and_digits = @admin.prefix_and_digits_for_stores.first
+        @prefix_and_digits = PrefixAndDigitsForStore.first
   
-        if @prefix_and_digits.present?
           found_prefix = @prefix_and_digits.prefix
           found_digits = @prefix_and_digits.minimum_digits.to_i
           Rails.logger.info "Prefix and digit relationship found"
@@ -36,14 +42,8 @@ load_and_authorize_resource
           @store.update(store_number: auto_generated_number)
   
           render json: @store, status: :created
-        else
-          Rails.logger.info "Prefix and digit relationship not found"
-          render json: { error: "Prefix and digit not found for the account" }, status: :unprocessable_entity
-        end
-      else
-        Rails.logger.info "Admin does not respond to prefix_and_digits_for_stores"
-        render json: { error: "Admin does not have prefix and digits for stores" }, status: :unprocessable_entity
-      end
+       
+     
     else
       render json: @store.errors, status: :unprocessable_entity
     end

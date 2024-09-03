@@ -1,3 +1,7 @@
+
+
+
+
 module MessageTemplate
   def self.interpolate(template, variables)
     variables.each do |key, value|
@@ -6,6 +10,7 @@ module MessageTemplate
     template
   end
 end
+
 
 
 
