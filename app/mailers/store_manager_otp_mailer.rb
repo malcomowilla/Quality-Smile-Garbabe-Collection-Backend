@@ -14,10 +14,10 @@ def store_manager_otp(store_manager)
     Rails.logger "template uuid store manager not found"
   end
   MailtrapService.new(ENV['MAIL_TRAP_API_KEY']).send_template_email(
-    to: @admin.email,
+    to: @store_manager.email,
     template_uuid: template_uuid,
     template_variables: {
-      "user_name" => @store_manager.user_name,
+      "user_name" => @store_manager.name,
       "store_manager_otp" => @store_manager.otp
     }
   )

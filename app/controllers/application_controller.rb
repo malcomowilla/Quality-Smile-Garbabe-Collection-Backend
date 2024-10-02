@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
     private
 
 def current_store_manager
-  store_manager_token = cookies.signed[:jwt_store_manager]
+  store_manager_token = cookies.encrypted.signed[:jwt_store_manager]
 
 
   if store_manager_token  
@@ -66,7 +66,7 @@ end
 
 
 def current_customer
-  customer_token = cookies.signed[:customer_jwt]
+  customer_token = cookies.encrypted.signed[:customer_jwt]
   if  customer_token 
     begin
 
@@ -107,7 +107,7 @@ end
 
 
     def current_service_provider
-      service_provider_token = cookies.signed[:service_provider_jwt]
+      service_provider_token = cookies.encrypted.signed[:service_provider_jwt]
       if  service_provider_token
         begin
 
@@ -130,7 +130,7 @@ end
 
     def current_user
       @current_user ||= begin
-      token = cookies.signed[:jwt]
+      token = cookies.encrypted.signed[:jwt]
       
       # service_provider_token = cookies.signed[:service_provider_jwt]
       

@@ -2,20 +2,30 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
+  resources :chat_rooms
+  resources :chat_messages
   resources :finances_and_accounts
   mount ActionCable.server => '/cable'
-  mount Sidekiq::Web => '/sidekiq'
+  # mount Sidekiq::Web => '/sidekiq'
 
   post '/update_customer_settings', to: 'general_settings#create_for_customer'
   get '/get_customer_settings', to: 'general_settings#get_settings_for_customer' 
+  get '/allow_get_customer_settings', to: 'general_settings#allow_get_customer_settings'
 post '/update_provider_settings', to: 'general_settings#create_for_provider'
 get '/get_provider_settings', to: 'general_settings#get_settings_for_provider'
+get '/allow_get_settings_for_provider', to: 'general_settings#allow_get_settings_for_provider'
 post '/update_store_settings', to: 'general_settings#create_for_store'
 post '/update_store_manager', to: 'general_settings#create_for_store_manager'
 get '/get_store_manager', to: 'general_settings#get_settings_for_store_manager'
+get '/allow_get_settings_for_store_manager', to: 'general_settings#allow_get_settings_for_store_manager'
+post '/create_calendar_settings', to: 'general_settings#create_calendar_settings'
+get '/get_calendar_settings', to: 'general_settings#get_calendar_settings'
+
+
 get '/get_store_settings', to: 'general_settings#get_settings_for_store'
 post '/admin_settings', to: 'general_settings#create_admin_settings'
 get 'get_settings_for_admin', to: 'general_settings#get_admin_settings'
+get '/allow_get_admin_settings', to: 'general_settings#allow_get_admin_settings'
 post '/update_ticket_settings', to: 'general_settings#create_for_tickets'
 get '/get_ticket_settings', to: 'general_settings#get_settings_for_tickets'
 
@@ -92,13 +102,14 @@ patch '/update_location/:id', to: 'locations#update'
 post '/customer_login', to: 'customers#login'
   post '/customer', to: 'customers#create'
 get '/customers', to: 'customers#index'
+
 patch 'update_customer/:id', to: 'customers#update'
 delete 'delete_customer/:id', to: 'customers#destroy'
 get '/get_customer_code', to: 'customers#get_customer_code' 
 post '/otp_verification', to: 'customers#verify_otp'
 post '/confirm_bag', to: 'customers#confirm_bag'
 post '/confirm_request', to: 'customers#confirm_request'
- 
+get '/my_current_customer', to: 'customers#my_current_customer'
 
 
 
@@ -141,6 +152,7 @@ post '/invite_register_with_webauth', to: 'admins#invite_register_with_webauthn'
   patch 'update_user_roles/:id', to: 'admins#update_user'
   patch '/update_admin/:id', to: 'admins#update_admin'
   get '/get_admins', to: 'admins#index'
+  get '/allow_get_updated_admin', to: 'admins#allow_get_updated_admin'
   get '/current_user', to: 'admins#user'
    post '/save_fcm_token', to: 'admins#create_fcm_token'
    get '/updated_admin', to: 'admins#get_updated_admin'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,13 +57,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.boolean "check_is_inactivehrs"
     t.boolean "check_is_inactiveminutes"
     t.string "check_inactive_minutes"
+    t.boolean "enable_2fa_for_admin_passkeys"
   end
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name"
     t.string "email"
     t.string "password_digest"
-    t.string "phone_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "otp"
@@ -113,6 +113,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.string "can_read_dashboard"
     t.boolean "can_manage_calendar"
     t.boolean "can_read_calendar"
+    t.string "phone_number"
+    t.boolean "online"
+    t.integer "connection_count"
   end
 
   create_table "calendar_events", force: :cascade do |t|
@@ -126,11 +129,37 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.datetime "end"
   end
 
+  create_table "chat_messages", force: :cascade do |t|
+    t.string "content"
+    t.datetime "date_time_of_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "chat_room_id"
+    t.integer "admin_id"
+  end
+
+  create_table "chat_rooms", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "credentials", force: :cascade do |t|
     t.string "webauthn_id"
     t.string "public_key"
     t.integer "sign_count"
     t.integer "admin_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "customer_settings", force: :cascade do |t|
+    t.boolean "send_sms_and_email"
+    t.boolean "send_email"
+    t.string "prefix"
+    t.string "minimum_digits"
+    t.boolean "use_auto_generated_number"
+    t.boolean "enable_2fa"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -175,6 +204,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.string "sub_location"
     t.string "location_code"
     t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "my_calendar_settings", force: :cascade do |t|
+    t.string "start_in_minutes"
+    t.string "start_in_hours"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -242,6 +278,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "service_provider_settings", force: :cascade do |t|
+    t.string "prefix"
+    t.string "minimum_digits"
+    t.boolean "use_auto_generated_number_for_service_provider"
+    t.boolean "send_sms_and_email_for_provider"
+    t.boolean "enable_2fa_for_service_provider"
+    t.boolean "send_email_for_provider"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "service_providers", force: :cascade do |t|
     t.string "phone_number"
     t.string "name"
@@ -279,6 +326,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_113608) do
     t.string "service_provider_otp_confirmation_template"
     t.string "admin_otp_confirmation_template"
     t.string "payment_reminder_template"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "store_manager_manager_number_confirmation_template"
+    t.string "store_manager_otp_confirmation_template"
+  end
+
+  create_table "store_manager_settings", force: :cascade do |t|
+    t.string "prefix"
+    t.string "minimum_digits"
+    t.boolean "send_manager_number_via_sms"
+    t.boolean "send_manager_number_via_email"
+    t.boolean "enable_2fa_for_store_manager"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

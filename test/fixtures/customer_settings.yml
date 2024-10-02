@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  send_sms_and_email: false
+  send_email: false
+  prefix: MyString
+  minimum_digits: MyString
+  use_auto_generated_number: false
+  enable_2fa: false
+
+two:
+  send_sms_and_email: false
+  send_email: false
+  prefix: MyString
+  minimum_digits: MyString
+  use_auto_generated_number: false
+  enable_2fa: false

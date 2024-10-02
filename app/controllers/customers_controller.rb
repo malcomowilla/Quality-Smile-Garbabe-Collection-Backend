@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
         # before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_bag, :confirm_request]
   # before_action :authenticate_customer, except: [:index, :login, :verify_otp, :logout]
   # before_action :current_customer, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
-      before_action :current_user, except: [:confirm_bag, :confirm_request]
+      # before_action :current_user, except: [:confirm_bag, :confirm_request]
 
 
       before_action :update_last_activity, except: [:logout, :login, :verify_otp, :confirm_bag, :confirm_request, 
@@ -15,6 +15,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'message_template'
   require "twilio-ruby"
 
+
+  
   # GET /customers or /customers.json
   def index
     @customers = Customer.all
@@ -22,8 +24,37 @@ require 'message_template'
   end
 
 
+  def get_all_customers
+    @customers = Customer.all
+    render json: @customers
+  end
+
+
+
+def my_current_customer
+  if current_customer
+
+    customer_name = current_customer.name
+    support_ticket = SupportTicket.find_by(customer:  customer_name)
+
+    render json: [customer: support_ticket], status: :ok
+  else
+    render json: {customer_error_message: "customer not found"}, status: :not_found
+  end
+end
+
+
+
+
+
+  
+def get_my_customer_code
+  
+end
+
+
   def update_last_activity
-    if current_user.instance_of?(Admin)
+if current_user.instance_of?(Admin)
       current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
     end
     
@@ -57,8 +88,19 @@ end
 # CustomerOtpMailer
 
 
+
+
+
+
+
+
+
+
+
+
   def login
-    @customer = Customer.find_by(customer_code: params[:customer_code])
+    @customer = Customer.find_by(customer_code: params[:customer_code]) || Customer.find_by(customer_code: params[:my_customer_code
+  ])
 
     if @customer
       # session[:customer_id] = @customer.id
@@ -66,20 +108,21 @@ end
       
       if params[:enable_2fa] == true || params[:enable_2fa] == 'true'
         @customer.generate_otp
+        render json: {customer:  @customer.customer_code}, status: :ok
       if params[:send_email] == true || params[:send_email] == 'true'
         CustomerOtpMailer.customers_otp(@customer).deliver_now
       end
 
       if params[:send_sms_and_email] == true || params[:send_sms_and_email] == 'true'
         @customer.generate_otp
-        send_otp(@customer.phone_number, customer.name, @customer.otp)
+        send_otp(@customer.phone_number, @customer.name, @customer.otp)
       end
       else
         token = generate_token(customer_id:  @customer.id)
-      cookies.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.encrypted.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       end
       
-      render json: {customer:  @customer.customer_code}, status: :ok
+      
     else
       render json: { error: 'Invalid customer code' }, status: :unauthorized
     end
@@ -92,8 +135,10 @@ end
     @customer = Customer.find_by(customer_code: params[:customer_code])
     if  @customer&.verify_otp(params[:otp])
       token = generate_token(customer_id:  @customer.id)
-      cookies.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.encrypted.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       render json: { message: 'Login successful' }, status: :ok
+
+      
     else
       render json: { message: 'Invalid OTP' }, status: :unauthorized
     end
@@ -108,7 +153,7 @@ end
     @customer = Customer.new(customer_params)
       if @customer.save
           # @prefix_and_digits = Admin.prefix_and_digits.first
-          @prefix_and_digits = PrefixAndDigit.first
+          @prefix_and_digits = CustomerSetting.first
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i
@@ -249,13 +294,13 @@ end
           )
           
           # Return a JSON response or whatever is appropriate for your application
-          render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+          # render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
         else
           render json: { error: "Failed to send message: #{sms_data['message']}" }
         end
       else
         puts "Failed to send message: #{response.body}"
-        render json: { error: "Failed to send message: #{response.body}" }
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 
@@ -303,13 +348,13 @@ end
           )
           
           # Return a JSON response or whatever is appropriate for your application
-          render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
+          # render json: { success: true, message: "Message sent successfully", recipient: sms_recipient, status: sms_status }
         else
           render json: { error: "Failed to send message: #{sms_data['message']}" }
         end
       else
         puts "Failed to send message: #{response.body}"
-        render json: { error: "Failed to send message: #{response.body}" }
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 

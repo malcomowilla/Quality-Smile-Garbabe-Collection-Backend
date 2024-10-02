@@ -4,8 +4,8 @@ class ServiceProvider < ApplicationRecord
     # validates :provider_code, presence: true, uniqueness: true
 
 
-    validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
-    validates :phone_number, uniqueness: true, presence: true
+    # validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
+    # validates :phone_number, uniqueness: true, presence: true
     
 
     def generate_otp

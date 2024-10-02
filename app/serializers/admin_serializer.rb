@@ -66,6 +66,8 @@ class AdminSerializer < ActiveModel::Serializer
 # end
 # end
 
+  
+
 
 
 def formatted_last_activity_active

@@ -25,6 +25,31 @@ end
 
 
 
+
+        def show_conversation
+          @other_admin = Admin.find_by(id: params[:id])
+          @messages = Message.where(sender: current_user, receiver: @other_admin)
+                             .or(Message.where(sender: @other_admin,
+                              receiver: current_user))
+      
+          render json: @messages
+        end
+
+
+        def allow_get_updated_admin
+          admin = Admin.find_by(id: params[:id])
+          render json: {
+            id: admin.id,
+            email: admin.email,
+            user_name: admin.user_name,
+            profile_image: admin.profile_image.attached? ? url_for(admin.profile_image) : nil,
+            phone_number: admin.phone_number
+          }
+        end
+
+        
+
+
         def get_updated_admin
           render json: {
             id: current_user.id,
@@ -39,11 +64,9 @@ end
         def create_admins
           @my_admin = Admin.new(admin_params)
           # email_valid = Truemail.validate(params[:email])
-        
-          my_password = @my_admin.password = SecureRandom.hex(8) 
+          validate_invite_admin
+           @my_admin.password = SecureRandom.hex(8) 
           # my_password = @my_admin.generate_login_password
-          @my_admin.password_confirmation = my_password
-          @my_admin.skip_password_validation = true
           if params[:role].blank?
             render json: { error: "Role cannot be empty" }, status: :unprocessable_entity
             return
@@ -57,6 +80,8 @@ end
           #
             # t.string "can_manage_calendar"
     # t.string "can_read_calendar"
+    # 
+     if @my_admin.errors.empty?
           if @my_admin.save
             @my_admin.update(
               role: params[:role],
@@ -121,6 +146,11 @@ end
             render json: { errors: @my_admin.errors }, status: :unprocessable_entity
             
           end
+
+        else
+          render json: { errors: @my_admin.errors }, status: :unprocessable_entity
+          
+        end
        
         end
         
@@ -153,13 +183,13 @@ def create_fcm_token
 end
 
 
-
+# generate_password_reset_token(admin)
 
 
   def forgot_password
    
     if  @admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
-      @admin.generate_password_reset_token
+      @admin.generate_password_reset_token(@admin)
       ResetPasswordMailer.password_forgotten(@admin).deliver_now
       render json: {message: 'email sent'}, status: :ok
     else
@@ -167,14 +197,14 @@ end
     end
   end
 
-
+  # reset_password(password, admin)
 
   def reset_password
     @admin = Admin.find_by(reset_password_token: params[:token])
     if params[:password] == params[:password_confirmation]
       if params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/) 
     if @admin&.password_token_valid?
-      if @admin.reset_password(params[:password])
+      if @admin.reset_password(params[:password], @admin)
         render json: {message: 'password has been updated succesfully'}, status: :ok
       else
         render json: {error: 'failed to update password'}, status: :unprocessable_entity
@@ -215,46 +245,57 @@ end
   
   
 def login
- Rails.logger.info "enable 2fa=> #{params[:enable_2fa_for_admin]}"
   admin = Admin.find_by(email: params[:email]) 
   if params[:enable_2fa_for_admin] == true || params[:enable_2fa_for_admin] == 'true' 
     if admin&.authenticate(params[:password])
-      
-     admin.generate_otp(admin)
+    
     #  admin.update_column(inactive: false)
     if params[:login_with_otp] == true  || params[:login_with_otp] == 'true'
+      admin.generate_otp(admin)
+
       send_otp(params[:phone_number], admin.otp, admin.user_name)
     end
-           
-           admin.update(last_login_at: Time.current)
+        render json: {message: 'sms sent'}, status: :ok
+        # token = generate_token(admin_id: admin.id)
 
-           render json:  admin, serializer: AdminSerializer,   status: :accepted
+        # cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
+        # sameSite: 'strict'}
+
+          #  admin.update_column(:last_login_at, Time.current)
+
+          #  render json:  admin, serializer: AdminSerializer,   status: :accepted
     else
   
-      render json: {error: 'Invalid  Password' }, status: :unauthorized
+      render json: {error: 'Invalid  Email Or Password' }, status: :unauthorized
+      return
     end
-  elsif params[:login_with_otp_email] == true || params[:login_with_otp_email] == 'true'
+  if params[:login_with_otp_email] == true || params[:login_with_otp_email] == ''
 
-if admin&.authenticate(params[:password])
      admin.generate_otp(admin)
+    #  token = generate_token(admin_id: admin.id)
+    #  cookies.signed[:jwt] = { value: token, httponly: true, secure: true,
+    # sameSite: 'strict'}
+      
+admin.update_column(:inactive, false)
+admin.update_column(:last_activity_active, Time.zone.now)
      AdminOtpMailer.admins_otp(admin).deliver_now
-           admin.update(last_login_at: Time.current)
+    
+          #  admin.update(last_login_at: Time.current)
 
-           render json:  admin, serializer: AdminSerializer,   status: :accepted
-    else
-      render json: {error: 'Invalid Username Or Password' }, status: :unauthorized
-    end
+# render json:  admin, serializer: AdminSerializer,   status: :accepted
+   
+  end
   else
     
 if admin&.authenticate(params[:password])
   
   # session[:admin_id] = @admin.id
   token = generate_token(admin_id: admin.id)
-  cookies.signed[:jwt] = { value: token, httponly: true, secure: true,
+  cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
  sameSite: 'strict'}
-  admin.update(last_login_at: Time.now)
+  admin.update_column(:last_login_at, Time.now)
   # admin.update_column(:inactive, false)
-  # 
+  admin.update_column(:last_activity_active, Time.zone.now)
   admin.update_column(:inactive, false)
   # admin.update_column(:last_activity_active, Time.zone.now )
   render json:  admin, serializer: AdminSerializer,   status: :accepted
@@ -303,9 +344,8 @@ Rails.logger.info   "received email from react =>#{params[:my_email]}"
     render json: { error: 'Admin not found' }, status: :not_found
     return
   end
-  admin.skip_password_validation = true
-  admin.password = SecureRandom.base64(8) 
-  admin.password_confirmation = admin.password
+  # admin.skip_password_validation = true
+  # admin.password = SecureRandom.base64(8) 
     if admin.webauthn_id.nil?
       admin.update!(webauthn_id: WebAuthn.generate_user_id[0..32], 
 
@@ -339,19 +379,16 @@ end
 
 
 def register_webauthn
-
-  admin = find_or_initialize_user(params[:email], params[:user_name])
-  admin.skip_password_validation = true
-
-  if admin.new_record?
-    admin.password = SecureRandom.base64(8) 
-    admin.email = 'random@gmail.com'
-  admin.password_confirmation = admin.password
-  end
   
-  if admin.save
-    if admin.webauthn_id.nil?
-      admin.update!(webauthn_id: WebAuthn.generate_user_id[0..32], 
+
+
+  @the_admin = find_or_initialize_user(params[:user_name])
+  validate_admin_passkey_user_name
+  if @the_admin.errors.empty?
+
+  if @the_admin.save
+    if @the_admin.webauthn_id.nil?
+      @the_admin.update!(webauthn_id: WebAuthn.generate_user_id[0..32], 
 
 
       date_registered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
@@ -359,8 +396,8 @@ def register_webauthn
 
     # admin.update(date_registered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),)
     options = WebAuthn::Credential.options_for_create(
-      user: { id: Base64.urlsafe_encode64(admin.webauthn_id), name: admin.user_name || admin.email },
-      exclude: admin.credentials.map { |c| c.webauthn_id },
+      user: { id: Base64.urlsafe_encode64(@the_admin .webauthn_id), name: @the_admin.user_name || @the_admin.email },
+      exclude: @the_admin.credentials.map { |c| c.webauthn_id },
       # authenticator_selection: { authenticator_attachment: 'cross-platform' }, # Use cross-platform authenticator
 
       # authenticator_selection: { authenticator_attachment: 'platform' }, # Ensure it's using platform authenticator (e.g., phone)
@@ -377,9 +414,15 @@ def register_webauthn
 
 
     render json: options, status: :ok
-  else
-    render json: admin.errors , status: :unprocessable_entity
+
+else  
+    render json: @the_admin.errors , status: :unprocessable_entity
   end
+  
+else  
+    render json: @the_admin.errors , status: :unprocessable_entity
+
+end
 end
 
 
@@ -397,8 +440,7 @@ def create_webauthn
     Rails.logger.info "challenge during verification: #{session[:webauthn_registration].inspect}"
 
     webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
-    admin = Admin.find_by(user_name: params[:user_name])
-
+    admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
 
     # Check if the session data is present
     if session[:webauthn_registration].blank?
@@ -419,7 +461,7 @@ def create_webauthn
       # rp: { name: 'quality-smiles'}
 
     )
-
+    # PasswordPasskeysMailer.password_passkeys(admin).deliver_now
     session[:webauthn_registration] = nil
     render json: { message: 'WebAuthn registration successful' }, status: :ok
   rescue WebAuthn::Error => e
@@ -434,7 +476,7 @@ end
 def authenticate_webauthn
   # "id": ""AdVZRNnFYkuE-z2ExPy7YNCjTEbBPiGqJHJ0DSMW8d_3H63vtT5dcjFWa_QUp5bNTimc5J3_SSXIeFVuUeAbxTo",
   # "5TR0TJqgdKRNuqsDhDQV6L7ccHct5B_xGUJ1HJWp0G4" =>  chalenge,
-  admin = find_passkey_user(params[:email], params[:user_name])
+  admin = find_passkey_user(params[:user_name])
 
   if admin.present?
     options = WebAuthn::Credential.options_for_get(allow: admin.credentials.map { |c| c.webauthn_id })
@@ -464,7 +506,7 @@ end
 def verify_webauthn
 
 
-  admin = find_passkey_user(params[:email], params[:user_name])
+  admin = find_passkey_user(params[:user_name])
   webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
   begin
@@ -479,7 +521,7 @@ def verify_webauthn
 
 
     token = generate_token(admin_id: admin.id)
-    cookies.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
     # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
     webauthn_credential.verify(
       session[:authentication_challenge],
@@ -487,8 +529,9 @@ def verify_webauthn
       sign_count: stored_credential.sign_count
     )
 
-
-
+    admin.update_column(:inactive, false)
+    admin.update_column(:last_activity_active, Time.zone.now)
+    admin.update_column(:last_login_at, Time.now)
     # if webauthn_credential.nil?
     #   render json: { error: 'Your Passkey Not Found Please Signup First' }, status: :not_found
     # end
@@ -515,13 +558,19 @@ end
 
 
 def verify_otp
+
+  
+  # admin.update_column(:inactive, false)
+  
   admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
   if  admin&.verify_otp(params[:otp])
     # session[:admin_id] = @admin.id
      token = generate_token(admin_id: admin.id)
-  cookies.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i }
+     cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i }
   # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
-  admin.update(inactive: false, last_activity_active: Time.zone.now)
+  admin.update_column(:inactive, false)
+  admin.update_column(:last_activity_active, Time.zone.now)
+  admin.update_column(:last_login_at, Time.now)
         render json: {admin: admin.user_name}, status: :accepted
 
   else
@@ -548,18 +597,23 @@ end
 
   # POST /admins or /admins.json
   def create
-    @admin = Admin.create(admin_params)
-
-    
-  if @admin.valid?
-    @admin.update(date_registered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),)
-    # session[:account_id] =  @account.id
-    render json: { admin: AdminSerializer.new(@admin) }, status: :created
-  else
-    render json: { errors: @admin.errors }, status: :unprocessable_entity
+    @admin = Admin.new(admin_params)
+  
+    # Manually apply your custom validations
+    validate_admin_data
+  
+    if @admin.errors.empty?
+      @admin.date_registered = Time.now.strftime('%Y-%m-%d %I:%M:%S %p')
+      
+      if @admin.save
+        render json: { admin: AdminSerializer.new(@admin) }, status: :created
+      else
+        render json: { errors: @admin.errors }, status: :unprocessable_entity
+      end
+    else
+      render json: { errors: @admin.errors}, status: :unprocessable_entity
+    end
   end
-  end
-
 
   def update_user
 admin = find_user
@@ -652,16 +706,17 @@ admin = find_user
     end
 
 
-    def find_or_initialize_user(email, user_name)
+    def find_or_initialize_user(user_name)
   # Admin.new(email: email, user_name: user_name)  
   # && Admin.find_by(email: email, user_name: user_name) 
   
-  Admin.find_or_initialize_by(email: email, user_name: user_name)
+  
+    Admin.find_or_initialize_by(user_name: user_name)
 
     end
     
-    def find_passkey_user(email, user_name)
-     Admin.find_by(email: email) || Admin.find_by(user_name: user_name)
+    def find_passkey_user(user_name)
+      Admin.find_by(user_name: user_name)
     end
 
 
@@ -837,7 +892,75 @@ end
 
 
 
+def validate_invite_admin
+  if params[:user_name].blank?
+    @my_admin.errors.add(:user_name, "can't be blank")
+  end
+
+  if params[:email].blank?
+    @my_admin.errors.add(:email, "can't be blank")
+  elsif !params[:email].match?(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)
+    @my_admin.errors.add(:email, "is not a valid email")
+  elsif Admin.exists?(email: params[:email])
+    @my_admin.errors.add(:email, "has already been taken")
+  end
+
 end
+
+
+
+
+def validate_admin_passkey_user_name
+  # Check user_name presence
+  if params[:user_name].blank? || params[:user_name] == ''
+    @the_admin.errors.add(:user_name, "can't be blank")
+  end
+
+
+  
+
+end
+
+
+
+
+
+
+
+    def validate_admin_data
+      # Check user_name presence
+      if params[:user_name].blank?
+        @admin.errors.add(:user_name, "can't be blank")
+      end
+    
+      # Check password presence and complexity
+      if params[:password].present?
+        unless params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/)
+          @admin.errors.add(:password, "must include at least one lowercase letter, one uppercase letter, one digit, and be at least 12 characters long.")
+        end
+      end
+    
+      # Check email presence and format
+      if params[:email].blank?
+        @admin.errors.add(:email, "can't be blank")
+      elsif !params[:email].match?(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)
+        @admin.errors.add(:email, "is not a valid email")
+      elsif Admin.exists?(email: params[:email])
+        @admin.errors.add(:email, "has already been taken")
+      end
+    
+      # Validate password confirmation
+      if params[:password_confirmation].blank?
+        @admin.errors.add(:password_confirmation, "can't be blank")
+      elsif params[:password] != params[:password_confirmation]
+        @admin.errors.add(:password_confirmation, "doesn't match Password")
+      end
+    end
+    
+  end
+
+
+
 
 
 

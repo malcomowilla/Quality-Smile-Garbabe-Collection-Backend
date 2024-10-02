@@ -1,0 +1,2 @@
+class StoreManagerSetting < ApplicationRecord
+end

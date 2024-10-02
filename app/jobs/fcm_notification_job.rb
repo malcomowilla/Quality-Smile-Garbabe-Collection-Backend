@@ -18,7 +18,7 @@ require 'json'
     event_start_time = @calendar_event.start.in_time_zone
     current_time = Time.current.in_time_zone
     
-    Rails.logger.info "Event start time: #{event_start_time}, Current time: #{current_time}"
+    Rails.logger.info "#{event_start_time}, Current time: #{current_time}"
     
     if event_start_time < current_time
       Rails.logger.info "Event start time has already passed. Skipping notification."
@@ -29,13 +29,32 @@ require 'json'
     # Fetch access token
     access_token = credentials.fetch_access_token!['access_token']
     
+    calendar_settings = MyCalendarSetting.first
+    in_minutes = calendar_settings.start_in_minutes
+    in_hours = calendar_settings.start_in_hours
+
+
+    body_message = []
+
+if in_minutes.to_i > 0
+  body_message << "The event is starting in #{in_minutes} minutes at 👉" + @calendar_event.start.strftime('%I:%M %p')
+end
+
+if in_hours.to_i > 0
+  body_message << "The event is starting in #{in_hours} hours at 👉" + @calendar_event.start.strftime('%I:%M %p')
+end
+    # FcmNotificationJob.perform_now(@calendar_event.id, @fcm_token)
+    
+
     # Define the request payload (sending to a specific device)
     payload = {
       message: {
         token: fcm_token, 
         notification: {
-          title:  "Upcoming Event" + @calendar_event.title,
-          body:   "The event is starting in 30 minutes at " +  @calendar_event.start.strftime('%I:%M %p'),
+          title:  "Upcoming Event 👉" +  @calendar_event.title,
+          body:  body_message, 
+        
+          
           image: 'https://quality-smiles-bucket.s3.eu-north-1.amazonaws.com/uploads/2024-08-16/image_9ee0c32b-9c8d-4782-bb6e-6d02e81b2512.png',
 
         },

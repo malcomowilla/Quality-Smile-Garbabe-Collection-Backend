@@ -1,0 +1,10 @@
+<h1>Editing chat message</h1>
+
+<%= render "form", chat_message: @chat_message %>
+
+<br>
+
+<div>
+  <%= link_to "Show this chat message", @chat_message %> |
+  <%= link_to "Back to chat messages", chat_messages_path %>
+</div>

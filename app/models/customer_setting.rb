@@ -1,0 +1,2 @@
+class CustomerSetting < ApplicationRecord
+end

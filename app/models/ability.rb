@@ -10,8 +10,7 @@ class Ability
       can :manage, :all
       can :read, :all
       
-
-
+# b1376dbf7ba88ae3
 
       Rails.logger.info "Super administrator can manage and read all"
     elsif admin.role == 'administrator'  
@@ -33,7 +32,9 @@ class Ability
         can :manage, SubLocation
 
       elsif admin.role == 'agent'
-        can :manage,  SupportTicket
+        can :manage, SupportTicket
+        can :read, SupportTicket
+        can :read, Customer
       elsif admin.role == 'customer'
         can :manage, CalendarEvent  
         can :read, CalendarEvent
@@ -65,6 +66,8 @@ class Ability
     # create_for_provider
     # create_admin_settings
     # create_for_store_manager
+    
+
 
 
     can :read, :get_settings_for_store_manager if admin.can_read_settings 
@@ -76,11 +79,12 @@ class Ability
     can :read, :get_sms_balance if admin.can_read_sms
     can :read, :get_sms_balance if admin.can_manage_sms
     can :read, :get_all_sms if admin.can_read_sms
+    can :read, :get_calendar_settings if admin.can_read_settings
+    
 
 
 
-
-
+    can :read, :get_calendar_settings if admin.can_manage_settings
     can :read, :get_settings_for_store_manager if admin.can_manage_settings 
     can :read, :get_settings_for_store if admin.can_manage_settings 
     can :read, :get_settings_for_provider if admin.can_manage_settings
@@ -95,7 +99,7 @@ class Ability
     can :manage, :create_admin_settings if admin.can_manage_settings
     can :manage, :create_for_store_manager if admin.can_manage_settings
     can :manage, :create_for_tickets if admin.can_manage_settings
-
+    can :manage, :create_calendar_settings if admin.can_manage_settings
 
     # t.string "can_manage_calendar"
     # t.string "can_read_calendar"

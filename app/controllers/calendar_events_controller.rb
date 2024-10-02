@@ -10,6 +10,11 @@ require 'onesignal'
 
 
 
+
+
+
+
+
   def index
     @calendar_events = CalendarEvent.all
     render json: @calendar_events
@@ -42,9 +47,22 @@ require 'onesignal'
       #   puts "Error when calling DefaultApi->create_notification: #{e}"
       # end
       @fcm_token = current_user.fcm_token
+
+      # start_in_minutes: params[:start_in_minutes],
+      # start_in_hours: params[:start_in_hours]
+      
+      calendar_settings = MyCalendarSetting.first
+      in_minutes = calendar_settings.start_in_minutes
+      in_hours = calendar_settings.start_in_hours
+
       # FcmNotificationJob.perform_now(@calendar_event.id, @fcm_token)
-      notification_time = @calendar_event.start.in_time_zone - 30.minutes
-      FcmNotificationJob.set(wait_until:notification_time).perform_later(@calendar_event.id, @fcm_token)
+      notification_time_minutes = @calendar_event.start.in_time_zone - in_minutes.to_i.minutes
+      notification_time_hrs = @calendar_event.start.in_time_zone - in_hours.to_i.hours
+
+
+      FcmNotificationJob.set(wait_until:notification_time_hrs).perform_later(@calendar_event.id, @fcm_token)
+      FcmNotificationJob.set(wait_until:notification_time_minutes).perform_later(@calendar_event.id, @fcm_token)
+
       # FcmNotificationJob.perform(@calendar_event.id)
 
       # FcmNotificationJob.perform_at(@calendar_event.start - 1.minute, @calendar_event.id)
@@ -57,6 +75,23 @@ require 'onesignal'
 
   def update
       if @calendar_event.update(calendar_event_params)
+        @fcm_token = current_user.fcm_token
+
+        # start_in_minutes: params[:start_in_minutes],
+        # start_in_hours: params[:start_in_hours]
+        
+        calendar_settings = MyCalendarSetting.first
+        in_minutes = calendar_settings.start_in_minutes
+        in_hours = calendar_settings.start_in_hours
+  
+        # FcmNotificationJob.perform_now(@calendar_event.id, @fcm_token)
+        notification_time_minutes = @calendar_event.start.in_time_zone - in_minutes.to_i.minutes
+        notification_time_hrs = @calendar_event.start.in_time_zone - in_hours.to_i.hours
+  
+  
+        FcmNotificationJob.set(wait_until:notification_time_hrs).perform_later(@calendar_event.id, @fcm_token)
+        FcmNotificationJob.set(wait_until:notification_time_minutes).perform_later(@calendar_event.id, @fcm_token)
+  
          render json: @calendar_event , status: :ok
       else
         render json: @calendar_event.errors, status: :unprocessable_entity 

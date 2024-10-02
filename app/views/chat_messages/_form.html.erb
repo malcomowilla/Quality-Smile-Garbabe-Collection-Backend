@@ -1,0 +1,32 @@
+<%= form_with(model: chat_message) do |form| %>
+  <% if chat_message.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(chat_message.errors.count, "error") %> prohibited this chat_message from being saved:</h2>
+
+      <ul>
+        <% chat_message.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :content, style: "display: block" %>
+    <%= form.text_field :content %>
+  </div>
+
+  <div>
+    <%= form.label :date_time_of_message, style: "display: block" %>
+    <%= form.datetime_field :date_time_of_message %>
+  </div>
+
+  <div>
+    <%= form.label :admin_id, style: "display: block" %>
+    <%= form.text_field :admin_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

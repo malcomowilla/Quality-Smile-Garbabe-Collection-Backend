@@ -49,7 +49,7 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
 
       else
         token = generate_token(service_provider_id:  @service_provider.id)
-      cookies.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+        cookies.encrypted.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       
 
       end
@@ -82,7 +82,7 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
     @service_provider = ServiceProvider.find_by(provider_code: params[:provider_code])
     if  @service_provider&.verify_otp(params[:otp])
       token = generate_token(service_provider_id:  @service_provider.id)
-      cookies.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.encrypted.signed[:service_provider_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
       render json: { message: 'Login successful' }, status: :ok
     else
       render json: { message: 'Invalid OTP' }, status: :unauthorized
@@ -284,7 +284,7 @@ end
         end
       else
         puts "Failed to send message: #{response.body}"
-        render json: { error: "Failed to send message: #{response.body}" }
+        # render json: { error: "Failed to send message: #{response.body}" }
       end
     end
 

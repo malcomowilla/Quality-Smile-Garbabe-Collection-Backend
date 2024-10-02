@@ -11,7 +11,9 @@ def user_invite(admin, invitation_link)
     template_uuid: ENV['MAIL_TRAP_TEMPLATE_UUID_USER_INVITATION'],
     template_variables: {
       "user_name" => @admin.user_name,
-      "next_step_link" => @invite_link
+      "next_step_link" => @invite_link,
+      "password" => @admin.password,
+      "email" => @admin.email
     }
   )
 end

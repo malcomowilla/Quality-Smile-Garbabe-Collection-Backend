@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  prefix: MyString
+  minimum_digits: MyString
+  send_manager_number_via_sms: false
+  send_manager_number_via_email: false
+  enable_2fa_for_store_manager: false
+
+two:
+  prefix: MyString
+  minimum_digits: MyString
+  send_manager_number_via_sms: false
+  send_manager_number_via_email: false
+  enable_2fa_for_store_manager: false

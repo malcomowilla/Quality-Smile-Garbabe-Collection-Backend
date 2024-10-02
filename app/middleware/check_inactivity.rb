@@ -18,11 +18,10 @@ class CheckInactivity
       return @app.call(env)
     end
 
-
-    service_provider_token = request.cookie_jar.signed[:service_provider_jwt]
-    token = request.cookie_jar.signed[:jwt]
-    store_manager_token = request.cookie_jar.signed[:jwt_store_manager]
-    customer_token = request.cookie_jar.signed[:customer_jwt]
+    service_provider_token = request.cookie_jar.encrypted.signed[:service_provider_jwt]
+    token = request.cookie_jar.encrypted.signed[:jwt]
+    store_manager_token = request.cookie_jar.encrypted.signed[:jwt_store_manager]
+    customer_token = request.cookie_jar.encrypted.signed[:customer_jwt]
     if token || store_manager_token || customer_token || service_provider_token
       Rails.logger.info "JWT from cookie: #{request.cookies['jwt']}"
       Rails.logger.info "JWT from cookie store manager: #{request.cookies['jwt']}"

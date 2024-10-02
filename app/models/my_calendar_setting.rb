@@ -1,0 +1,5 @@
+class MyCalendarSetting < ApplicationRecord
+
+
+  
+end

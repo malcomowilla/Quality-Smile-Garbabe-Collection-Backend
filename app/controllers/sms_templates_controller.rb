@@ -14,6 +14,7 @@ before_action :update_last_activity
       current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
   end
 
+
     end
     
 
@@ -42,7 +43,9 @@ before_action :update_last_activity
       end
     end
   end
-
+ 
+  
+  
   # DELETE /sms_templates/1 or /sms_templates/1.json
   def destroy
     @sms_template.destroy!
@@ -53,6 +56,9 @@ before_action :update_last_activity
     end
   end
 
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sms_template
@@ -61,6 +67,13 @@ before_action :update_last_activity
 
     # Only allow a list of trusted parameters through.
     def sms_template_params
-      params.require(:sms_template).permit(:customer_confirmation_code_template, :service_provider_confirmation_code_template, :user_invitation_template, :customer_otp_confirmation_template, :service_provider_otp_confirmation_template, :admin_otp_confirmation_template, :payment_reminder_template)
+      params.require(:sms_template).permit(:customer_confirmation_code_template,
+       :service_provider_confirmation_code_template, :user_invitation_template, 
+       :customer_otp_confirmation_template, :service_provider_otp_confirmation_template,
+        :admin_otp_confirmation_template,
+         :payment_reminder_template,
+         :store_manager_otp_confirmation_template,
+         :store_manager_manager_number_confirmation_template,
+          )
     end
 end

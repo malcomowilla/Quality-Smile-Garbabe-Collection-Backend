@@ -42,33 +42,85 @@ class GeneralSettingsController < ApplicationController
 
 
   def create_for_store_manager
+
+
     authorize! :manage, :create_for_store_manager
-@prefix_and_digits = PrefixAndDigitsForStoreManager.first_or_initialize(
-     prefix:params[:prefix],
-      minimum_digits:params[:minimum_digits],
+# @prefix_and_digits = PrefixAndDigitsForStoreManager.first_or_initialize(
+#      prefix:params[:prefix],
+#       minimum_digits:params[:minimum_digits],
       
+# )
+
+
+
+store_manager_settings = StoreManagerSetting.first_or_initialize(
+  prefix: params[:prefix],
+  minimum_digits: params[:minimum_digits],
+  send_manager_number_via_sms: params[:send_manager_number_via_sms],
+  enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager],
+  send_manager_number_via_email: params[:send_manager_number_via_email]
+  
+
+
 )
 
-  @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits],
+
+store_manager_settings.update(
+  prefix: params[:prefix],
+  minimum_digits: params[:minimum_digits],
+  send_manager_number_via_sms: params[:send_manager_number_via_sms],
+  enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager],
+  send_manager_number_via_email: params[:send_manager_number_via_email]
   
-  send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
-   send_manager_number_via_email: params[:send_manager_number_via_email], 
-   enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
-  )
-      if @prefix_and_digits.save
-        Rails.logger.info "settings updated successfully"
-        render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForStoreManagerSerializer,context:{
-          send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
-   send_manager_number_via_email: params[:send_manager_number_via_email], 
-   enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
-        }
+)
+
+
+
+
+
+if store_manager_settings.save
+  render json: store_manager_settings,status: :ok
+else
+  render json: {error: @prefix_and_digits.errors }
+end
+
+
+
+
+
+
+
+
+  # @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits],
+  
+  # send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
+  #  send_manager_number_via_email: params[:send_manager_number_via_email], 
+  #  enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
+  # )
+  #     if @prefix_and_digits.save
+  #       Rails.logger.info "settings updated successfully"
+  #       render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForStoreManagerSerializer,context:{
+  #         send_manager_number_via_sms:  params[:send_manager_number_via_sms], 
+  #  send_manager_number_via_email: params[:send_manager_number_via_email], 
+  #  enable_2fa_for_store_manager: params[:enable_2fa_for_store_manager]
+  #       }
         
 
-      else
-        rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
-        render json: {error: @prefix_and_digits.errors }
+  #     else
+  #       rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
+  #       render json: {error: @prefix_and_digits.errors }
     
-      end
+  #     end
+  #     
+
+
+
+
+
+
+
+
+
   
       # Hello  {{name}} Welcome To QUALITY SMILES. Use Customer Code {{customer_code}} and start using our services
       # Hello {{name}} Welcome To QUALITY SMILES. Use Service Provider Code {{provider_code}} and start using our services
@@ -129,14 +181,21 @@ check_inactive_hrs: params[:check_inactive_hrs],
 check_inactive_minutes: params[:check_inactive_minutes],
 login_with_otp: to_boolean(params[:login_with_otp]), login_with_web_auth:
 to_boolean(params[:login_with_web_auth]), login_with_otp_email: to_boolean(params[:login_with_otp_email]),
+
 check_is_inactive: 
 to_boolean(params[:check_is_inactive]),
 send_password_via_email: to_boolean(params[:send_password_via_email]), 
 send_password_via_sms: to_boolean(params[:send_password_via_sms] ),
-enable_2fa_for_admin: to_boolean(params[:enable_2fa_for_admin]) )
+enable_2fa_for_admin: to_boolean(params[:enable_2fa_for_admin]),
+enable_2fa_for_admin_passkeys: to_boolean(params[:enable_2fa_for_admin_passkeys])
+
+
+)
 
 
 admin_settings.update(
+  enable_2fa_for_admin_passkeys: 
+  to_boolean(params[:enable_2fa_for_admin_passkeys]),
   check_inactive_days: params[:check_inactive_days],
   check_inactive_minutes: params[:check_inactive_minutes],
 check_inactive_hrs: params[:check_inactive_hrs],
@@ -158,6 +217,16 @@ end
 
 
 end
+
+
+def allow_get_admin_settings
+  
+  admin_settings = AdminSettings.all
+  render json: admin_settings
+end
+
+
+
 
 
 
@@ -188,37 +257,72 @@ def get_admin_settings
 
  def create_for_provider
 
-
-  
-
   authorize! :manage, :create_for_provider
   if params[:use_auto_generated_number_for_service_provider] == true 
 
-  @prefix_and_digits = PrefixAndDigitsForServiceProvider.first_or_initialize(
+  # @prefix_and_digits = PrefixAndDigitsForServiceProvider.first_or_initialize(
       
-      prefix:params[:prefix],
-      minimum_digits:params[:minimum_digits]
+  #     prefix:params[:prefix],
+  #     minimum_digits:params[:minimum_digits]
+  # )
+
+  service_provider_settings = ServiceProviderSetting.first_or_initialize(
+    prefix: params[:prefix],
+    minimum_digits: params[:minimum_digits],
+    use_auto_generated_number_for_service_provider: to_boolean(params[:use_auto_generated_number_for_service_provider]),
+    send_sms_and_email_for_provider: to_boolean(params[:send_sms_and_email_for_provider]),
+    enable_2fa_for_service_provider: to_boolean(params[:enable_2fa_for_service_provider]),
+    send_email_for_provider: to_boolean(params[:send_email_for_provider]),
   )
 
 
 
-      @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
-      if @prefix_and_digits.save
-        Rails.logger.info "settings updated successfully"
-        render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForServiceProviderSerializer,context:
-         { use_auto_generated_number_for_service_provider:
-        params[:use_auto_generated_number_for_service_provider], 
-        send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider],
-        enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
-        send_email_for_provider: params[:send_email_for_provider]
-      
-      }
+service_provider_settings.update(
+  prefix: params[:prefix],
+  minimum_digits: params[:minimum_digits],
+  use_auto_generated_number_for_service_provider: to_boolean(params[:use_auto_generated_number_for_service_provider]),
+  send_sms_and_email_for_provider: to_boolean(params[:send_sms_and_email_for_provider]),
+  enable_2fa_for_service_provider: to_boolean(params[:enable_2fa_for_service_provider]),
+  send_email_for_provider: to_boolean(params[:send_email_for_provider])
 
-      else
-        rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
-        render json: {error: @prefix_and_digits.errors }
+)
+
+
+
+if service_provider_settings.save
+  render json: service_provider_settings, status: :ok
+else
+
+  render json: {error: @prefix_and_digits.errors }
+end
+
+
+
+
+
+
+
+
+
+
+
+      # @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
+      # if @prefix_and_digits.save
+      #   Rails.logger.info "settings updated successfully"
+      #   render json: @prefix_and_digits, status: :created, serializer: PrefixAndDigitsForServiceProviderSerializer,context:
+      #    { use_auto_generated_number_for_service_provider:
+      #   params[:use_auto_generated_number_for_service_provider], 
+      #   send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider],
+      #   enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
+      #   send_email_for_provider: params[:send_email_for_provider]
+      
+      # }
+
+      # else
+      #   rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
+      #   render json: {error: @prefix_and_digits.errors }
     
-      end
+      # end
 
     # if @admin.respond_to?(:prefix_and_digits_for_service_providers)
     
@@ -326,10 +430,31 @@ def get_admin_settings
 
 
 
+
+ def allow_get_settings_for_store_manager
+  store_managers_settings = StoreManagerSetting.all
+  render json: store_managers_settings
+ end
+
  def get_settings_for_store_manager
   authorize! :read, :get_settings_for_store_manager
-  @prefix_and_digits = PrefixAndDigitsForStoreManager.all
-  render json: @prefix_and_digits 
+  # 
+  #
+
+
+  store_managers_settings = StoreManagerSetting.all
+  render json: store_managers_settings
+
+
+
+
+
+
+
+
+
+
+
   # if @admin.respond_to?(:prefix_and_digits_for_store_managers)
   #   Rails.logger.info "prefix_and_digits association exists"
   #   @prefix_and_digits =  @admin.prefix_and_digits_for_store_managers.all
@@ -370,24 +495,31 @@ def get_admin_settings
 
 
 
-
+def allow_get_settings_for_provider
+  authorize! :read, :get_settings_for_provider
+  # @prefix_and_digits = PrefixAndDigitsForServiceProvider.all
+  service_provider_settings = ServiceProviderSetting.all
+  render json: service_provider_settings,status: :ok
+  
+end
 
 
 
 
  def get_settings_for_provider
   authorize! :read, :get_settings_for_provider
-@prefix_and_digits = PrefixAndDigitsForServiceProvider.all
+# @prefix_and_digits = PrefixAndDigitsForServiceProvider.all
+service_provider_settings = ServiceProviderSetting.all
+render json: service_provider_settings,status: :ok
 
-
-render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,context:
-    { use_auto_generated_number_for_service_provider:
-   params[:use_auto_generated_number_for_service_provider],
-   send_email_for_provider: params[:send_email_for_provider],
-   enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
+# render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,context:
+#     { use_auto_generated_number_for_service_provider:
+#    params[:use_auto_generated_number_for_service_provider],
+#    send_email_for_provider: params[:send_email_for_provider],
+#    enable_2fa_for_service_provider: params[:enable_2fa_for_service_provider],
   
-   send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider]
-  }
+#    send_sms_and_email_for_provider: params[:send_sms_and_email_for_provider]
+#   }
 
   # if @admin.respond_to?(:prefix_and_digits_for_service_providers)
   #   Rails.logger.info "prefix_and_digits association exists"
@@ -407,20 +539,26 @@ render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,conte
  end
 
 
-
+def allow_get_customer_settings
+  customer_settings = CustomerSetting.all
+  render json: customer_settings
+end
 
 
 
 
   def get_settings_for_customer
     authorize! :read, :get_settings_for_customer
-    @prefix_and_digits = PrefixAndDigit.all
+    # @prefix_and_digits = PrefixAndDigit.all
 
 
-    render json: @prefix_and_digits, each_serializer: GeneralSettingSerializer,  context: {use_auto_generated_number:
-        params[:use_auto_generated_number], send_sms_and_email: params[:send_sms_and_email], send_email: params[:send_email],
-        enable_2fa:params[:enable_2fa]
-        }
+    # render json: @prefix_and_digits, each_serializer: GeneralSettingSerializer,  context: {use_auto_generated_number:
+    #     params[:use_auto_generated_number], send_sms_and_email: params[:send_sms_and_email], send_email: params[:send_email],
+    #     enable_2fa:params[:enable_2fa]
+    #     }
+    #     
+    customer_settings = CustomerSetting.all
+    render json: customer_settings
 
 
         # if @admin.respond_to?(:prefix_and_digits)
@@ -439,32 +577,107 @@ render json: @prefix_and_digits ,each_serializer: GeneralSettingSerializer,conte
   end
 
 
-def create_for_customer
-  authorize! :manage, :create_for_customer
+  # MyCalendarSetting
 
-# if params[:use_auto_generated_number] == true || params[:send_sms_and_email] == true
-  
-@prefix_and_digits = PrefixAndDigit.first_or_initialize(
 
-prefix: params[:prefix],
-  minimum_digits:params[:minimum_digits]
-)
+  def get_calendar_settings
+    authorize! :read, :get_calendar_settings
+    calendar_settings = MyCalendarSetting.all
+    render json: calendar_settings
+  end
 
-# CurrentUserWorker.perform_async(@prefix_and_digits)
 
-@prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
 
-  if @prefix_and_digits.save
-    Rails.logger.info "settings updated successfully"
-    render json: @prefix_and_digits,  status: :created, serializer: PrefixAndDigitSerializer,context: {use_auto_generated_number:
-    params[:use_auto_generated_number], enable_2fa: params[:enable_2fa], 
-        send_email: params[:send_email], send_sms_and_email: params[:send_sms_and_email]
-    }
-  else
-    Rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
-    render json: {error: @prefix_and_digits.errors }
+
+
+  def create_calendar_settings
+    authorize! :manage, :create_calendar_settings
+
+      calendar_settings = MyCalendarSetting.first_or_initialize(
+        start_in_minutes: params[:start_in_minutes],
+        start_in_hours: params[:start_in_hours]
+      )
+
+      calendar_settings.update(
+        start_in_minutes: params[:start_in_minutes],
+        start_in_hours: params[:start_in_hours]
+      )
+
+
+if calendar_settings.save
+  render json: calendar_settings, status: :ok
+else
+  render json: {error: calendar_settings.errors }, status: :unprocessable_entity
+
+end
 
   end
+
+
+
+
+def create_for_customer
+  authorize! :manage, :create_for_customer
+  if params[:use_auto_generated_number] == true 
+  
+  customer_settings = CustomerSetting.first_or_initialize(
+    prefix: params[:prefix],
+  minimum_digits:params[:minimum_digits],
+  use_auto_generated_number: to_boolean(params[:use_auto_generated_number]),
+  send_sms_and_email: to_boolean(params[:send_sms_and_email]),
+  enable_2fa: to_boolean(params[:enable_2fa]),
+  send_email: to_boolean(params[:send_email]),
+  )
+
+
+
+
+  customer_settings.update(
+    prefix: params[:prefix],
+    minimum_digits:params[:minimum_digits],
+    use_auto_generated_number: to_boolean(params[:use_auto_generated_number]),
+    send_sms_and_email: to_boolean(params[:send_sms_and_email]),
+    enable_2fa: to_boolean(params[:enable_2fa]),
+    send_email: to_boolean(params[:send_email]),
+  )
+
+
+if customer_settings.save
+  render json: customer_settings, status: :ok
+else
+  render json: {error: customer_settings.errors }, status: :unprocessable_entity
+
+end
+
+
+
+
+
+
+
+# # if params[:use_auto_generated_number] == true || params[:send_sms_and_email] == true
+  
+# @prefix_and_digits = PrefixAndDigit.first_or_initialize(
+
+# prefix: params[:prefix],
+#   minimum_digits:params[:minimum_digits]
+# )
+
+# # CurrentUserWorker.perform_async(@prefix_and_digits)
+
+# @prefix_and_digits.update(prefix:params[:prefix], minimum_digits: params[:minimum_digits])
+
+#   if @prefix_and_digits.save
+#     Rails.logger.info "settings updated successfully"
+#     render json: @prefix_and_digits,  status: :created, serializer: PrefixAndDigitSerializer,context: {use_auto_generated_number:
+#     params[:use_auto_generated_number], enable_2fa: params[:enable_2fa], 
+#         send_email: params[:send_email], send_sms_and_email: params[:send_sms_and_email]
+#     }
+#   else
+#     Rails.logger.warn "failed to update settings #{@prefix_and_digits.errors.full_messages.join(", ")}"
+#     render json: {error: @prefix_and_digits.errors }
+
+#   end
 
 
 
@@ -496,9 +709,9 @@ prefix: params[:prefix],
 # end
 
 
-# else
-# render json: {message: "settings updated succesfully"}
-# end
+else
+render json: {message: "settings updated succesfully"}
+end
 
 end
   
