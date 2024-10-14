@@ -33,7 +33,6 @@
 
 
 
-/firebase-messaging-sw.js
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
