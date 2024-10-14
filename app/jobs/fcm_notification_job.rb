@@ -13,6 +13,7 @@ require 'json'
     # Load the credentials
     credentials = Google::Auth::ServiceAccountCredentials.make_creds(
       json_key_io: File.open('/home/malc0m0willa/Downloads/quality-smiles-firebase-adminsdk-w53uj-aba4a2b4a5.json'),
+      
       scope: scopes
     )
     event_start_time = @calendar_event.start.in_time_zone
@@ -35,7 +36,7 @@ require 'json'
 
 
     body_message = []
-
+    
 if in_minutes.to_i > 0
   body_message << "The event is starting in #{in_minutes} minutes at 👉" + @calendar_event.start.strftime('%I:%M %p')
 end
@@ -45,23 +46,22 @@ if in_hours.to_i > 0
 end
     # FcmNotificationJob.perform_now(@calendar_event.id, @fcm_token)
     
+    formatted_body = body_message.join("\n")
 
     # Define the request payload (sending to a specific device)
     payload = {
       message: {
         token: fcm_token, 
         notification: {
-          title:  "Upcoming Event 👉" +  @calendar_event.title,
-          body:  body_message, 
+          title:  "upcoming event 👉" +  @calendar_event.title,
+          body:  formatted_body, 
         
           
           image: 'https://quality-smiles-bucket.s3.eu-north-1.amazonaws.com/uploads/2024-08-16/image_9ee0c32b-9c8d-4782-bb6e-6d02e81b2512.png',
 
         },
         android: {
-    notification: {
-      sound: 'default'
-    }
+    
   },
         "webpush": {
        

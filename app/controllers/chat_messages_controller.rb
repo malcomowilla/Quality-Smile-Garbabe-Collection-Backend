@@ -1,6 +1,10 @@
 class ChatMessagesController < ApplicationController
   before_action :set_chat_message, only: %i[ show edit update destroy ]
 
+
+
+
+  
   # GET /chat_messages or /chat_messages.json
   def index
     # @chat_messages = ChatMessage.all
@@ -21,7 +25,6 @@ class ChatMessagesController < ApplicationController
   # GET /chat_messages/1/edit
   def edit
   end
-
 
 
 
@@ -98,7 +101,7 @@ class ChatMessagesController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_chat_message
-      @chat_message = ChatMessage.find(params[:id])
+      @chat_message = ChatMessage.find_by(id: params[:id])
     end
 
     # Only allow a list of trusted parameters through.

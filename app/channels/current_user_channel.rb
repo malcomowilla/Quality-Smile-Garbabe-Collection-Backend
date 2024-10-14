@@ -5,6 +5,8 @@ class CurrentUserChannel < ApplicationCable::Channel
     # stream_from "CurrentUserChannel"
   end
 
+  
+
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end

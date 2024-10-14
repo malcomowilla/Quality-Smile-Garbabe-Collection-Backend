@@ -14,4 +14,6 @@ class AdminStatusChannel < ApplicationCable::Channel
   #  current_user.update(online: false)
    ActionCable.server.broadcast "admin_status_channel", { admin_id: current_user.id, online: false }
  end
+
+ 
 end

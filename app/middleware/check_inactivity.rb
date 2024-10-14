@@ -31,47 +31,47 @@ class CheckInactivity
        
         
 
-        if service_provider_token == !nil
-          decoded_token_service_provider = JWT.decode(service_provider_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
-          service_provider_id = decoded_token_service_provider[0]['service_provider_id']
+        # if service_provider_token == !nil
+        #   decoded_token_service_provider = JWT.decode(service_provider_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
+        #   service_provider_id = decoded_token_service_provider[0]['service_provider_id']
 
-          if service_provider_id
-            service_provider = ServiceProvider.find_by(id: service_provider_id)
-            if service_provider.nil?
-              Rails.logger.info "service provider not found with ID: #{service_provider_id}"
-              return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
-            end
+        #   if service_provider_id
+        #     service_provider = ServiceProvider.find_by(id: service_provider_id)
+        #     if service_provider.nil?
+        #       Rails.logger.info "service provider not found with ID: #{service_provider_id}"
+        #       return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
+        #     end
         
-          end
-        end
+        #   end
+        # end
 
 
-if customer_token 
-  decoded_token_customer = JWT.decode(customer_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
-  customer_id = decoded_token_customer[0]['customer_id']
+# if customer_token 
+#   decoded_token_customer = JWT.decode(customer_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
+#   customer_id = decoded_token_customer[0]['customer_id']
 
-  if customer_id
-    customer = Customer.find_by(id: customer_id)
-    if customer.nil?
-      Rails.logger.info "Customer not found with ID: #{customer_id}"
-      return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
-    end
+#   if customer_id
+#     customer = Customer.find_by(id: customer_id)
+#     if customer.nil?
+#       Rails.logger.info "Customer not found with ID: #{customer_id}"
+#       return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
+#     end
 
-  end
-end
+#   end
+# end
 
 
- if store_manager_token
-          decoded_token_store_manager = JWT.decode(store_manager_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
-          store_manager_id = decoded_token_store_manager[0]['store_manager_id']
-           Rails.logger.info "Decoded token store manager: #{decoded_token_store_manager.inspect}"
-          store_manager = StoreManager.find_by(id: store_manager_id)
-          if store_manager.nil?
-            Rails.logger.info "Store Manager not found with ID: #{store_manager_id}"
-            return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
-          end
+#  if store_manager_token
+#           decoded_token_store_manager = JWT.decode(store_manager_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
+#           store_manager_id = decoded_token_store_manager[0]['store_manager_id']
+#            Rails.logger.info "Decoded token store manager: #{decoded_token_store_manager.inspect}"
+#           store_manager = StoreManager.find_by(id: store_manager_id)
+#           if store_manager.nil?
+#             Rails.logger.info "Store Manager not found with ID: #{store_manager_id}"
+#             return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
+#           end
         
-        end
+#         end
 
 
 

@@ -209,11 +209,15 @@ end
 
 
   def confirm_bag
-    if  current_customer.update(bag_confirmed: true,  confirmation_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    customer_confirm =  current_customer.update(bag_confirmed: true, 
+       confirmation_date: Time.current.strftime('%Y-%m-%d %I:%M:%S %p'),
+       confirm_request: false)
+    if customer_confirm
       
-      formatted_time = current_customer.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')
-
-      render json: { message: 'Bag confirmed successfully.', confirmation_date: formatted_time }, status: :ok
+      # Rails.logger.info "current customer =>#{current_customer.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')}"
+       ActionCable.server.broadcast "requests_channel", 
+       {request: CustomerSerializer.new(current_customer).as_json}
+      render json: { message: 'Bag confirmed successfully.'}, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
     end
@@ -224,7 +228,14 @@ end
 
 
   def confirm_request
-    if current_customer.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), bag_confirmed: false) 
+
+customer_request = current_customer.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+bag_confirmed: false)
+
+    if customer_request 
+      Rails.logger.info "customer_request=>#{customer_request}" 
+       ActionCable.server.broadcast "requests_channel", 
+       {request: CustomerSerializer.new(current_customer).as_json}
       render json: { message: 'Bag confirmed successfully.' }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity

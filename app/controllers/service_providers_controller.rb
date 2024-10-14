@@ -91,11 +91,14 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
 
 
 
-
-
   def confirm_collected
-    if current_service_provider.update(collected: true, date_collected: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), delivered: false,
+    if current_service_provider.update(collected: true, date_collected: 
+      Time.current.strftime('%Y-%m-%d %I:%M:%S %p'), delivered: false,
                  ) 
+
+  ActionCable.server.broadcast "requests_channel", 
+  {request: ServiceProviderSerializer.new(current_service_provider).as_json}
+
       render json: { message: 'Bag confirmed successfully.' }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
@@ -109,9 +112,12 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
 
   def confirm_delivered
 
-    if  current_service_provider.update(delivered: true,  date_delivered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), collected: false,
+    if  current_service_provider.update(delivered: true,  date_delivered:
+       Time.current.strftime('%Y-%m-%d %I:%M:%S %p'), collected: false,
       )
       
+  ActionCable.server.broadcast "requests_channel", 
+  {request: ServiceProviderSerializer.new(current_service_provider).as_json}
       render json: { message: 'Bag confirmed successfully.', }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
@@ -372,7 +378,8 @@ end
   end
 
     def service_provider_params
-      params.require(:service_provider).permit(:phone_number, :name, :email, :provider_code, :status, :date_registered, :location)
+      params.require(:service_provider).permit(:phone_number, :name, 
+      :email, :provider_code, :status, :date_registered, :location)
     end
 
 

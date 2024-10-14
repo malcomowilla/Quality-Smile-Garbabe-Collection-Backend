@@ -114,21 +114,3 @@ end
 
 
 
-# Ticket Number: Test_Ticket_number
-# Date Created: Test_Created_at
-# Issue Summary: Test_Issue_summary
-# Priority Level: Test_Priority_level
-
-
-
-
-
-
-
-# Our support team is currently reviewing your request and will contact you as soon as possible with an update.
-
-# In the meantime, you can track the progress of your ticket by logging into your account at [Support Portal URL].We will keep you informed via email of any updates or changes to your ticket status.
-
-# If you have any further questions or additional information to provide, please feel free to contact us
-
-# Thank you for your patience!

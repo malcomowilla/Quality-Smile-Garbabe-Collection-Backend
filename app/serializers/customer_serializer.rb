@@ -3,7 +3,6 @@ class CustomerSerializer < ActiveModel::Serializer
   :date_registered, :bag_confirmed, :confirm_request, :formatted_confirmation_date, :formatted_request_date
 
 
-
   def formatted_request_date
     object.request_date.strftime('%Y-%m-%d %I:%M:%S %p') if object.request_date.present?
   end
@@ -12,5 +11,7 @@ class CustomerSerializer < ActiveModel::Serializer
 def formatted_confirmation_date
   object.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p') if object.confirmation_date.present?
 end
+
+
 
 end

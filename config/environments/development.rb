@@ -8,7 +8,8 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
 
   Rails.application.routes.default_url_options[:host] = 'localhost:4000'
-  # config.action_cable.url = "ws://localhost:4000/cable"
+  # Rails.application.routes.default_url_options[:host] = 'https://74jp5ccr-5173.uks1.devtunnels.ms/'
+  config.action_cable.url = "ws://localhost:4000/cable"
 #   config.action_mailer.delivery_method = :smtp
 #   config.action_mailer.raise_delivery_errors = true
 

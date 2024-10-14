@@ -61,17 +61,40 @@ class StoreManagersController < ApplicationController
 
 
 def  confirm_delivered
-  current_store_manager.update(delivered_bags: true, date_delivered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'), 
+ confirm_store_manager_delivered = current_store_manager.update(
+  delivered_bags: true, date_delivered: Time.current.strftime('%Y-%m-%d %I:%M:%S %p'), 
 received_bags: false,
 number_of_bags_delivered: params[:number_of_bags_delivered] )
+
+if confirm_store_manager_delivered
+
+  ActionCable.server.broadcast "requests_channel", 
+  {request: StoreManagerSerializer.new(current_store_manager).as_json}
+
+  render json: {message: 'confirmation sucessful'}, status: :ok
+
+else
+  render json: {message: 'failed to confirm'}, status: :unprocessable_entity
+end
 end
 
 
 
 def  confirm_received
-  current_store_manager.update(received_bags: true, date_received: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+  confirm_store_manager_received = current_store_manager.update(received_bags: true,
+   date_received: Time.current.strftime('%Y-%m-%d %I:%M:%S %p'),
   delivered_bags: false,
   number_of_bags_received: params[:number_of_bags_received] )
+
+  if  confirm_store_manager_received
+    
+  ActionCable.server.broadcast "requests_channel", 
+  {request: StoreManagerSerializer.new(current_store_manager).as_json}
+
+  render json: {message: 'confirmation sucessful'}, status: :ok
+  else
+    render json: {message: 'failed to confirm'}, status: :unprocessable_entity
+  end
   end
 
 
