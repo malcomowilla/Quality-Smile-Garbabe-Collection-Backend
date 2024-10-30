@@ -1,6 +1,7 @@
 
 
 class AdminSettings < ApplicationRecord
+  acts_as_tenant(:account)
     # include ActiveModel::Model
     # include ActiveModel::Serialization
 

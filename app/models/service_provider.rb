@@ -1,6 +1,6 @@
 class ServiceProvider < ApplicationRecord
     auto_increment :sequence_number
-
+    acts_as_tenant(:account)
     # validates :provider_code, presence: true, uniqueness: true
 
 

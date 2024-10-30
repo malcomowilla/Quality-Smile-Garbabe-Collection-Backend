@@ -1,7 +1,44 @@
 class GeneralSettingsController < ApplicationController
   # before_action :set_admi
   before_action :update_last_activity
- 
+  set_current_tenant_through_filter
+  before_action :set_tenant 
+
+   
+  # def set_tenant
+  #   random_name = "Tenant-#{SecureRandom.hex(4)}"
+  #   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain, name: random_name)
+      
+  #   set_current_tenant(@account)
+   
+  #  end
+
+
+  def set_customers_sequence_value(value)
+
+
+    ActiveRecord::Base.connection.execute("SELECT setval('customers_sequence_number_seq', #{value})")
+  
+  
+    
+  end
+
+
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
+
+# def set_tenant
+#   if current_user.present? && current_user.account.present?
+#     set_current_tenant(current_user.account)
+#   else
+#     Rails.logger.debug "No tenant or current_user found"
+#     # Optionally, handle cases where no tenant is set
+#     raise ActsAsTenant::Errors::NoTenantSet
+#   end
+# end
 
 
   def update_last_activity
@@ -374,7 +411,6 @@ end
 
 
 
-
  def create_for_store
   authorize! :manage, :create_for_store
   @prefix_and_digits = PrefixAndDigitsForStore.first_or_initialize(
@@ -627,6 +663,7 @@ def create_for_customer
   send_sms_and_email: to_boolean(params[:send_sms_and_email]),
   enable_2fa: to_boolean(params[:enable_2fa]),
   send_email: to_boolean(params[:send_email]),
+  sequence_value: params[:sequence_value]
   )
 
 
@@ -639,6 +676,7 @@ def create_for_customer
     send_sms_and_email: to_boolean(params[:send_sms_and_email]),
     enable_2fa: to_boolean(params[:enable_2fa]),
     send_email: to_boolean(params[:send_email]),
+    sequence_value: params[:sequence_value]
   )
 
 

@@ -3,6 +3,7 @@ class CheckInactivity
     @app = app
   end
 
+
   def call(env)
     request = ActionDispatch::Request.new(env)
     
@@ -13,10 +14,17 @@ class CheckInactivity
       '/confirm_deivered_bags_from_store', '/signup-admin', '/login-admin'
     ]
 
+
     # Skip middleware for bypass paths
     if bypass_paths.any? { |path| request.path.start_with?(path) }
       return @app.call(env)
     end
+
+
+
+    @account = Account.find_or_create_by(domain: request.domain, subdomain: request.subdomain)
+    ActsAsTenant.current_tenant = @account
+
 
     service_provider_token = request.cookie_jar.encrypted.signed[:service_provider_jwt]
     token = request.cookie_jar.encrypted.signed[:jwt]
@@ -94,12 +102,12 @@ class CheckInactivity
             Rails.logger.info "Admin not found with ID: #{admin_id}"
             return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
           end
-
+# ActsAsTenant.current_tenant = admin.account
           admin = Admin.find_by(id: admin_id)
           admin_settings = AdminSettings.first
-if_check_is_inactive = admin_settings.check_is_inactive
-if_check_is_inactive_minutes = admin_settings.check_is_inactiveminutes
-if_check_is_inactive_hrs = admin_settings.check_is_inactivehrs
+if_check_is_inactive = admin_settings&.check_is_inactive
+if_check_is_inactive_minutes = admin_settings&.check_is_inactiveminutes
+if_check_is_inactive_hrs = admin_settings&.check_is_inactivehrs
 
           # if admin_settings.check_is_inactive == nil
           #   admin_settings_nil = AdminSettings.first_or_initialize(check_is_inactive: false)
@@ -110,7 +118,7 @@ if_check_is_inactive_hrs = admin_settings.check_is_inactivehrs
 
 
 
-          if if_check_is_inactive == true
+          if if_check_is_inactive == true 
             admin.update_column(:enable_inactivity_check,true)
 
           elsif if_check_is_inactive == false

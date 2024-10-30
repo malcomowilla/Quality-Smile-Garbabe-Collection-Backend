@@ -2,12 +2,29 @@ class SmsTemplatesController < ApplicationController
   before_action :set_sms_template, only: %i[ show edit update destroy ]
   load_and_authorize_resource
 before_action :update_last_activity
+before_action :set_tenant
+
+set_current_tenant_through_filter
+
+
+
   # GET /sms_templates or /sms_templates.json
   def index
     @sms_templates = SmsTemplate.all
     render json: @sms_templates
   end
 
+
+
+
+
+
+
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
 
   def update_last_activity
     if current_user.instance_of?(Admin)

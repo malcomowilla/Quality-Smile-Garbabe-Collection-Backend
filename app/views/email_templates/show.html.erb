@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @email_template %>
+
+<div>
+  <%= link_to "Edit this email template", edit_email_template_path(@email_template) %> |
+  <%= link_to "Back to email templates", email_templates_path %>
+
+  <%= button_to "Destroy this email template", @email_template, method: :delete %>
+</div>

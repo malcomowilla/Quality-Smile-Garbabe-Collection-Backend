@@ -1,16 +1,24 @@
 class Ability
   include CanCan::Ability
-
+  
   def initialize(admin)
     return unless admin.present?
 
-    Rails.logger.info "Initializing abilities for admin: #{admin.inspect}"
-    assign_permissions_based_on_flags(admin)
+    Rails.logger.info "Initializing abilities for
+     admin: #{admin.inspect}"
+
+
+    
+
+    ActsAsTenant.with_tenant(admin.account) do
+
+      assign_permissions_based_on_flags(admin)
+    end
+    
     if admin.role == 'super_administrator'
       can :manage, :all
       can :read, :all
       
-# b1376dbf7ba88ae3
 
       Rails.logger.info "Super administrator can manage and read all"
     elsif admin.role == 'administrator'  

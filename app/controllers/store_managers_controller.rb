@@ -3,8 +3,8 @@ class StoreManagersController < ApplicationController
   before_action :set_store_manager, only: [:update, :destroy ] 
   # before_action :set_admin, except: %i[  create ]
   
-
-
+before_action :set_tenant
+set_current_tenant_through_filter
 
 
 
@@ -12,6 +12,22 @@ class StoreManagersController < ApplicationController
   before_action :update_last_activity, except: [:verify_otp, :logout, :login, :confirm_delivered, :confirm_received] 
   # GET /store_managers or /store_managers.json
 
+
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
+
+  # def set_tenant
+  #   if current_user.present? && current_user.account.present?
+  #     set_current_tenant(current_user.account)
+  #   else
+  #     Rails.logger.debug "No tenant or current_user found"
+  #     # Optionally, handle cases where no tenant is set
+  #     raise ActsAsTenant::Errors::NoTenantSet
+  #   end
+  # end
 
 
 

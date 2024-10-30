@@ -1,9 +1,9 @@
 development:
-adapter: async
 # adapter: async
-# adapter: redis
+# adapter: async
+adapter: redis
 # url: redis://localhost:6379/1
-
+pool_size: 6
   # adapter: redis
   # url: redis://localhost:6379/1
   

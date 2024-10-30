@@ -2,9 +2,9 @@ class StoresController < ApplicationController
   before_action :set_store, only: %i[ show edit update destroy ]
 # before_action :set_admin, only: %i[ create show edit update destroy ]
 before_action :update_last_activity
-
+before_action :set_tenant
 load_and_authorize_resource
-
+set_current_tenant_through_filter
 
 
 
@@ -16,6 +16,25 @@ def update_last_activity
 end
 
 
+
+
+
+def set_tenant
+  set_current_tenant(current_user.account)
+end
+
+
+
+
+# def set_tenant
+#   if current_user.present? && current_user.account.present?
+#     set_current_tenant(current_user.account)
+#   else
+#     Rails.logger.debug "No tenant or current_user found"
+#     # Optionally, handle cases where no tenant is set
+#     raise ActsAsTenant::Errors::NoTenantSet
+#   end
+# end
 
   # GET /stores or /stores.json
   def index

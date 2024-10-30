@@ -4,10 +4,12 @@ class CustomersController < ApplicationController
   # before_action :authenticate_customer, except: [:index, :login, :verify_otp, :logout]
   # before_action :current_customer, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
       # before_action :current_user, except: [:confirm_bag, :confirm_request]
-
+      set_current_tenant_through_filter
 
       before_action :update_last_activity, except: [:logout, :login, :verify_otp, :confirm_bag, :confirm_request, 
     ]
+
+    before_action :set_tenant 
 
         load_and_authorize_resource except: [:verify_otp,  :login, :logout, :confirm_bag, :confirm_request]
 
@@ -16,6 +18,38 @@ require 'message_template'
   require "twilio-ruby"
 
 
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
+
+
+
+
+
+   
+  # def set_tenant
+  #   random_name = "Tenant-#{SecureRandom.hex(4)}"
+  #   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain, name: random_name)
+      
+  #   set_current_tenant(@account)
+   
+  #  end
+
+
+
+
+
+  # def set_tenant
+  #   if current_user.present? && current_user.account.present?
+  #     set_current_tenant(current_user.account)
+  #   else
+  #     Rails.logger.debug "No tenant or current_user found"
+  #     # Optionally, handle cases where no tenant is set
+  #     raise ActsAsTenant::Errors::NoTenantSet
+  #   end
+  # end
   
   # GET /customers or /customers.json
   def index

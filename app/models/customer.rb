@@ -5,10 +5,10 @@ class Customer < ApplicationRecord
 
     # before_create :generate_unique_identifier
     auto_increment :sequence_number
-    validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
-    validates :phone_number, uniqueness: true, presence: true
-    validates :name, presence: true
-
+    # validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
+    # validates :phone_number, uniqueness: true, presence: true
+    # validates :name, presence: true
+    acts_as_tenant(:account)
 
     def generate_otp
         self.otp = rand(100000..999999).to_s

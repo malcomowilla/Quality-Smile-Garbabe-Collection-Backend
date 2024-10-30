@@ -1,7 +1,8 @@
 class CalendarEventsController < ApplicationController
   before_action :set_calendar_event, only: %i[ show edit update destroy ]
+  before_action :set_tenant 
 
-
+  set_current_tenant_through_filter
   load_and_authorize_resource
 require 'rest-client'
 require 'json'
@@ -10,9 +11,30 @@ require 'onesignal'
 
 
 
+def set_tenant
+  set_current_tenant(current_user.account)
 
 
+end
 
+   
+# def set_tenant
+#   random_name = "Tenant-#{SecureRandom.hex(4)}"
+#   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain, name: random_name)
+  
+#   set_current_tenant(current_user.account)
+ 
+#  end
+
+# def set_tenant
+#   if current_user.present? && current_user.account.present?
+#     set_current_tenant(current_user.account)
+#   else
+#     Rails.logger.debug "No tenant or current_user found"
+#     # Optionally, handle cases where no tenant is set
+#     raise ActsAsTenant::Errors::NoTenantSet
+#   end
+# end
 
 
   def index

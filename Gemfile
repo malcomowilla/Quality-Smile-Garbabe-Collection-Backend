@@ -80,7 +80,7 @@ end
 # Gemfile
 gem 'dotenv-rails', groups: [:development, :test]
 
-
+gem 'acts_as_tenant'
 gem 'cancancan'
 gem 'mailtrap'
 

@@ -10,22 +10,36 @@ Rails.application.configure do
   Rails.application.routes.default_url_options[:host] = 'localhost:4000'
   # Rails.application.routes.default_url_options[:host] = 'https://74jp5ccr-5173.uks1.devtunnels.ms/'
   config.action_cable.url = "ws://localhost:4000/cable"
-#   config.action_mailer.delivery_method = :smtp
-#   config.action_mailer.raise_delivery_errors = true
 
-# config.action_mailer.smtp_settings = {
-#   :user_name => ENV['MAIL_TRAP_USERNAME'],
-#   :password => ENV['MAIL_TRAP_PASSWORD'],
-#   :address => 'live.smtp.mailtrap.io',
-#   :domain => ENV['MAIL_TRAP_DOMAIN'],
-#   :port => '587',
-#   :authentication => :login,
 
-#   :enable_starttls_auto => true   # Enable TLS
+  # MAIL_TRAP_USERNAME = api
+  # MAIL_TRAP_DOMAIN = aitechsent.net
+  # MAIL_TRAP_PASSWORD = f17620673c51e537ef268dea49025da8
+  
 
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
+
+  config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.mailtrap_settings
+  # config.action_mailer.delivery_method = :mailtrap
+  # config.action_mailer.raise_delivery_errors = true
+  # 
+  
+#   config.action_mailer.mailtrap_settings= {
+#   # :user_name => ENV['MAIL_TRAP_USERNAME'],
+#   # :password => ENV['MAIL_TRAP_PASSWORD'],
+#   # :address => 'live.smtp.mailtrap.io',
+#   # :domain => 'aitechsent.net',
+#   # :port => '587',
+#   # :authentication => :plain,
+
+#   # :enable_starttls_auto => true   
+#   api_key: 'f17620673c51e537ef268dea49025da8',
 # }
   config.enable_reloading = true
-  config.action_mailer.perform_deliveries = true
+  # config.action_mailer.perform_deliveries = true
   # Do not eager load code on boot.
   config.eager_load = false
 

@@ -2,8 +2,43 @@ class LocationsController < ApplicationController
   before_action :set_location, only: %i[   update destroy ]
 before_action :update_last_activity
 
+set_current_tenant_through_filter
 
   load_and_authorize_resource
+
+  before_action :set_tenant 
+
+   
+  # def set_tenant
+  #   random_name = "Tenant-#{SecureRandom.hex(4)}"
+  #   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain, name: random_name)
+      
+  #   set_current_tenant(@account)
+   
+  #  end
+
+
+
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
+
+
+
+  # def set_tenant
+  #   if current_user.present? && current_user.account.present?
+  #     set_current_tenant(current_user.account)
+  #   else
+  #     Rails.logger.debug "No tenant or current_user found"
+  #     # Optionally, handle cases where no tenant is set
+  #     raise ActsAsTenant::Errors::NoTenantSet
+  #   end
+  # end
+
+
+
 
   # GET /locations or /locations.json
   def index

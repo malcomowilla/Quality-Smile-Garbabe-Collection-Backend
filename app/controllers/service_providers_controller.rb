@@ -6,6 +6,8 @@ before_action :current_user, only: [:confirm_collected, :confirm_delivered]
 
 before_action :update_last_activity, except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered] 
 load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered]
+before_action :set_tenant 
+set_current_tenant_through_filter
 
 
   def index
@@ -14,6 +16,11 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
   end
 
 
+  def set_tenant
+    set_current_tenant(current_user.account)
+  
+
+end
 
   def update_last_activity
     if current_user.instance_of?(Admin)

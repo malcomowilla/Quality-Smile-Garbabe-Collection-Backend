@@ -4,8 +4,9 @@ class Admin < ApplicationRecord
     has_secure_token :reset_password_token
     has_one_attached :profile_image
 
-
+acts_as_tenant(:account)
    
+
     # has_many :prefix_and_digits_for_ticket_numbers, dependent: :destroy
 has_many :credentials
 
@@ -13,8 +14,8 @@ has_many :credentials
 # has_many :messages
 # has_many :chat_rooms, through: :messages
 
-has_many :messages_sent, class_name: 'Message', foreign_key: 'sender_id', dependent: :destroy
-has_many :messages_received, class_name: 'Message', foreign_key: 'receiver_id', dependent: :destroy
+# has_many :messages_sent, class_name: 'Message', foreign_key: 'sender_id', dependent: :destroy
+# has_many :messages_received, class_name: 'Message', foreign_key: 'receiver_id', dependent: :destroy
 
 
 

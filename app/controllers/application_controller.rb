@@ -1,12 +1,23 @@
 class ApplicationController < ActionController::Base
     include ActionController::Cookies
-
+    set_current_tenant_through_filter
+    before_action :set_tenant
     skip_before_action :verify_authenticity_token
 
     helper_method :current_user, :current_admin, :current_service_provider,
      :current_customer, :current_store_manager
 
+     
 
+     
+
+     
+     def set_tenant
+      @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+    
+      set_current_tenant(@account)
+    
+    end
 
 
 
@@ -187,7 +198,7 @@ end
 
 def current_customer_ability
 if current_customer.present?
-  @current_ability ||= CustomerAbility.new(current_customer)
+  @current_ability ||= CustomerAbility.new(current_customer,current_user )
 else
   raise CanCan::AccessDenied
 end

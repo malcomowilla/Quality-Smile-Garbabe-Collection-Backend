@@ -4,18 +4,53 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'message_template'
 require 'webauthn'
 
+set_current_tenant_through_filter
 
 
+before_action :set_tenant 
 
 before_action :update_last_activity, only: [:create_admins, :logout ]
-
 
 
 def update_last_activity
     current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
   
 end
-       
+    
+def set_tenant
+  @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+
+  set_current_tenant(@account)
+
+end
+
+# def set_tenant
+#   set_current_tenant(current_user.account)
+
+
+# end
+
+
+# def set_tenant
+#   Rails.logger.debug "Request Domain: #{request.domain}, Subdomain: #{request.subdomain}"
+  
+#   # Find or create the account based on the current domain and subdomain
+#   @account = Account.find_or_create_by(domain: request.domain, subdomain: request.subdomain) do |account|
+#     account.name = "Tenant-#{SecureRandom.hex(4)}" # Set name only if creating a new account
+#   end
+
+#   set_current_tenant(@account)
+# end
+
+# def set_tenant
+#   if current_user.present? && current_user.account.present?
+#     set_current_tenant(current_user.account)
+#   else
+#     Rails.logger.debug "No tenant or current_user found"
+#     # Optionally, handle cases where no tenant is set
+#     raise ActsAsTenant::Errors::NoTenantSet
+#   end
+# end
 
 
         def index
@@ -23,7 +58,15 @@ end
           render json: @admins
         end
 
-
+        def get_my_admins
+  #         limit = params[:limit].to_i
+  # offset = params[:offset].to_i
+  # admins = Admin.offset(offset).limit(limit)
+  # has_more = admins.size == limit
+  # render json: { admins: admins, has_more: has_more }
+   @admins = Admin.all
+  render json: @admins
+        end
 
 
         def show_conversation
@@ -245,6 +288,8 @@ end
   
   
 def login
+    # Tenant checking is disabled for all code in this block
+  
   admin = Admin.find_by(email: params[:email]) 
   if params[:enable_2fa_for_admin] == true || params[:enable_2fa_for_admin] == 'true' 
     if admin&.authenticate(params[:password])
@@ -305,7 +350,6 @@ else
     end
 end
   
- 
 end
 
 
@@ -381,7 +425,6 @@ end
 def register_webauthn
   
 
-
   @the_admin = find_or_initialize_user(params[:user_name])
   validate_admin_passkey_user_name
   if @the_admin.errors.empty?
@@ -422,6 +465,7 @@ else
 else  
     render json: @the_admin.errors , status: :unprocessable_entity
 
+
 end
 end
 
@@ -433,7 +477,6 @@ end
 
 
 def create_webauthn
- 
 
   begin
     Rails.logger.info "Received params: #{params.inspect}"
@@ -469,6 +512,7 @@ def create_webauthn
     render json: { error: e.message }, status: :unprocessable_entity
     
   end
+
 end
 
 
@@ -505,7 +549,6 @@ end
 
 def verify_webauthn
 
-
   admin = find_passkey_user(params[:user_name])
   webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
@@ -541,6 +584,7 @@ def verify_webauthn
   rescue WebAuthn::Error => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
+
 end
 
 
@@ -559,7 +603,6 @@ end
 
 def verify_otp
 
-  
   # admin.update_column(:inactive, false)
   
   admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
@@ -576,6 +619,7 @@ def verify_otp
   else
     render json: { message: 'Invalid OTP' }, status: :unauthorized
   end
+
 end
 
 
@@ -591,6 +635,7 @@ def logout
 #  end
  cookies.delete(:jwt)
 head :no_content
+  
 end
 
 
@@ -613,6 +658,7 @@ end
     else
       render json: { errors: @admin.errors}, status: :unprocessable_entity
     end
+  
   end
 
   def update_user
@@ -938,7 +984,7 @@ end
         unless params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/)
           @admin.errors.add(:password, "must include at least one lowercase letter, one uppercase letter, one digit, and be at least 12 characters long.")
         end
-      end
+      
     
       # Check email presence and format
       if params[:email].blank?
@@ -956,7 +1002,7 @@ end
         @admin.errors.add(:password_confirmation, "doesn't match Password")
       end
     end
-    
+  end
   end
 
 

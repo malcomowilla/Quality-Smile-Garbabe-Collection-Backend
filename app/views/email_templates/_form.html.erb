@@ -1,0 +1,152 @@
+<%= form_with(model: email_template) do |form| %>
+  <% if email_template.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(email_template.errors.count, "error") %> prohibited this email_template from being saved:</h2>
+
+      <ul>
+        <% email_template.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :customer_confirmation_code_header, style: "display: block" %>
+    <%= form.text_field :customer_confirmation_code_header %>
+  </div>
+
+  <div>
+    <%= form.label :customer_confirmation_code_body, style: "display: block" %>
+    <%= form.text_field :customer_confirmation_code_body %>
+  </div>
+
+  <div>
+    <%= form.label :customer_confirmation_code_footer, style: "display: block" %>
+    <%= form.text_field :customer_confirmation_code_footer %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_confirmation_code_header, style: "display: block" %>
+    <%= form.text_field :service_provider_confirmation_code_header %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_confirmation_code_body, style: "display: block" %>
+    <%= form.text_field :service_provider_confirmation_code_body %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_confirmation_code_footer, style: "display: block" %>
+    <%= form.text_field :service_provider_confirmation_code_footer %>
+  </div>
+
+  <div>
+    <%= form.label :user_invitation_header, style: "display: block" %>
+    <%= form.text_field :user_invitation_header %>
+  </div>
+
+  <div>
+    <%= form.label :user_invitation_body, style: "display: block" %>
+    <%= form.text_field :user_invitation_body %>
+  </div>
+
+  <div>
+    <%= form.label :user_invitation_footer, style: "display: block" %>
+    <%= form.text_field :user_invitation_footer %>
+  </div>
+
+  <div>
+    <%= form.label :customer_otp_confirmation_header, style: "display: block" %>
+    <%= form.text_field :customer_otp_confirmation_header %>
+  </div>
+
+  <div>
+    <%= form.label :customer_otp_confirmation_body, style: "display: block" %>
+    <%= form.text_field :customer_otp_confirmation_body %>
+  </div>
+
+  <div>
+    <%= form.label :customer_otp_confirmation_footer, style: "display: block" %>
+    <%= form.text_field :customer_otp_confirmation_footer %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_otp_confirmation_header, style: "display: block" %>
+    <%= form.text_field :service_provider_otp_confirmation_header %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_otp_confirmation_body, style: "display: block" %>
+    <%= form.text_field :service_provider_otp_confirmation_body %>
+  </div>
+
+  <div>
+    <%= form.label :service_provider_otp_confirmation_footer, style: "display: block" %>
+    <%= form.text_field :service_provider_otp_confirmation_footer %>
+  </div>
+
+  <div>
+    <%= form.label :admin_otp_confirmation_header, style: "display: block" %>
+    <%= form.text_field :admin_otp_confirmation_header %>
+  </div>
+
+  <div>
+    <%= form.label :admin_otp_confirmation_body, style: "display: block" %>
+    <%= form.text_field :admin_otp_confirmation_body %>
+  </div>
+
+  <div>
+    <%= form.label :admin_otp_confirmation_footer, style: "display: block" %>
+    <%= form.text_field :admin_otp_confirmation_footer %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_otp_confirmation_header, style: "display: block" %>
+    <%= form.text_field :store_manager_otp_confirmation_header %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_otp_confirmation_body, style: "display: block" %>
+    <%= form.text_field :store_manager_otp_confirmation_body %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_otp_confirmation_footer, style: "display: block" %>
+    <%= form.text_field :store_manager_otp_confirmation_footer %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_number_header, style: "display: block" %>
+    <%= form.text_field :store_manager_number_header %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_number_body, style: "display: block" %>
+    <%= form.text_field :store_manager_number_body %>
+  </div>
+
+  <div>
+    <%= form.label :store_manager_number_footer, style: "display: block" %>
+    <%= form.text_field :store_manager_number_footer %>
+  </div>
+
+  <div>
+    <%= form.label :payment_reminder_header, style: "display: block" %>
+    <%= form.text_field :payment_reminder_header %>
+  </div>
+
+  <div>
+    <%= form.label :payment_reminder_body, style: "display: block" %>
+    <%= form.text_field :payment_reminder_body %>
+  </div>
+
+  <div>
+    <%= form.label :payment_reminder_footer, style: "display: block" %>
+    <%= form.text_field :payment_reminder_footer %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

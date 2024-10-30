@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name"
+    t.string "subdomain"
+    t.string "domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -58,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.boolean "check_is_inactiveminutes"
     t.string "check_inactive_minutes"
     t.boolean "enable_2fa_for_admin_passkeys"
+    t.integer "account_id"
   end
 
   create_table "admins", force: :cascade do |t|
@@ -116,6 +125,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "phone_number"
     t.boolean "online"
     t.integer "connection_count"
+    t.integer "account_id"
   end
 
   create_table "calendar_events", force: :cascade do |t|
@@ -127,6 +137,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "title"
     t.datetime "start"
     t.datetime "end"
+    t.integer "account_id"
   end
 
   create_table "chat_messages", force: :cascade do |t|
@@ -136,6 +147,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.datetime "updated_at", null: false
     t.integer "chat_room_id"
     t.integer "admin_id"
+    t.integer "sender_id"
+    t.integer "account_id"
   end
 
   create_table "chat_rooms", force: :cascade do |t|
@@ -162,6 +175,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.boolean "enable_2fa"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
+    t.integer "sequence_value"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -182,6 +197,52 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.datetime "confirmation_date"
     t.datetime "request_date"
     t.string "otp"
+    t.integer "account_id"
+  end
+
+  create_table "email_settings", force: :cascade do |t|
+    t.string "smtp_host"
+    t.string "smtp_username"
+    t.string "sender_email"
+    t.string "smtp_password"
+    t.string "api_key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
+    t.string "domain"
+  end
+
+  create_table "email_templates", force: :cascade do |t|
+    t.string "customer_confirmation_code_header"
+    t.string "customer_confirmation_code_body"
+    t.string "customer_confirmation_code_footer"
+    t.string "service_provider_confirmation_code_header"
+    t.string "service_provider_confirmation_code_body"
+    t.string "service_provider_confirmation_code_footer"
+    t.string "user_invitation_header"
+    t.string "user_invitation_body"
+    t.string "user_invitation_footer"
+    t.string "customer_otp_confirmation_header"
+    t.string "customer_otp_confirmation_body"
+    t.string "customer_otp_confirmation_footer"
+    t.string "service_provider_otp_confirmation_header"
+    t.string "service_provider_otp_confirmation_body"
+    t.string "service_provider_otp_confirmation_footer"
+    t.string "admin_otp_confirmation_header"
+    t.string "admin_otp_confirmation_body"
+    t.string "admin_otp_confirmation_footer"
+    t.string "store_manager_otp_confirmation_header"
+    t.string "store_manager_otp_confirmation_body"
+    t.string "store_manager_otp_confirmation_footer"
+    t.string "store_manager_number_header"
+    t.string "store_manager_number_body"
+    t.string "store_manager_number_footer"
+    t.string "payment_reminder_header"
+    t.string "payment_reminder_body"
+    t.string "payment_reminder_footer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "finances_and_accounts", force: :cascade do |t|
@@ -206,6 +267,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "my_calendar_settings", force: :cascade do |t|
@@ -213,6 +275,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "start_in_hours"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -255,6 +318,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "prefix_and_digits_for_ticket_numbers", force: :cascade do |t|
@@ -262,6 +326,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "minimum_digits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "prefixes", force: :cascade do |t|
@@ -305,6 +370,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.boolean "collected", default: false
     t.string "otp"
     t.string "location"
+    t.integer "account_id"
   end
 
   create_table "sms", force: :cascade do |t|
@@ -316,6 +382,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "status"
     t.string "admin_user"
     t.string "system_user"
+    t.integer "account_id"
   end
 
   create_table "sms_templates", force: :cascade do |t|
@@ -330,6 +397,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.datetime "updated_at", null: false
     t.string "store_manager_manager_number_confirmation_template"
     t.string "store_manager_otp_confirmation_template"
+    t.integer "account_id"
   end
 
   create_table "store_manager_settings", force: :cascade do |t|
@@ -340,6 +408,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.boolean "enable_2fa_for_store_manager"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "store_managers", force: :cascade do |t|
@@ -360,6 +429,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "otp"
     t.boolean "delivered_bags", default: false
     t.boolean "received_bags", default: false
+    t.integer "account_id"
   end
 
   create_table "stores", force: :cascade do |t|
@@ -372,6 +442,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "store_number"
     t.serial "sequence_number"
     t.string "sub_location"
+    t.integer "account_id"
   end
 
   create_table "sub_locations", force: :cascade do |t|
@@ -381,6 +452,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "support_tickets", force: :cascade do |t|
@@ -402,6 +474,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_132612) do
     t.datetime "date_closed"
     t.string "agent_review"
     t.string "agent_response"
+    t.integer "account_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

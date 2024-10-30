@@ -2,11 +2,26 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
-  resources :chat_rooms
-  resources :chat_messages
+  resources :email_templates
+  resources :accounts
   resources :finances_and_accounts
   mount ActionCable.server => '/cable'
   # mount Sidekiq::Web => '/sidekiq'
+
+
+
+
+
+post '/email_settings', to: 'email_settings#create'
+get '/get_email_settings', to: 'email_settings#index'
+
+
+
+
+
+post '/send_chat_message', to: 'chat_messages#create'
+get '/chat_messages', to: 'chat_messages#index'
+
 
   post '/update_customer_settings', to: 'general_settings#create_for_customer'
   get '/get_customer_settings', to: 'general_settings#get_settings_for_customer' 
@@ -152,6 +167,7 @@ post '/invite_register_with_webauth', to: 'admins#invite_register_with_webauthn'
   patch 'update_user_roles/:id', to: 'admins#update_user'
   patch '/update_admin/:id', to: 'admins#update_admin'
   get '/get_admins', to: 'admins#index'
+  get '/get_my_admins', to: 'admins#get_my_admins'
   get '/allow_get_updated_admin', to: 'admins#allow_get_updated_admin'
   get '/current_user', to: 'admins#user'
    post '/save_fcm_token', to: 'admins#create_fcm_token'

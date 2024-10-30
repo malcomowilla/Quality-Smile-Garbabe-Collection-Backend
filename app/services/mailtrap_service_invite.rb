@@ -20,3 +20,4 @@ class MailtrapServiceInvite
     puts response
   end
 end
+

@@ -2,7 +2,8 @@
 
 class CustomerAbility
     include CanCan::Ability
-    def initialize(customer)
+    def initialize(customer, admin)
+        ActsAsTenant.with_tenant(admin.account) do
         Rails.logger.info "initializing customer ability#{customer}"
         return unless customer.is_a?(Customer) && customer.present?
     Rails.logger.info "initializing customer ability#{customer}"
@@ -12,4 +13,6 @@ class CustomerAbility
                                     can :confirm_request, Customer
                                     can :confirm_bag, Customer
     end
+
+end
 end

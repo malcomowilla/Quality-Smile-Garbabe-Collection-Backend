@@ -1,0 +1,59 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer_confirmation_code_header: MyString
+  customer_confirmation_code_body: MyString
+  customer_confirmation_code_footer: MyString
+  service_provider_confirmation_code_header: MyString
+  service_provider_confirmation_code_body: MyString
+  service_provider_confirmation_code_footer: MyString
+  user_invitation_header: MyString
+  user_invitation_body: MyString
+  user_invitation_footer: MyString
+  customer_otp_confirmation_header: MyString
+  customer_otp_confirmation_body: MyString
+  customer_otp_confirmation_footer: MyString
+  service_provider_otp_confirmation_header: MyString
+  service_provider_otp_confirmation_body: MyString
+  service_provider_otp_confirmation_footer: MyString
+  admin_otp_confirmation_header: MyString
+  admin_otp_confirmation_body: MyString
+  admin_otp_confirmation_footer: MyString
+  store_manager_otp_confirmation_header: MyString
+  store_manager_otp_confirmation_body: MyString
+  store_manager_otp_confirmation_footer: MyString
+  store_manager_number_header: MyString
+  store_manager_number_body: MyString
+  store_manager_number_footer: MyString
+  payment_reminder_header: MyString
+  payment_reminder_body: MyString
+  payment_reminder_footer: MyString
+
+two:
+  customer_confirmation_code_header: MyString
+  customer_confirmation_code_body: MyString
+  customer_confirmation_code_footer: MyString
+  service_provider_confirmation_code_header: MyString
+  service_provider_confirmation_code_body: MyString
+  service_provider_confirmation_code_footer: MyString
+  user_invitation_header: MyString
+  user_invitation_body: MyString
+  user_invitation_footer: MyString
+  customer_otp_confirmation_header: MyString
+  customer_otp_confirmation_body: MyString
+  customer_otp_confirmation_footer: MyString
+  service_provider_otp_confirmation_header: MyString
+  service_provider_otp_confirmation_body: MyString
+  service_provider_otp_confirmation_footer: MyString
+  admin_otp_confirmation_header: MyString
+  admin_otp_confirmation_body: MyString
+  admin_otp_confirmation_footer: MyString
+  store_manager_otp_confirmation_header: MyString
+  store_manager_otp_confirmation_body: MyString
+  store_manager_otp_confirmation_footer: MyString
+  store_manager_number_header: MyString
+  store_manager_number_body: MyString
+  store_manager_number_footer: MyString
+  payment_reminder_header: MyString
+  payment_reminder_body: MyString
+  payment_reminder_footer: MyString
