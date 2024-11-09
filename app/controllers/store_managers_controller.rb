@@ -13,11 +13,20 @@ set_current_tenant_through_filter
   # GET /store_managers or /store_managers.json
 
 
-  def set_tenant
-    set_current_tenant(current_user.account)
-  
+  before_action :set_tenant 
+  set_current_tenant_through_filter
 
-end
+     
+
+
+
+  def set_tenant
+    @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+  
+    set_current_tenant(@account)
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Invalid tenant' }, status: :not_found
+  end
 
   # def set_tenant
   #   if current_user.present? && current_user.account.present?

@@ -21,7 +21,6 @@ module QualitySmilesBackend
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
-    config.middleware.use ActionDispatch::Cookies
     # rack attack middleware
     # # config/application.rb
 config.middleware.use CheckInactivity
@@ -35,7 +34,8 @@ config.active_job.queue_adapter = :sidekiq
     Dotenv::Railtie.load
     config.jwt_secret = ENV['JWT_SECRET']
 
-    config.middleware.use ActionDispatch::Session::CookieStore, key: '__quality_smiles_session'
+    config.middleware.use ActionDispatch::Session::CookieStore,
+     key: '__quality_smiles_session',domain: :all
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

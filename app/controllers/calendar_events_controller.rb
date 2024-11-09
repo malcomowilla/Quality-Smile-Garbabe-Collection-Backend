@@ -1,5 +1,5 @@
 class CalendarEventsController < ApplicationController
-  before_action :set_calendar_event, only: %i[ show edit update destroy ]
+  # before_action :set_calendar_event, only: %i[ show edit update destroy ]
   before_action :set_tenant 
 
   set_current_tenant_through_filter
@@ -12,9 +12,11 @@ require 'onesignal'
 
 
 def set_tenant
-  set_current_tenant(current_user.account)
+  @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
 
-
+  set_current_tenant(@account)
+rescue ActiveRecord::RecordNotFound
+  render json: { error: 'Invalid tenant' }, status: :not_found
 end
 
    

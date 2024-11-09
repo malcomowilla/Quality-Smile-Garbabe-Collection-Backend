@@ -1,21 +1,23 @@
+
+
 class ServiceProvider < ApplicationRecord
-    auto_increment :sequence_number
+    # Associations
+    # has_many :services
+    # has_many :appointments
+    #acts_as_tenant(:account)
     acts_as_tenant(:account)
-    # validates :provider_code, presence: true, uniqueness: true
+
+  has_many :appointments, dependent: :destroy
+
+  scope :active, -> { where(active: true) }
+  scope :with_completed_appointments, -> { joins(:appointments).where(appointments: { status: 'completed' }) }
+  scope :with_cancelled_appointments, -> { joins(:appointments).where(appointments: { status: 'cancelled' }) }
+
+  # Add any validations you need
+  validates :name, presence: true
+  validates :rating, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 }, allow_nil: true
+  has_many :appointments, class_name: 'Appointment', dependent: :destroy
+
+  end
 
 
-    # validates :email,  uniqueness: {case_sensitive: true}, format: { with: URI::MailTo::EMAIL_REGEXP } 
-    # validates :phone_number, uniqueness: true, presence: true
-    
-
-    def generate_otp
-        self.otp = rand(100000..999999).to_s
-        save!
-    end
-
-
-
-    def verify_otp(submitted_otp)
-        self.otp == submitted_otp
-      end
-end

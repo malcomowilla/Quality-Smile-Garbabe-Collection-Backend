@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_09_144700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -123,9 +123,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
     t.boolean "can_manage_calendar"
     t.boolean "can_read_calendar"
     t.string "phone_number"
-    t.boolean "online"
     t.integer "connection_count"
     t.integer "account_id"
+    t.integer "conversations_count", default: 0
+    t.boolean "online", default: false
+    t.datetime "last_seen"
+    t.datetime "last_heartbeat"
+  end
+
+  create_table "appointments", force: :cascade do |t|
+    t.bigint "service_provider_id", null: false
+    t.bigint "account_id", null: false
+    t.string "status", default: "pending"
+    t.datetime "appointment_date"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "service_provider_id"], name: "index_appointments_on_account_id_and_service_provider_id"
+    t.index ["account_id"], name: "index_appointments_on_account_id"
+    t.index ["service_provider_id"], name: "index_appointments_on_service_provider_id"
   end
 
   create_table "calendar_events", force: :cascade do |t|
@@ -147,14 +163,64 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
     t.datetime "updated_at", null: false
     t.integer "chat_room_id"
     t.integer "admin_id"
-    t.integer "sender_id"
     t.integer "account_id"
+    t.integer "customer_id"
+    t.integer "customer_sender_id"
+    t.bigint "receiver_id"
+    t.bigint "conversation_id"
+    t.index ["conversation_id"], name: "index_chat_messages_on_conversation_id"
   end
 
   create_table "chat_rooms", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
+    t.bigint "admin_id", null: false
+    t.index ["admin_id"], name: "index_chat_rooms_on_admin_id"
+    t.index ["customer_id", "admin_id"], name: "index_chat_rooms_on_customer_id_and_admin_id", unique: true
+    t.index ["customer_id"], name: "index_chat_rooms_on_customer_id"
+  end
+
+  create_table "company_settings", force: :cascade do |t|
+    t.string "company_name"
+    t.string "contact_info"
+    t.string "email_info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
+    t.string "logo"
+  end
+
+  create_table "contact_requests", force: :cascade do |t|
+    t.string "company_name"
+    t.string "business_type"
+    t.string "contact_person"
+    t.string "business_email"
+    t.string "phone_number"
+    t.string "expected_users"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "city"
+    t.string "mmessage"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
+    t.bigint "admin_id", null: false
+    t.string "status", default: "active"
+    t.integer "messages_count", default: 0
+    t.datetime "last_message_at"
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_conversations_on_account_id"
+    t.index ["admin_id"], name: "index_conversations_on_admin_id"
+    t.index ["customer_id", "admin_id"], name: "index_conversations_on_customer_id_and_admin_id", unique: true
+    t.index ["customer_id"], name: "index_conversations_on_customer_id"
+    t.index ["status"], name: "index_conversations_on_status"
   end
 
   create_table "credentials", force: :cascade do |t|
@@ -243,6 +309,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "account_id"
+    t.string "password_reset_header"
+    t.string "password_reset_body"
+    t.string "password_reset_footer"
   end
 
   create_table "finances_and_accounts", force: :cascade do |t|
@@ -371,6 +440,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
     t.string "otp"
     t.string "location"
     t.integer "account_id"
+    t.decimal "rating", precision: 3, scale: 2, default: "0.0"
+    t.decimal "completion_rate", precision: 5, scale: 2, default: "0.0"
+    t.integer "total_appointments", default: 0
+    t.integer "completed_appointments", default: 0
+    t.integer "cancelled_appointments", default: 0
+    t.decimal "on_time_delivery_rate", precision: 5, scale: 2, default: "0.0"
+    t.boolean "active_status", default: true
+    t.datetime "last_active_at"
   end
 
   create_table "sms", force: :cascade do |t|
@@ -382,6 +459,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
     t.string "status"
     t.string "admin_user"
     t.string "system_user"
+    t.integer "account_id"
+  end
+
+  create_table "sms_settings", force: :cascade do |t|
+    t.string "api_key"
+    t.string "api_secret"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "account_id"
   end
 
@@ -479,4 +564,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_28_132232) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "appointments", "accounts"
+  add_foreign_key "appointments", "service_providers"
+  add_foreign_key "chat_messages", "conversations"
+  add_foreign_key "chat_rooms", "admins"
+  add_foreign_key "chat_rooms", "customers"
+  add_foreign_key "conversations", "accounts"
+  add_foreign_key "conversations", "admins"
+  add_foreign_key "conversations", "customers"
 end

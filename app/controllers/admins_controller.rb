@@ -21,7 +21,8 @@ def set_tenant
   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
 
   set_current_tenant(@account)
-
+rescue ActiveRecord::RecordNotFound
+  render json: { error: 'Invalid tenant' }, status: :not_found
 end
 
 # def set_tenant
@@ -228,12 +229,13 @@ end
 
 # generate_password_reset_token(admin)
 
-
   def forgot_password
-   
+    @company_name = CompanySetting.first.company_name
+    # @company_photo = CompanySetting.first.logo.attached? ? url_for(CompanySetting.first.logo) : nil
     if  @admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
       @admin.generate_password_reset_token(@admin)
-      ResetPasswordMailer.password_forgotten(@admin).deliver_now
+      PasswordResetMailer.password_reset(@admin).deliver_now
+      # ResetPasswordMailer.password_forgotten(@admin).deliver_now
       render json: {message: 'email sent'}, status: :ok
     else
       render json: {error:'email not found'}, status: :unprocessable_entity

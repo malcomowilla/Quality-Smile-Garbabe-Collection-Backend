@@ -2,14 +2,27 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
-  resources :email_templates
+  resources :sms_settings
+  resources :contact_requests
   resources :accounts
   resources :finances_and_accounts
   mount ActionCable.server => '/cable'
   # mount Sidekiq::Web => '/sidekiq'
 
+  get '/get_email_templates', to: 'email_templates#index'
+  post '/email_template', to: 'email_templates#create'
 
 
+  get '/service_provider_reports', to: 'service_provider_reports#index'
+  get '/service_provider_reports/export', to: 'service_provider_reports#export'
+  
+
+  post '/create_sms_setting', to: 'sms_settings#create'
+  get '/get_sms_settings', to: 'sms_settings#index'
+
+
+post '/company_settings', to: 'company_settings#create'
+get '/get_company_settings', to: 'company_settings#index'
 
 
 post '/email_settings', to: 'email_settings#create'
@@ -17,8 +30,12 @@ get '/get_email_settings', to: 'email_settings#index'
 
 
 
+# resources :chat_rooms, only: [:show] do
+#   resources :chat_messages, only: [:create]
+# end
 
 
+# get '/current_chat', to: 'chat_rooms#current'
 post '/send_chat_message', to: 'chat_messages#create'
 get '/chat_messages', to: 'chat_messages#index'
 
@@ -125,7 +142,7 @@ post '/otp_verification', to: 'customers#verify_otp'
 post '/confirm_bag', to: 'customers#confirm_bag'
 post '/confirm_request', to: 'customers#confirm_request'
 get '/my_current_customer', to: 'customers#my_current_customer'
-
+get '/get_current_customer', to: 'customers#get_current_customer'
 
 
 post '/confirm_collection', to: 'service_providers#confirm_collected'
@@ -137,7 +154,7 @@ post '/create_service_provider', to: 'service_providers#create'
 get '/get_service_providers', to: 'service_providers#index'
 patch '/update_service_provider/:id', to: 'service_providers#update'
 delete '/delete_service_providers/:id', to: 'service_providers#destroy'
-
+get '/get_current_service_provider', to: 'service_providers#get_current_service_provider'
 
 
 

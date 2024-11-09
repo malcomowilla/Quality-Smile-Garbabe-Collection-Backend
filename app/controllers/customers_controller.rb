@@ -6,23 +6,31 @@ class CustomersController < ApplicationController
       # before_action :current_user, except: [:confirm_bag, :confirm_request]
       set_current_tenant_through_filter
 
-      before_action :update_last_activity, except: [:logout, :login, :verify_otp, :confirm_bag, :confirm_request, 
+      before_action :update_last_activity, except: [:logout, :login, :verify_otp,
+       :confirm_bag, :confirm_request, 
     ]
 
     before_action :set_tenant 
 
-        load_and_authorize_resource except: [:verify_otp,  :login, :logout, :confirm_bag, :confirm_request]
+        load_and_authorize_resource except: [:verify_otp,  :login, 
+        :logout, :confirm_bag, :confirm_request, :my_current_customer,
+        :get_customer_code, :get_my_customer_code, :get_current_customer
+      ]
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'message_template'
   require "twilio-ruby"
 
 
-  def set_tenant
-    set_current_tenant(current_user.account)
-  
 
-end
+  def set_tenant
+    @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+  
+    set_current_tenant(@account)
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Invalid tenant' }, status: :not_found
+  end
+
 
 
 
@@ -125,6 +133,13 @@ end
 
 
 
+def get_current_customer
+  if current_customer
+    render json: current_customer, status: :ok
+  else
+    render json: {error: 'no customer logged in'}, status: :unauthorized
+  end
+end
 
 
 
@@ -153,7 +168,8 @@ end
       end
       else
         token = generate_token(customer_id:  @customer.id)
-      cookies.encrypted.signed[:customer_jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+      cookies.encrypted.signed[:customer_jwt] = { value: token, httponly: true,
+       secure: true , exp: 24.hours.from_now.to_i , }
       end
       
       

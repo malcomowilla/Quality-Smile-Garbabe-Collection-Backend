@@ -1,5 +1,20 @@
 class EmailTemplatesController < ApplicationController
 
+  before_action :set_tenant 
+  set_current_tenant_through_filter
+
+     
+
+
+  def set_tenant
+    @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+  
+    set_current_tenant(@account)
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Invalid tenant' }, status: :not_found
+  end
+
+  
   # GET /email_templates or /email_templates.json
   def index
     @email_templates = EmailTemplate.all
@@ -12,7 +27,7 @@ class EmailTemplatesController < ApplicationController
   # POST /email_templates or /email_templates.json
   def create
 
-    @email_template = EmailTemplate.first_or_initialize(email_setting_params)
+    @email_template = EmailTemplate.first_or_initialize(email_template_params)
     @email_template.update(email_template_params)
 
 
@@ -43,6 +58,7 @@ end
        :admin_otp_confirmation_footer, :store_manager_otp_confirmation_header, :store_manager_otp_confirmation_body, :store_manager_otp_confirmation_footer, :store_manager_number_header, :store_manager_number_body,
         :store_manager_number_footer,
         :payment_reminder_header,
-       :payment_reminder_body, :payment_reminder_footer)
+       :payment_reminder_body, :payment_reminder_footer,
+       :password_reset_body, :password_reset_footer, :password_reset_header)
     end
 end

@@ -196,13 +196,13 @@ end
     #  :current_customer, :current_store_manager
 
 
-def current_customer_ability
-if current_customer.present?
-  @current_ability ||= CustomerAbility.new(current_customer,current_user )
-else
-  raise CanCan::AccessDenied
-end
-end
+# def current_customer_ability
+# if current_customer.present?
+#   @current_ability ||= CustomerAbility.new(current_customer,current_user )
+# else
+#   raise CanCan::AccessDenied
+# end
+# end
 
 
 def current_service_provider_ability

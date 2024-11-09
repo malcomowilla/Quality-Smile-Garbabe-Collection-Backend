@@ -3,7 +3,7 @@ class Admin < ApplicationRecord
     has_secure_password(validations: false)
     has_secure_token :reset_password_token
     has_one_attached :profile_image
-
+    has_many :conversations, counter_cache: true
 acts_as_tenant(:account)
    
 
@@ -20,12 +20,22 @@ has_many :credentials
 
 
 encrypts :email, :password,   :fcm_token,  deterministic: true
-enum :role,  [:super_administrator, :store_manager, :customer, :service_provider, :customer_support,  :administrator, :agent]
+enum :role,  [:super_administrator, :store_manager, :customer, :service_provider,
+ :customer_support,  :administrator, :agent]
 
 
 # def skip_password_validation
 #     skip_password_validation == '1' || skip_password_validation == true
 #   end
+
+
+def as_json(options = {})
+super(options).merge(
+  online: online,
+  last_seen: last_seen
+)
+end
+
 
   def skip_password_validation=(value)
     @skip_password_validation = value
