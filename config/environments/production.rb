@@ -113,7 +113,7 @@ Rails.application.configure do
     'https://aitechs-sas-garbage-solution.onrender.com'
   ]
 
-
+  config.require_master_key = true
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
   

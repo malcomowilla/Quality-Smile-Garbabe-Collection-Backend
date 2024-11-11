@@ -14,7 +14,7 @@ module QualitySmilesBackend
     # config.active_record.encryption.primary_key = Rails.application.credentials.active_record_encryption[:primary_key]
     # config.active_record.encryption.deterministic_key = Rails.application.credentials.active_record_encryption[:deterministic_key]
     # config.active_record.encryption.key_derivation_salt = Rails.application.credentials.active_record_encryption[:key_derivation_salt]
-    config.active_record.encryption.support_unencrypted_data = true
+    # config.active_record.encryption.support_unencrypted_data = true
 
 
     config.autoload_lib(ignore: %w(assets tasks))
@@ -44,10 +44,10 @@ config.active_job.queue_adapter = :sidekiq
     Dotenv::Railtie.load
     config.jwt_secret = ENV['JWT_SECRET']
     config.action_dispatch.cookies_same_site_protection = :lax
-    config.action_dispatch.cookies_serializer = :json
+    config.action_dispatch.cookies_serializer = :hybrid
     config.action_dispatch.cookies_rotations
     config.middleware.use ActionDispatch::Flash
-
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA256
     config.middleware.use ActionDispatch::Cookies
 
     config.middleware.use ActionDispatch::Session::CookieStore,
