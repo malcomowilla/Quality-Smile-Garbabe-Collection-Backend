@@ -12,6 +12,12 @@ Rails.application.configure do
   config.action_cable.url = "ws://localhost:4000/cable"
   config.action_mailer.default_url_options = { host: 'http://localhost:4000' }
 
+
+
+
+
+
+
   # MAIL_TRAP_USERNAME = api
   # MAIL_TRAP_DOMAIN = aitechsent.net
   # MAIL_TRAP_PASSWORD = f17620673c51e537ef268dea49025da8
