@@ -57,7 +57,8 @@ end
           body:  formatted_body, 
         
           
-          image: 'https://quality-smiles-bucket.s3.eu-north-1.amazonaws.com/uploads/2024-08-16/image_9ee0c32b-9c8d-4782-bb6e-6d02e81b2512.png',
+          image: 'https://quality-smiles-bucket.s3.eu-north-1.
+          amazonaws.com/uploads/2024-08-16/image_9ee0c32b-9c8d-4782-bb6e-6d02e81b2512.png',
 
         },
         android: {

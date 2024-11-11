@@ -88,6 +88,10 @@ gem 'jwt'
 gem 'webauthn'
 
 
+
+# Use hiredis to get better performance than the "redis" gem
+gem 'hiredis'
+
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
