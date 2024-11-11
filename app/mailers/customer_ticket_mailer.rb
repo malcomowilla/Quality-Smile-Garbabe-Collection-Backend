@@ -41,7 +41,7 @@ end
        "issue_description" => @issue_description,
        "ticket_status" => @ticket_status,
        "ticket_priority" => @ticket_priority,
-       "customer_portal_link" => "http://localhost:5173/customer_role?my_customer_code=#{@customer_code}"
+       "customer_portal_link" => "https://aitechs-sas-garbage-solution.onrender.com/customer_role?my_customer_code=#{@customer_code}"
       
     }
   )

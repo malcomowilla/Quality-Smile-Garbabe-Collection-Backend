@@ -1,13 +1,13 @@
 WebAuthn.configure do |config|
   # This value needs to match `window.location.origin` evaluated by
   # the User Agent during registration and authentication ceremonies.
-  config.origin = "http://localhost:5173"
+  config.origin = "https://aitechs-sas-garbage-solution.onrender.com"
 
   # Relying Party name for display purposes
   config.rp_name = "Quality Smiles"
 
 
-    config.rp_id = "localhost"
+    config.rp_id = "aitechs-sas-garbage-solution.onrender.com"
 
   # Optionally configure a client timeout hint, in milliseconds.
   # This hint specifies how long the browser should wait for any

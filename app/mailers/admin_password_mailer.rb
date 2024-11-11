@@ -19,7 +19,8 @@ end
       "user_name" => @admin.user_name,
       "admin_password" => @admin.password,
       "admin_email" => @admin.email,
-      "invitation_link" => "http://localhost:5173/signin"
+      # "invitation_link" => "http://localhost:517/signin"
+      "invitation_link" => "https://aitechs-sas-garbage-solution.onrender.com"
       
     }
   )

@@ -10,7 +10,7 @@ def password_forgotten(admin)
       template_uuid: ENV['MAIL_TRAP_TEMPLATE_UUID2'],
       template_variables: {
         "user_email" => @admin.email,
-        "reset_password_url" => "http://localhost:5173/reset_password?token=#{@admin.reset_password_token}"
+        "reset_password_url" => "https://aitechs-sas-garbage-solution.onrender.com/reset_password?token=#{@admin.reset_password_token}"
         
       }
     )

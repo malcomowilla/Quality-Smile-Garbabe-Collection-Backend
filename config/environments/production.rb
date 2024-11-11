@@ -98,9 +98,25 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
+
+  config.action_mailer.asset_host = 'https://aitechs-sas-garbage-solution-backend.onrender.com'
+  config.active_storage.service_url_host = 'https://aitechs-sas-garbage-solution-backend.onrender.com'
+  
+
+  Rails.application.routes.default_url_options[:host] = 'aitechs-sas-garbage-solution-backend.onrender.com'
+  # Rails.application.routes.default_url_options[:host] = 'https://74jp5ccr-5173.uks1.devtunnels.ms/'
+  config.action_cable.url = "wss://aitechs-sas-garbage-solution-backend.onrender.com/cable"
+  config.action_mailer.default_url_options = { host: 'https://aitechs-sas-garbage-solution-backend.onrender.com' }
+
+  config.action_cable.allowed_request_origins = [
+    'http://localhost:5173',
+    'https://aitechs-sas-garbage-solution.onrender.com'
+  ]
+
+
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
-
+  
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
