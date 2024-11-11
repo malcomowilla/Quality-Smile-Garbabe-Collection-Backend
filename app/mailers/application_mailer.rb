@@ -12,7 +12,6 @@
 class ApplicationMailer < ActionMailer::Base
   before_action :set_sender_email
   before_action :set_tenant
-  skip_before_action :verify_authenticity_token
 
   layout "mailer"
 
