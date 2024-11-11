@@ -77,8 +77,23 @@ group :development do
   # gem "spring"
 end
 
-# Gemfile
-gem 'dotenv-rails', groups: [:development, :test]
+
+
+
+# Move dotenv-rails out of the development/test group
+gem 'dotenv-rails'
+
+group :development, :test do
+  # other development gems...
+end
+
+
+
+
+
+
+
+
 
 gem 'acts_as_tenant'
 gem 'cancancan'
