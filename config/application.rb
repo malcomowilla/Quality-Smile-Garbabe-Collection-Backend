@@ -13,7 +13,7 @@ module QualitySmilesBackend
     # Initialize configuration defaults for originally generated Rails version.
     
    
-    
+    config.assets.enabled = false
     config.action_cable.disable_request_forgery_protection = true
 
     config.load_defaults 7.1
