@@ -19,9 +19,10 @@ has_many :credentials
 
 
 
-encrypts :email, :password,   :fcm_token,  deterministic: true
+# encrypts :email, :password,   :fcm_token,  deterministic: true
 enum :role,  [:super_administrator, :store_manager, :customer, :service_provider,
  :customer_support,  :administrator, :agent]
+ has_many :conversations, dependent: :destroy
 
 
 # def skip_password_validation

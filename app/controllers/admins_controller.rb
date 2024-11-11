@@ -290,7 +290,6 @@ end
   
   
 def login
-    # Tenant checking is disabled for all code in this block
   
   admin = Admin.find_by(email: params[:email]) 
   if params[:enable_2fa_for_admin] == true || params[:enable_2fa_for_admin] == 'true' 

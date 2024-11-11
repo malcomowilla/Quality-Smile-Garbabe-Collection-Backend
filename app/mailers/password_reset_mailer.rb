@@ -24,6 +24,11 @@ class PasswordResetMailer < ApplicationMailer
     )
   end
 
+rescue ActiveRecord::Encryption::Errors::Decryption => e
+  # Handle decryption error
+  Rails.logger.error "Decryption error for admin #{admin.id}: #{e.message}"
+  raise
+
 
 
 

@@ -6,6 +6,7 @@ class PasswordPasskeysMailer < ApplicationMailer
 
   require_dependency 'mailtrap_service'
     
+  # secret_key_base: 8f757ece8ae271b68e5782d52b49409d618aca8d0133392830f7c17107c555>
 
 
   def password_passkeys(admin)

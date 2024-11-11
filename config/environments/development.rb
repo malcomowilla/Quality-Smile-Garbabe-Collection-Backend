@@ -97,7 +97,7 @@ config.active_storage.service_url_host = 'http://localhost:4000'
   config.active_job.verbose_enqueue_logs = true
 
   # Suppress logger output for asset requests.
-  config.assets.quiet = true
+  # config.assets.quiet = true
 # config.active_job.queue_adapter = :sidekiq
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
@@ -109,7 +109,6 @@ config.active_storage.service_url_host = 'http://localhost:4000'
   config.action_cable.allowed_request_origins = [
     'http://localhost:5173',
     'http://localhost:3000',
-    /http:\/\/localhost:.*/    # Allows all localhost ports
   ]
 
   # Raise error when a before_action's only/except options reference missing actions

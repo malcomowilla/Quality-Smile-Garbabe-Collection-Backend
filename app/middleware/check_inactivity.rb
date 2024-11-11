@@ -327,7 +327,7 @@ class CheckInactivity
                   admin.enable_inactivity_check_minutes) && admin.inactive == true
                 Rails.logger.info "Inactivity check triggered for admin: #{admin.id}"
                 # Clear the JWT cookie
-                # request.cookie_jar.delete(:jwt)
+                request.cookie_jar.delete(:jwt)
                 
                 # Return unauthorized with a clear message
                 response = Rack::Response.new
@@ -346,7 +346,7 @@ class CheckInactivity
         end
       rescue JWT::DecodeError => e
         Rails.logger.error "JWT decode error: #{e.message}"
-        # request.cookie_jar.delete(:jwt)
+        request.cookie_jar.delete(:jwt)
         return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired token' }.to_json]]
       end
     end

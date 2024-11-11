@@ -56,26 +56,35 @@ class ChatMessagesController < ApplicationController
   end
 
 
-
   def create
+    admin = find_available_admin if current_customer
+    
+    if current_customer && admin.nil?
+      render json: { 
+        error: 'Support Unavailable', 
+        message: 'Our customer support team is currently offline. Please try again
+         later or contact us via email.',
+        status: 'offline'
+      }, status: :service_unavailable
+      return
+    end
+  
     @conversation = if current_customer
       Conversation.find_or_create_by(customer_id: current_customer.id) do |conv|
-        conv.admin_id = find_available_admin.id
-        conv.account_id = current_tenant.id  # 
+        conv.admin_id = admin.id
+        conv.account_id = current_tenant.id
       end
     else
       Conversation.find(params[:conversation_id])
     end
-
-    # Time.current.strftime('%I:%M:%S %p')
+  
     @message = @conversation.chat_messages.build(
       content: params[:content],
-      customer_id: current_customer&.id,  # Changed from sender
-      admin_id: current_user&.id,  
+      customer_id: current_customer&.id,
+      admin_id: current_user&.id,
       account_id: current_tenant.id,
       date_time_of_message: Time.current.strftime("%I:%M %p")
     )
-
 
     if @message.save
       broadcast_message
@@ -83,8 +92,13 @@ class ChatMessagesController < ApplicationController
     else
       render json: @message.errors, status: :unprocessable_entity
     end
+  rescue => e
+    Rails.logger.error "Chat message error: #{e.message}"
+    render json: { 
+      error: 'Unable to send message', 
+      message: 'Please try again later'
+    }, status: :unprocessable_entity
   end
-
 
   private
 
@@ -94,9 +108,11 @@ class ChatMessagesController < ApplicationController
       ChatMessageSerializer.new(@message).as_json
     )
   end
-
+  
   def find_available_admin
+    # Use @account instead of current_tenant since you set it in set_tenant
     Admin.where(role: 'customer_support')
+         .where(account_id: @account.id)  # Use @account instead
          .order(Arel.sql('CASE WHEN online = true THEN 0 ELSE 1 END, conversations_count ASC'))
          .first 
   end

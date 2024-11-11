@@ -11,7 +11,11 @@ module QualitySmilesBackend
   class Application < Rails::Application
     # Sidekiq.strict_args!(false)
     # Initialize configuration defaults for originally generated Rails version.
-    
+    # config.active_record.encryption.primary_key = Rails.application.credentials.active_record_encryption[:primary_key]
+    # config.active_record.encryption.deterministic_key = Rails.application.credentials.active_record_encryption[:deterministic_key]
+    # config.active_record.encryption.key_derivation_salt = Rails.application.credentials.active_record_encryption[:key_derivation_salt]
+    config.active_record.encryption.support_unencrypted_data = true
+
 
     config.autoload_lib(ignore: %w(assets tasks))
 
@@ -39,6 +43,12 @@ config.active_job.queue_adapter = :sidekiq
     config.autoload_paths << "#{root}app/lib"
     Dotenv::Railtie.load
     config.jwt_secret = ENV['JWT_SECRET']
+    config.action_dispatch.cookies_same_site_protection = :lax
+    config.action_dispatch.cookies_serializer = :json
+    config.action_dispatch.cookies_rotations
+    config.middleware.use ActionDispatch::Flash
+
+    config.middleware.use ActionDispatch::Cookies
 
     config.middleware.use ActionDispatch::Session::CookieStore,
      key: '__quality_smiles_session',domain: :all
