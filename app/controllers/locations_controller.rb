@@ -56,6 +56,9 @@ set_current_tenant_through_filter
 
   # GET /locations or /locations.json
   def index
+    Rails.logger.info " Debugging Current user: #{current_user.inspect}"
+    Rails.logger.info "Current abilities: #{current_user_ability.inspect}"
+    
     @locations = Location.all
     render json: @locations
   end
