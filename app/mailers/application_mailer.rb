@@ -8,32 +8,22 @@
 #   # layout "mailer"
 # end
 
+layout "mailer"
 
-class ApplicationMailer < ActionMailer::Base
-  before_action :set_sender_email
-  before_action :set_tenant
+# Set default sender email at the class level
+default from: -> { EmailSetting.first&.sender_email }
 
-  layout "mailer"
+before_action :set_tenant
 
-  helper_method :current_user, :current_admin, :current_service_provider,
-                :current_customer, :current_store_manager
+helper_method :current_user, :current_admin, :current_service_provider,
+              :current_customer, :current_store_manager
 
-  private
+private
 
-  def set_sender_email
-    # Get sender email safely with a fallback
-    email_setting = EmailSetting.first
-    sender_email = email_setting&.sender_email 
-    default from: sender_email
-  end
-
-  def set_tenant
-    @account = Account.find_or_create_by(
-      domain: request.domain, 
-      subdomain: request.subdomain
-    )
-    set_current_tenant(@account)
-  end
+def set_tenant
+  @account = Account.find_or_create_by(
+    domain: request.domain, 
+    subdomain: request.subdomain
+  )
+  set_current_tenant(@account)
 end
-
-

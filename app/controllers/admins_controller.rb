@@ -530,6 +530,19 @@ def verify_webauthn
   admin = find_passkey_user(params[:user_name])
   webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
+
+  challenge = params[:credential][:challenge]
+  # Check if the session data is present
+
+  if challenge.blank?
+    Rails.logger.warn "Challenge is missing from the request"
+    render json: { error: "Challenge is missing" }, status: :unprocessable_entity
+    return
+  end 
+
+
+
+
   begin
     stored_credential = admin.credentials.find_by(webauthn_id: webauthn_credential.id)
     Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
@@ -541,11 +554,9 @@ def verify_webauthn
     end
 
 
-    token = generate_token(admin_id: admin.id)
-    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
     # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
     webauthn_credential.verify(
-      session[:authentication_challenge],
+      challenge,
       public_key: stored_credential.public_key,
       sign_count: stored_credential.sign_count
     )
@@ -556,6 +567,13 @@ def verify_webauthn
     # if webauthn_credential.nil?
     #   render json: { error: 'Your Passkey Not Found Please Signup First' }, status: :not_found
     # end
+
+
+    token = generate_token(admin_id: admin.id)
+    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
+    
+
+
 
     stored_credential.update!(sign_count: webauthn_credential.sign_count)
     render json: { message: 'WebAuthn authentication successful' }, status: :ok
