@@ -24,7 +24,7 @@ set_current_tenant_through_filter
 
     Rails.logger.info "Request Subdomain: #{request.subdomain}"
   
-    @account = Account.find_by(subdomain: request.subdomain)
+    @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
     
     if @account.nil?
       Rails.logger.error "No account found for subdomain: #{request.subdomain}"
