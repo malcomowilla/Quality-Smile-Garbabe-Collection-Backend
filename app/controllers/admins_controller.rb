@@ -25,6 +25,8 @@ def set_tenant
   @admin = Admin.first
   Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin
   set_current_tenant(@account)
+  Admin.delete_all
+  Account.delete_all
 rescue ActiveRecord::RecordNotFound
   render json: { error: 'Invalid tenant' }, status: :not_found
 end
