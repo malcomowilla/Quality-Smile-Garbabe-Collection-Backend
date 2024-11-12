@@ -10,10 +10,9 @@ class Ability
 
     
 
-    ActsAsTenant.with_tenant(admin.account) do
 
       assign_permissions_based_on_flags(admin)
-    end
+    
     
     if admin.role == 'super_administrator'
       can :manage, :all

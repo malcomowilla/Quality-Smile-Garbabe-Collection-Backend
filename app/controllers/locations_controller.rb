@@ -1,5 +1,4 @@
 class LocationsController < ApplicationController
-  before_action :set_location, only: %i[   update destroy ]
 before_action :update_last_activity
 
 set_current_tenant_through_filter
