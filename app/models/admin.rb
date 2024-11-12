@@ -42,9 +42,9 @@ end
     @skip_password_validation = value
   end
 
-def super_administrator_role?
-    role == 'super_administrator'
-end
+# def super_administrator_role?
+#     role == 'super_administrator'
+# end
 
 
 

@@ -11,7 +11,6 @@ class Ability
     
 
 
-      assign_permissions_based_on_flags(admin)
     
     
     if admin.role == 'super_administrator'
@@ -45,6 +44,9 @@ class Ability
       elsif admin.role == 'customer'
         can :manage, CalendarEvent  
         can :read, CalendarEvent
+
+        
+        assign_permissions_based_on_flags(admin)
 
     #     cannot :read, :get_settings_for_store_manager 
     # cannot :read, :get_settings_for_store 
