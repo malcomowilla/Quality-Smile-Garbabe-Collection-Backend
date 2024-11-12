@@ -4,7 +4,7 @@ WebAuthn.configure do |config|
   config.origin = "https://aitechs-sas-garbage-solution.onrender.com"
 
   # Relying Party name for display purposes
-  config.rp_name = "Quality Smiles"
+  config.rp_name = "Aitechs"
 
 
     config.rp_id = "aitechs-sas-garbage-solution.onrender.com"

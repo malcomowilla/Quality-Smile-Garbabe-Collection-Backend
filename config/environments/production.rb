@@ -5,7 +5,19 @@ Rails.application.configure do
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
+  config.action_mailer.delivery_method = :mailtrap
 
+  config.action_mailer.mailtrap_settings= {
+  # :user_name => ENV['MAIL_TRAP_USERNAME'],
+  # :password => ENV['MAIL_TRAP_PASSWORD'],
+  # :address => 'live.smtp.mailtrap.io',
+  # :domain => 'aitechsent.net',
+  # :port => '587',
+  # :authentication => :plain,
+
+  # :enable_starttls_auto => true   
+  api_key: 'f17620673c51e537ef268dea49025da8',
+}
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
