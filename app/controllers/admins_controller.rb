@@ -446,7 +446,8 @@ def register_webauthn
 
       # authenticator_selection: { authenticator_attachment: 'platform' }, # Ensure it's using platform authenticator (e.g., phone)
 
-      rp: { name: 'Aitechs', id: 'aitechs-sas-garbage-solution.onrender.com'  }
+      rp: { name: 'aitechs', id: 'aitechs-sas-garbage-solution.onrender.com'  }
+      # rp: { name: 'aitechs', id: 'localhost'  }
 
     )
 
@@ -481,7 +482,7 @@ def create_webauthn
 
   begin
     Rails.logger.info "Received params: #{params.inspect}"
-    Rails.logger.info "challenge during verification: #{session[:webauthn_registration].inspect}"
+    Rails.logger.info "Challenge during verification: #{session[:webauthn_registration].inspect}"
 
     webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
     admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
