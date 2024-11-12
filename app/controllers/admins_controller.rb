@@ -21,8 +21,8 @@ def set_tenant
   @account = Account.find_or_create_by(domain:request.domain, 
   subdomain: request.subdomain)
   Rails.logger.info "my tenant account  #{@account.subdomain} <=>   #{@account.domain}"
-   
-    Rails.logger.info "my tenant account  #{Admin.all}"
+  @admin = Admin.first
+  Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin
   set_current_tenant(@account)
 rescue ActiveRecord::RecordNotFound
   render json: { error: 'Invalid tenant' }, status: :not_found
