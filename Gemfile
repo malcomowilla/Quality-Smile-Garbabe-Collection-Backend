@@ -95,7 +95,7 @@ end
 
 
 
-# gem 'acts_as_tenant'
+gem 'acts_as_tenant'
 gem 'cancancan'
 gem 'mailtrap'
 
