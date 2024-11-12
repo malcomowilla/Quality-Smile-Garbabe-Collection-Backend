@@ -4,8 +4,8 @@ class Ability
   def initialize(admin)
     return unless admin.present?
 
-    Rails.logger.info "Initializing abilities for
-     admin: #{admin.inspect}"
+    Rails.logger.info "Initializing abilities for  admin: #{admin.inspect}"
+    
 
 
     
@@ -45,7 +45,7 @@ class Ability
         can :manage, CalendarEvent  
         can :read, CalendarEvent
 
-        
+
         assign_permissions_based_on_flags(admin)
 
     #     cannot :read, :get_settings_for_store_manager 

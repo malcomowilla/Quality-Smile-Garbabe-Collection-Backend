@@ -73,6 +73,9 @@ set_current_tenant_through_filter
   
 
   def create
+    Rails.logger.info " Debugging Current user: #{current_user.inspect}"
+    Rails.logger.info "Current abilities: #{current_user_ability.inspect}"
+    
     @location = Location.create(location_params)
 
 
