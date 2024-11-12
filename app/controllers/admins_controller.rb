@@ -18,9 +18,10 @@ def update_last_activity
 end
     
 def set_tenant
-  @account = Account.find_or_create_by(domain:request.domain, 
+  @account = Account.find_or_create_by(
   subdomain: request.subdomain)
-  Rails.logger.info "my tenant account  #{@account.subdomain} <=>   #{@account.domain}"
+  Rails.logger.info "my tenant account  #{@account.subdomain} <=> 
+    #{@account.domain}"
   @admin = Admin.first
   Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin
   set_current_tenant(@account)
