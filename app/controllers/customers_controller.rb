@@ -24,7 +24,7 @@ require 'message_template'
 
 
   def set_tenant
-    @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+    @account = Account.find_or_create_by(subdomain: request.subdomain)
   
     set_current_tenant(@account)
   rescue ActiveRecord::RecordNotFound
