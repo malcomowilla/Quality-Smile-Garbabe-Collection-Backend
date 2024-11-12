@@ -15,8 +15,9 @@ class ApplicationController < ActionController::Base
      def set_tenant
       @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
-     
-
+Rails.logger.info "my tenant account  #{@account.subdomain} <=>   #{@account.domain}"
+    @admin = Admin.first
+    Rails.logger.info "my tenant account  #{@admin}"
       set_current_tenant(@account)
     
     end
