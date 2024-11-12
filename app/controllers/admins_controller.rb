@@ -299,7 +299,7 @@ end
   
   
 def login
-Admin.delete_all
+
   admin = Admin.find_by(email: params[:email]) 
 
 
