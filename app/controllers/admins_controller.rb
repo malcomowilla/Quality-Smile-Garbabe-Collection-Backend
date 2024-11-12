@@ -18,6 +18,7 @@ def update_last_activity
 end
     
 def set_tenant
+  Rails.logger.info "Request Subdomain: #{request.subdomain}"
   @account = Account.find_or_create_by(
   subdomain: request.subdomain)
   Rails.logger.info "my tenant account  #{@account.subdomain} <=> 

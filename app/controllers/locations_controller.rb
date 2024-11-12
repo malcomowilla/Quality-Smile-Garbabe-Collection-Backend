@@ -19,7 +19,7 @@ set_current_tenant_through_filter
 
 
   def set_tenant
-    Rails.logger.debug "Request Subdomain: #{request.subdomain}"
+    Rails.logger.info "Request Subdomain: #{request.subdomain}"
   
     @account = Account.find_by(subdomain: request.subdomain)
     
