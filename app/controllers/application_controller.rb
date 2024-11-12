@@ -16,8 +16,8 @@ class ApplicationController < ActionController::Base
       Rails.logger.debug "Full Request Host: #{request.host}"
       Rails.logger.debug "Original Host Header: #{request.headers['X-Original-Host']}"
  
-      @account = Account.find_or_create_by(subdomain: request.subdomain)
-  @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+      @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+
 Rails.logger.info "my tenant account  #{@account.subdomain} <=>   #{@account.domain}"
 @admin = Admin.first
 Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin 

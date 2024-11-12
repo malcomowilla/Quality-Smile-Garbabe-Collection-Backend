@@ -19,10 +19,7 @@ set_current_tenant_through_filter
 
 
   def set_tenant
-    Rails.logger.debug "Full Request Host: #{request.host}"
-    Rails.logger.debug "Original Host Header: #{request.headers['X-Original-Host']}"
-
-    Rails.logger.info "Request Subdomain: #{request.subdomain}"
+  
   
     @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
     
@@ -33,7 +30,6 @@ set_current_tenant_through_filter
     end
   
     set_current_tenant(@account)
-    Rails.logger.info "Current tenant set to: #{@account.subdomain} <=> #{@account.domain}"
   end
 
   # def set_tenant
