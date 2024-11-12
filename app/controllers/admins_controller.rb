@@ -462,24 +462,31 @@ def create_webauthn
 
     webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
     admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
-
+    challenge = params[:credential][:challenge]
     # Check if the session data is present
-    if session[:webauthn_registration].blank?
-      Rails.logger.warn "Session data for webauthn_registration is missing or nil"
+
+    if challenge.blank?
+      Rails.logger.warn "Challenge is missing from the request"
       render json: { error: "Challenge is missing" }, status: :unprocessable_entity
       return
     end 
 
-    # Verify the credential
-    webauthn_credential.verify(session[:webauthn_registration])
+    # if session[:webauthn_registration].blank?
+    #   Rails.logger.warn "Session data for webauthn_registration is missing or nil"
+    #   render json: { error: "Challenge is missing" }, status: :unprocessable_entity
+    #   return
+    # end 
 
+    # Verify the credential
+    # webauthn_credential.verify(session[:webauthn_registration])
+    webauthn_credential.verify(challenge)
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
       sign_count: webauthn_credential.sign_count
     )
 
-    session[:webauthn_registration] = nil
+    # session[:webauthn_registration] = nil
     render json: { message: 'WebAuthn registration successful' }, status: :ok
   rescue WebAuthn::Error => e
     Rails.logger.error "WebAuthn Error: #{e.message}"
