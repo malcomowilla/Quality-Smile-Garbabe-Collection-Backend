@@ -15,7 +15,7 @@ class CompanySettingsController < ApplicationController
   # GET /company_settings or /company_settings.json
   def index
     # @company_settings = CompanySetting.first
-    @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain)
+    @account = Account.find_or_create_by(subdomain: request.subdomain)
     @company_settings = @account.company_setting
     # render json: @company_settings
     render json: {
