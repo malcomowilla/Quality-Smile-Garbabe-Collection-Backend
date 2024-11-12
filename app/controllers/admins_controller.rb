@@ -18,6 +18,9 @@ def update_last_activity
 end
     
 def set_tenant
+  Rails.logger.debug "Full Request Host: #{request.host}"
+  Rails.logger.debug "Original Host Header: #{request.headers['X-Original-Host']}"
+
   Rails.logger.info "Request Subdomain: #{request.subdomain}"
   @account = Account.find_or_create_by(
   subdomain: request.subdomain)

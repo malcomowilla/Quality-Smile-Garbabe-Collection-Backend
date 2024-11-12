@@ -19,6 +19,9 @@ set_current_tenant_through_filter
 
 
   def set_tenant
+    Rails.logger.debug "Full Request Host: #{request.host}"
+    Rails.logger.debug "Original Host Header: #{request.headers['X-Original-Host']}"
+
     Rails.logger.info "Request Subdomain: #{request.subdomain}"
   
     @account = Account.find_by(subdomain: request.subdomain)
