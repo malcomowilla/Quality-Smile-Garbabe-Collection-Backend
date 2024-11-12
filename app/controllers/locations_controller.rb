@@ -18,15 +18,28 @@ set_current_tenant_through_filter
   #  end
 
 
-
-
   def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.subdomain)
+    Rails.logger.debug "Request Subdomain: #{request.subdomain}"
+  
+    @account = Account.find_by(subdomain: request.subdomain)
+    
+    if @account.nil?
+      Rails.logger.error "No account found for subdomain: #{request.subdomain}"
+      render json: { error: 'Invalid tenant' }, status: :not_found
+      return
+    end
   
     set_current_tenant(@account)
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Invalid tenant' }, status: :not_found
+    Rails.logger.info "Current tenant set to: #{@account.subdomain} <=> #{@account.domain}"
   end
+
+  # def set_tenant
+  #   @account = Account.find_or_create_by(subdomain: request.subdomain)
+  
+  #   set_current_tenant(@account)
+  # rescue ActiveRecord::RecordNotFound
+  #   render json: { error: 'Invalid tenant' }, status: :not_found
+  # end
 
 
 
