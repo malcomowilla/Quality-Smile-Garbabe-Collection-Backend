@@ -446,7 +446,7 @@ def register_webauthn
 
       # authenticator_selection: { authenticator_attachment: 'platform' }, # Ensure it's using platform authenticator (e.g., phone)
 
-      # rp: { name: 'quality_smiles', id: '0b53-102-68-79-195.ngrok-free.app'  }
+      rp: { name: 'Aitechs', id: 'aitechs-sas-garbage-solution.onrender.com'  }
 
     )
 
