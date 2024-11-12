@@ -24,10 +24,10 @@ set_current_tenant_through_filter
 
     Rails.logger.info "Request Subdomain: #{request.subdomain}"
   
-    @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
     
     if @account.nil?
-      Rails.logger.error "No account found for subdomain: #{request.subdomain}"
+      Rails.logger.error "No account found for subdomain: #{request.headers['X-Original-Host']}"
       render json: { error: 'Invalid tenant' }, status: :not_found
       return
     end
