@@ -7,7 +7,7 @@
 
 #   # layout "mailer"
 # end
-
+class ApplicationMailer < ActionMailer::Base
 layout "mailer"
 
 # Set default sender email at the class level
@@ -26,4 +26,6 @@ def set_tenant
     subdomain: request.subdomain
   )
   set_current_tenant(@account)
+end
+
 end
