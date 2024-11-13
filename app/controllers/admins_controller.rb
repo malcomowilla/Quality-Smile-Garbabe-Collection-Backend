@@ -85,7 +85,7 @@ end
 
 
         def allow_get_updated_admin
-          admin = current_user
+          admin = Admin.find_by(id: params[:id])
           render json: {
             id: admin.id,
             email: admin.email,
