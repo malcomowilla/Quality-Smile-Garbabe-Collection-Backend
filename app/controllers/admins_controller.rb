@@ -85,12 +85,12 @@ end
 
 
         def allow_get_updated_admin
-          admin = Admin.find_by(id: params[:id])
+          admin = current_user
           render json: {
             id: admin.id,
             email: admin.email,
             user_name: admin.user_name,
-            profile_image: admin.profile_image.attached? ? url_for(admin.profile_image) : nil,
+            # profile_image: admin.profile_image.attached? ? url_for(admin.profile_image) : nil,
             phone_number: admin.phone_number
           }
         end
@@ -234,7 +234,7 @@ end
 # generate_password_reset_token(admin)
 
   def forgot_password
-    @company_name = CompanySetting.first.company_name
+    @company_name = CompanySetting.first&.company_name
     # @company_photo = CompanySetting.first.logo.attached? ? url_for(CompanySetting.first.logo) : nil
     if  @admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
       @admin.generate_password_reset_token(@admin)

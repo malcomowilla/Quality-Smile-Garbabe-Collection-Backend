@@ -11,7 +11,7 @@ class PasswordResetMailer < ApplicationMailer
     @company_photo = company_settings&.logo if company_settings&.logo&.attached?
     @company_name = account.name
   
-    @reset_header = EmailTemplate.first.password_reset_header
+    @reset_header = EmailTemplate.first&.password_reset_header
     @admin_user_name = Admin.find_by(id: @admin.id).user_name
     @password_reset_header = MyEmailTemplate.interpolate(@reset_header, {user_name: @admin_user_name})
     @reset_body = EmailTemplate.first.password_reset_body
