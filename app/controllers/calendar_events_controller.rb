@@ -1,8 +1,8 @@
 class CalendarEventsController < ApplicationController
   # before_action :set_calendar_event, only: %i[ show edit update destroy ]
-  before_action :set_tenant 
+  # before_action :set_tenant 
 
-  set_current_tenant_through_filter
+  # set_current_tenant_through_filter
   load_and_authorize_resource
 require 'rest-client'
 require 'json'

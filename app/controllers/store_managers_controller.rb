@@ -13,8 +13,8 @@ set_current_tenant_through_filter
   # GET /store_managers or /store_managers.json
 
 
-  before_action :set_tenant 
-  set_current_tenant_through_filter
+  # before_action :set_tenant 
+  # set_current_tenant_through_filter
 
      
 

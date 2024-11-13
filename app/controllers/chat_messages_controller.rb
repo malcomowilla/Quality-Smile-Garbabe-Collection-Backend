@@ -1,6 +1,6 @@
 class ChatMessagesController < ApplicationController
-  before_action :set_tenant 
-  set_current_tenant_through_filter
+  # before_action :set_tenant 
+  # set_current_tenant_through_filter
 
   # def index
   #   @messages = if current_customer
