@@ -442,6 +442,7 @@ def register_webauthn
         user: { id: Base64.urlsafe_encode64(@the_admin.webauthn_id), name: @the_admin.user_name || @the_admin.email },
         exclude: @the_admin.credentials.map { |c| c.webauthn_id },
         rp: { name: 'aitechs', id: request.headers['X-Original-Host'] },
+        origin: request.headers['X-Original-Host'] # Add the origin here
 
       )
 
@@ -484,7 +485,13 @@ def create_webauthn
 
     # Verify the credential
     # webauthn_credential.verify(session[:webauthn_registration])
-    webauthn_credential.verify(challenge)
+    webauthn_credential.verify(
+      challenge,
+      public_key: admin.credentials.find_by(webauthn_id: webauthn_credential.id).public_key,
+      sign_count: admin.credentials.find_by(webauthn_id: webauthn_credential.id).sign_count,
+      origin: request.headers['X-Original-Host'] # Add the origin here
+    )
+
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
