@@ -441,8 +441,7 @@ def register_webauthn
       options = WebAuthn::Credential.options_for_create(
         user: { id: Base64.urlsafe_encode64(@the_admin.webauthn_id), name: @the_admin.user_name || @the_admin.email },
         exclude: @the_admin.credentials.map { |c| c.webauthn_id },
-        rp: { name: 'aitechs', id: request.headers['X-Original-Host'] },
-
+        rp: { name: 'aitechs', id: 'aitechs-sas-garbage-solution.onrender.com' }
       )
 
       # Set the challenge in the session
@@ -464,6 +463,7 @@ end
 def create_webauthn
   begin
     Rails.logger.info "Received params: #{params.inspect}"
+    Rails.logger.info "Challenge during verification: #{session[:webauthn_registration].inspect}"
 
     webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
     admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
@@ -484,11 +484,7 @@ def create_webauthn
 
     # Verify the credential
     # webauthn_credential.verify(session[:webauthn_registration])
-    webauthn_credential.verify(
-      challenge,
-    
-    )
-
+    webauthn_credential.verify(challenge)
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
