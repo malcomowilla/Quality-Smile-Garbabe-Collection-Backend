@@ -442,7 +442,6 @@ def register_webauthn
         user: { id: Base64.urlsafe_encode64(@the_admin.webauthn_id), name: @the_admin.user_name || @the_admin.email },
         exclude: @the_admin.credentials.map { |c| c.webauthn_id },
         rp: { name: 'aitechs', id: request.headers['X-Original-Host'] },
-        origin: request.headers['X-Original-Host'] 
 
       )
 
