@@ -556,81 +556,62 @@ end
 
 
 def verify_webauthn
+  # Initialize the Relying Party with the appropriate origin and name
+  relying_party = WebAuthn::RelyingParty.new(
+    origin: "https://#{request.headers['X-Original-Host']}",
+    name: "aitechs",
+    id: request.headers['X-Original-Host']
+  )
 
+  # Find the admin user based on the provided username
   admin = find_passkey_user(params[:user_name])
-  stored_credential = admin.credentials.find_by(webauthn_id: webauthn_credential.id)
 
- relying_party = WebAuthn::RelyingParty.new(
-      origin: "https://#{request.headers['X-Original-Host']}",
-      name: "aitechs",
-      id: request.headers['X-Original-Host']
-    )
+  # Extract the challenge from the incoming credential
+  challenge = params[:credential][:challenge]
 
-    challenge = params[:credential][:challenge]
-
-    webauthn_credential = relying_party.verify_authentication(
-      challenge,
-      public_key: stored_credential.public_key,
-      sign_count: stored_credential.sign_coun
-    )
-
-  # webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
-
-  # Check if the session data is present
-
+  # Check if the challenge is present
   if challenge.blank?
     Rails.logger.warn "Challenge is missing from the request"
     render json: { error: "Challenge is missing" }, status: :unprocessable_entity
     return
   end 
 
-
-
-
   begin
-    stored_credential = admin.credentials.find_by(webauthn_id: webauthn_credential.id)
+    # Find the stored credential for the admin
+    stored_credential = admin.credentials.find_by(webauthn_id: params[:credential][:id])
+
     Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
 
     if stored_credential.nil?
-  render json: { error: 'Your Passkey Not Found Please Signup First' }, status: :not_found
-
+      render json: { error: 'Your Passkey Not Found. Please Signup First' }, status: :not_found
       return
     end
 
+    # Verify the credential using the relying party
+    relying_party.verify_authentication(
+      challenge,
+      public_key: stored_credential.public_key,
+      sign_count: stored_credential.sign_count
+    )
 
-    # # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
-    # webauthn_credential.verify(
-    #   challenge,
-    #   public_key: stored_credential.public_key,
-    #   sign_count: stored_credential.sign_count
-    # )
-
+    # Update admin's last activity and login time
     admin.update_column(:inactive, false)
     admin.update_column(:last_activity_active, Time.zone.now)
     admin.update_column(:last_login_at, Time.now)
-    # if webauthn_credential.nil?
-    #   render json: { error: 'Your Passkey Not Found Please Signup First' }, status: :not_found
-    # end
 
-
+    # Generate a token and set it in cookies
     token = generate_token(admin_id: admin.id)
-    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true , exp: 24.hours.from_now.to_i , sameSite: 'strict'}
-    
+    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true, exp: 24.hours.from_now.to_i, sameSite: 'strict' }
 
+    # Update the sign count for the stored credential
+    stored_credential.update!(sign_count: stored_credential.sign_count)
 
-
-    stored_credential.update!(sign_count: webauthn_credential.sign_count)
     render json: { message: 'WebAuthn authentication successful' }, status: :ok
   rescue WebAuthn::Error => e
+    Rails.logger.error "WebAuthn Error: #{e.message}"
     render json: { error: e.message }, status: :unprocessable_entity
   end
-
 end
-
-
-
-
-
 
 
 
