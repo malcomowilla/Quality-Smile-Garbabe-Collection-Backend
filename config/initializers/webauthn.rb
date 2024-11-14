@@ -1,8 +1,7 @@
 WebAuthn.configure do |config|
   # This value needs to match `window.location.origin` evaluated by
   # the User Agent during registration and authentication ceremonies.
-  config.origin = ["https://aitechs-sas-garbage-solution.onrender.com",
-"https://aitechs-saas.onrender.com"
+  config.origin = ["https://aitechs-sas-garbage-solution.onrender.com"
 
 ]
 
