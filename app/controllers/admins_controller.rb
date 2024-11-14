@@ -484,8 +484,7 @@ def create_webauthn
 
     # Verify the credential
     # webauthn_credential.verify(session[:webauthn_registration])
-    webauthn_credential.verify(challenge, origin: "#{request.protocol}#{request.host_with_port}")
-
+    webauthn_credential.verify(challenge)
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
