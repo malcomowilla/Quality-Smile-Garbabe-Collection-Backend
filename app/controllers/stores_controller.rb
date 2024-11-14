@@ -19,8 +19,8 @@ end
 
 
 
-before_action :set_tenant 
-set_current_tenant_through_filter
+# before_action :set_tenant 
+# set_current_tenant_through_filter
 
    
 
