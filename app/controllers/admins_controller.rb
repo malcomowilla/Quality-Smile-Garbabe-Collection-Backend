@@ -553,6 +553,8 @@ def authenticate_webauthn
 
 end
 
+
+
 def verify_webauthn
   # Initialize the Relying Party with the appropriate origin and name
   relying_party = WebAuthn::RelyingParty.new(
@@ -585,11 +587,14 @@ def verify_webauthn
       return
     end
 
+    webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
+
+
     # Verify the credential using the relying party
     relying_party.verify_authentication(
       challenge,
-      public_key: stored_credential.public_key,
-      sign_count: stored_credential.sign_count
+      # params[:credential],
+      webauthn_credential
     )
 
     # Update admin's last activity and login time
@@ -610,6 +615,8 @@ def verify_webauthn
     render json: { error: e.message }, status: :unprocessable_entity
   end
 end
+
+
 
 
 
