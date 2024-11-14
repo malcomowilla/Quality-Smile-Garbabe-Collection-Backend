@@ -129,7 +129,7 @@ def verify_otp(submitted_otp)
     
     # validates :email,  format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
     # validate :validate_email_format
-    validates :user_name, uniqueness: true
+    # validates :user_name, uniqueness: true
 
     private
     def validate_email_format

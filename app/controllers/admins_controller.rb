@@ -982,6 +982,7 @@ end
         @admin.errors.add(:user_name, "can't be blank")
       end
     
+
       # Check password presence and complexity
       if params[:password].present?
         unless params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/)
@@ -989,7 +990,10 @@ end
         end
       
     
-      # Check email presence and format
+      if Admin.exists?(user_name: params[:user_name])
+        @admin.errors.add(:user_name, "has already been taken")
+      end 
+      #Check email presence and format
       if params[:email].blank?
         @admin.errors.add(:email, "can't be blank")
       elsif !params[:email].match?(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)
