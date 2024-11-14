@@ -21,6 +21,8 @@ def set_tenant
   
   @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
 
+  @admin = Admin.first
+  Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin
   set_current_tenant(@account)
  
 rescue ActiveRecord::RecordNotFound
