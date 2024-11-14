@@ -590,6 +590,7 @@ def verify_webauthn
     # Verify the credential using the relying party
     relying_party.verify_authentication(
       challenge,
+      # params[:credential],
       public_key: stored_credential.public_key,
       sign_count: stored_credential.sign_count
     )
