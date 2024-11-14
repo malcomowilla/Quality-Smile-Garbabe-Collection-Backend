@@ -13,7 +13,7 @@ config.rp_name = "aitechs"
 
 
     config.rp_id = ["aitechs-sas-garbage-solution.onrender.com",
-    aitechs-saas.onrender.com
+    "aitechs-saas.onrender.com"
   ]
 # config.rp_id = "localhost"
   # Optionally configure a client timeout hint, in milliseconds.
