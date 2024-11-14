@@ -2,7 +2,7 @@ class PasswordResetMailer < ApplicationMailer
 
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
   require 'my_email_template'
-  def password_reset(admin)
+  def password_reset(admin, company_subdomain)
     @admin = admin
     account = admin.account
     
@@ -10,7 +10,7 @@ class PasswordResetMailer < ApplicationMailer
     company_settings = CompanySetting.find_by(account: account)
     @company_photo = company_settings&.logo if company_settings&.logo&.attached?
     @company_name = account.name
-  
+    @company_subdomain = company_subdomain
     @reset_header = EmailTemplate.first&.password_reset_header
     @admin_user_name = Admin.find_by(id: @admin.id).user_name
     @password_reset_header = MyEmailTemplate.interpolate(@reset_header, {user_name: @admin_user_name})

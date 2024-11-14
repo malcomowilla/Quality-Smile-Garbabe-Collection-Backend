@@ -234,11 +234,12 @@ end
 # generate_password_reset_token(admin)
 
   def forgot_password
+    company_subdomain = request.headers['X-Original-Host']
     @company_name = CompanySetting.first&.company_name
     # @company_photo = CompanySetting.first.logo.attached? ? url_for(CompanySetting.first.logo) : nil
     if  @admin = Admin.find_by(email: params[:email]) || Admin.find_by(phone_number: params[:phone_number])
       @admin.generate_password_reset_token(@admin)
-      PasswordResetMailer.password_reset(@admin).deliver_now
+      PasswordResetMailer.password_reset(@admin,  company_subdomain).deliver_now
       # ResetPasswordMailer.password_forgotten(@admin).deliver_now
       render json: {message: 'email sent'}, status: :ok
     else

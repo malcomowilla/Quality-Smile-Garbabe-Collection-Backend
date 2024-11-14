@@ -121,6 +121,7 @@ Rails.application.configure do
 
   config.action_cable.allowed_request_origins = [
     'http://localhost:5173',
+    'https://aitechs-saas.onrender.com',
     'https://aitechs-sas-garbage-solution.onrender.com'
   ]
 
