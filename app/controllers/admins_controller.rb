@@ -587,7 +587,6 @@ def verify_webauthn
     # Find the stored credential for the admin
     # stored_credential = admin.credentials.find_by(webauthn_id: params[:credential][:id])
 
-    Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
 
     webauthn_credential, stored_credential = relying_party.verify_authentication(
       public_key_credential,
@@ -596,6 +595,7 @@ def verify_webauthn
       # Find the stored credential based on the external ID
       admin.credentials.find_by(webauthn_id: webauthn_credential.id)
     end
+    Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
 
     # webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
