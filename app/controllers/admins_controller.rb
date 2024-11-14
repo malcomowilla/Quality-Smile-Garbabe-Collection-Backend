@@ -563,6 +563,13 @@ def verify_webauthn
     id: request.headers['X-Original-Host']
   )
 
+
+  public_key_credential = params[:credential]
+  if public_key_credential.nil?
+    Rails.logger.warn "PublicKeyCredential is missing from the request"
+    render json: { error: "PublicKeyCredential is missing" }, status: :unprocessable_entity
+    return
+  end
   # Find the admin user based on the provided username
   admin = find_passkey_user(params[:user_name])
 
@@ -578,24 +585,27 @@ def verify_webauthn
 
   begin
     # Find the stored credential for the admin
-    stored_credential = admin.credentials.find_by(webauthn_id: params[:credential][:id])
+    # stored_credential = admin.credentials.find_by(webauthn_id: params[:credential][:id])
 
     Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
 
-    if stored_credential.nil?
-      render json: { error: 'Your Passkey Not Found. Please Signup First' }, status: :not_found
-      return
+    webauthn_credential, stored_credential = relying_party.verify_authentication(
+      public_key_credential,
+      challenge
+    ) do |webauthn_credential|
+      # Find the stored credential based on the external ID
+      admin.credentials.find_by(webauthn_id: webauthn_credential.id)
     end
 
-    webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
+    # webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
 
 
-    # Verify the credential using the relying party
-    relying_party.verify_authentication(
-      challenge,
-      # params[:credential],
-      webauthn_credential
-    )
+    # # Verify the credential using the relying party
+    # relying_party.verify_authentication(
+    #   challenge,
+    #   # params[:credential],
+    #   webauthn_credential
+    # )
 
     # Update admin's last activity and login time
     admin.update_column(:inactive, false)
@@ -607,7 +617,7 @@ def verify_webauthn
     cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true, exp: 24.hours.from_now.to_i, sameSite: 'strict' }
 
     # Update the sign count for the stored credential
-    stored_credential.update!(sign_count: stored_credential.sign_count)
+    stored_credential.update!(sign_count: webauthn_credential.sign_count)
 
     render json: { message: 'WebAuthn authentication successful' }, status: :ok
   rescue WebAuthn::Error => e
