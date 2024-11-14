@@ -477,11 +477,15 @@ def create_webauthn
       id: request.headers['X-Original-Host']
     )
 
-
-
-    webauthn_credential = relying_party.verify_registration(params[:credential])
-    admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
     challenge = params[:credential][:challenge]
+
+
+    webauthn_credential = relying_party.verify_registration(
+      params[:credential],
+      challenge
+      
+      )
+    admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
     # Check if the session data is present
 
     if challenge.blank?
@@ -498,7 +502,7 @@ def create_webauthn
 
     # Verify the credential
     # webauthn_credential.verify(session[:webauthn_registration])
-    webauthn_credential.verify(challenge)
+    # webauthn_credential.verify(challenge)
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
