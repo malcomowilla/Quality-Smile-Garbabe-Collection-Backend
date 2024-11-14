@@ -467,10 +467,10 @@ def create_webauthn
     Rails.logger.info "Received params: #{params.inspect}"
 
     webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
-    admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
+    # admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
     challenge = params[:credential][:challenge]
     # Check if the session data is present
-
+admin = Admin.find_by(user_name: params[:admin][:user_name])
     if challenge.blank?
       Rails.logger.warn "Challenge is missing from the request"
       render json: { error: "Challenge is missing" }, status: :unprocessable_entity
