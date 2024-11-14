@@ -469,7 +469,6 @@ def create_webauthn
     admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
     challenge = params[:credential][:challenge]
     # Check if the session data is present
-    admin = Admin.find_by(user_name: params[:admin][:user_name])
 
     if challenge.blank?
       Rails.logger.warn "Challenge is missing from the request"
@@ -487,11 +486,10 @@ def create_webauthn
     # webauthn_credential.verify(session[:webauthn_registration])
     webauthn_credential.verify(
       challenge,
-      public_key: admin.credentials.find_by(webauthn_id: webauthn_credential.id).public_key,
-      sign_count: admin.credentials.find_by(webauthn_id: webauthn_credential.id).sign_count,
+    
       origin: request.headers['X-Original-Host'] # Add the origin here
     )
-    
+
     admin.credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
