@@ -440,10 +440,15 @@ def register_webauthn
         @the_admin.update!(webauthn_id: WebAuthn.generate_user_id[0..32], date_registered: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
       end
 
-      options = WebAuthn::Credential.options_for_create(
+      relying_party = WebAuthn::RelyingParty.new(
+        origin: "https://#{request.headers['X-Original-Host']}",
+        name: "aitechs",
+        id: request.headers['X-Original-Host']
+      )
+
+      options = relying_party.options_for_create(
         user: { id: Base64.urlsafe_encode64(@the_admin.webauthn_id), name: @the_admin.user_name || @the_admin.email },
-        exclude: @the_admin.credentials.map { |c| c.webauthn_id },
-        rp: { name: 'aitechs', id: request.headers['X-Original-Host'] }
+        exclude: @the_admin.credentials.map(&:webauthn_id)
       )
 
       # Set the challenge in the session
@@ -465,9 +470,16 @@ end
 def create_webauthn
   begin
     Rails.logger.info "Received params: #{params.inspect}"
-    Rails.logger.info "Challenge during verification: #{session[:webauthn_registration].inspect}"
 
-    webauthn_credential = WebAuthn::Credential.from_create(params[:credential])
+    relying_party = WebAuthn::RelyingParty.new(
+      origin: "https://#{request.headers['X-Original-Host']}",
+      name: "aitechs",
+      id: request.headers['X-Original-Host']
+    )
+
+
+
+    webauthn_credential = relying_party.verify_registration(params[:credential])
     admin = Admin.find_by(user_name: params[:user_name]) || Admin.find_by(email: params[:email])
     challenge = params[:credential][:challenge]
     # Check if the session data is present
@@ -507,8 +519,15 @@ def authenticate_webauthn
   # "5TR0TJqgdKRNuqsDhDQV6L7ccHct5B_xGUJ1HJWp0G4" =>  chalenge,
   admin = find_passkey_user(params[:user_name])
 
+
+  relying_party = WebAuthn::RelyingParty.new(
+    origin: "https://#{request.headers['X-Original-Host']}",
+    name: "aitechs",
+    id: request.headers['X-Original-Host']
+  )
+
   if admin.present?
-    options = WebAuthn::Credential.options_for_get(allow: admin.credentials.map { |c| c.webauthn_id })
+    options = relying_party.options_for_authentication(allow: admin.credentials.map { |c| c.webauthn_id })
     # admin_credentials = admin.credentials.map do |credential|
     #   {  id: Base64.urlsafe_encode64(credential.webauthn_id) }
     # end
@@ -535,10 +554,24 @@ end
 def verify_webauthn
 
   admin = find_passkey_user(params[:user_name])
-  webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
+  stored_credential = admin.credentials.find_by(webauthn_id: webauthn_credential.id)
 
+ relying_party = WebAuthn::RelyingParty.new(
+      origin: "https://#{request.headers['X-Original-Host']}",
+      name: "aitechs",
+      id: request.headers['X-Original-Host']
+    )
 
-  challenge = params[:credential][:challenge]
+    challenge = params[:credential][:challenge]
+
+    webauthn_credential = relying_party.verify_authentication(
+      challenge,
+      public_key: stored_credential.public_key,
+      sign_count: stored_credential.sign_coun
+    )
+
+  # webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
+
   # Check if the session data is present
 
   if challenge.blank?
@@ -561,12 +594,12 @@ def verify_webauthn
     end
 
 
-    # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
-    webauthn_credential.verify(
-      challenge,
-      public_key: stored_credential.public_key,
-      sign_count: stored_credential.sign_count
-    )
+    # # admin.update_column(inactive: false, last_activity_active: Time.zone.now)
+    # webauthn_credential.verify(
+    #   challenge,
+    #   public_key: stored_credential.public_key,
+    #   sign_count: stored_credential.sign_count
+    # )
 
     admin.update_column(:inactive, false)
     admin.update_column(:last_activity_active, Time.zone.now)
