@@ -487,7 +487,6 @@ def create_webauthn
     webauthn_credential.verify(
       challenge,
     
-      origin: request.headers['X-Original-Host'] # Add the origin here
     )
 
     admin.credentials.create!(
