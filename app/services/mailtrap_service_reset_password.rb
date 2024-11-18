@@ -8,7 +8,7 @@ class MailtrapServiceResetPassword
   end
 
   def send_template_email(to:, template_uuid:, template_variables:, from: { email: "mailtrap@aitechsent.net",
-   name: "Quality Smiles" })
+   name: "Aitechs" })
     mail = Mailtrap::Mail::FromTemplate.new(
       from: from,
       to: [ { email: to } ],

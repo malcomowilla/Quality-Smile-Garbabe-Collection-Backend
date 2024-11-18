@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_11_111002) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -230,6 +230,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_11_111002) do
     t.integer "admin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "system_admin_id"
   end
 
   create_table "customer_settings", force: :cascade do |t|
@@ -560,6 +561,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_11_111002) do
     t.string "agent_review"
     t.string "agent_response"
     t.integer "account_id"
+  end
+
+  create_table "system_admins", force: :cascade do |t|
+    t.string "user_name"
+    t.string "password_digest"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "verification_token"
+    t.boolean "email_verified", default: false
+    t.string "role"
+    t.string "fcm_token"
+    t.string "webauthn_id"
+    t.jsonb "webauthn_authenticator_attachment"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

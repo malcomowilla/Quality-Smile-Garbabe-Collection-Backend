@@ -300,8 +300,8 @@ class CheckInactivity
 
     Rails.logger.info "Checking inactivity for admin path: #{request.path}"
 
-    @account = Account.find_or_create_by(domain: request.domain, subdomain: request.subdomain)
-    ActsAsTenant.current_tenant = @account
+    # @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+    # ActsAsTenant.current_tenant = @account
 
     token = request.cookie_jar.encrypted.signed[:jwt]
     

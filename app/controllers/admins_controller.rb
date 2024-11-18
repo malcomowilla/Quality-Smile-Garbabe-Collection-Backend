@@ -7,26 +7,41 @@ require 'webauthn'
 set_current_tenant_through_filter
 
 
-before_action :set_tenant 
+before_action :set_tenant, 
 
-before_action :update_last_activity, only: [:create_admins, :logout ]
+# before_action :update_last_activity, only: [:create_admins, :logout ]
 
 
 def update_last_activity
-    current_user.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
-  
+    current_user&.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+
 end
     
-def set_tenant
-  
-  @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
 
-  @admin = Admin.first
-  Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin
-  set_current_tenant(@account)
- 
-rescue ActiveRecord::RecordNotFound
-  render json: { error: 'Invalid tenant' }, status: :not_found
+# def login
+#   # Replace with your own admin credentials check
+#     role == 'system_administrator'
+
+# system_administrator =  params[:user_name] == 'admin' && params[:password] == 'your_admin_password'
+#   if system_administrator
+#     # Create a session or return a token
+#     render json: { success: true, message: 'Logged in successfully', user: { user_name: 'admin' } }, status: :ok
+#   else
+#     render json: { success: false, message: 'Invalid credentials' }, status: :unauthorized
+#   end
+# end
+
+
+def set_tenant
+  @account = Account.find_by(subdomain: request.headers['X-Original-Host']
+  )
+
+  if @account
+    ActsAsTenant.current_tenant = @account
+  else
+    # Handle the case where the account is not found
+    render json: { error: 'Tenant not found' }, status: :not_found
+  end
 end
 
 # def set_tenant
@@ -60,7 +75,7 @@ end
 
         def index
           @admins = Admin.all
-          render json: @admins
+          render json: @admins, each_serializer: AdminSerializer
         end
 
         def get_my_admins
@@ -70,7 +85,7 @@ end
   # has_more = admins.size == limit
   # render json: { admins: admins, has_more: has_more }
    @admins = Admin.all
-  render json: @admins
+  render json: @admins, each_serializer: AdminSerializer
         end
 
 
@@ -87,11 +102,11 @@ end
         def allow_get_updated_admin
           admin = Admin.find_by(id: params[:id])
           render json: {
-            id: admin.id,
-            email: admin.email,
-            user_name: admin.user_name,
+            id: admin&.id,
+            email: admin&.email,
+            user_name: admin&.user_name,
             # profile_image: admin.profile_image.attached? ? url_for(admin.profile_image) : nil,
-            phone_number: admin.phone_number
+            phone_number: admin&.phone_number
           }
         end
 
@@ -168,7 +183,12 @@ end
             # )
         
             # session[:webauthn_registration] = webauthn_options.challenge
-            # 
+        
+
+
+
+
+            
             
             
             if params[:send_password_via_sms] == true || params[:send_password_via_sms] == 'true'
@@ -207,6 +227,10 @@ end
 
 
 
+
+
+
+        
 def find_my_email
  admin =  Admin.find_by(email: params[:my_email])
   if admin 
@@ -216,6 +240,11 @@ def find_my_email
     Rails.logger.info "Admin not found"
   end
 end
+
+
+
+
+
 
 
 
@@ -274,6 +303,8 @@ end
   end
 
 
+
+
   def user
     if current_user
      
@@ -295,7 +326,7 @@ end
   
   
 def login
-
+  #  request.headers['X-Original-Host'])
   admin = Admin.find_by(email: params[:email]) 
 
 
@@ -339,7 +370,11 @@ admin.update_column(:last_activity_active, Time.zone.now)
    
   end
   else
-    
+    Rails.logger.info "subdomain during login => #{request.domain}"
+    account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+
+    if admin && admin.account == account # Ensure the admin belongs to the current tenant
+
 if admin&.authenticate(params[:password])
   
   # session[:admin_id] = @admin.id
@@ -356,6 +391,9 @@ if admin&.authenticate(params[:password])
 else
   render json: {error: 'Invalid Email Or Password' }, status: :unauthorized
     end
+  else
+    render json: { error: 'Unauthorized: Admin does not belong to this tenant' }, status: :unauthorized
+  end
 end
   
 end
@@ -441,9 +479,11 @@ def register_webauthn
       end
 
       relying_party = WebAuthn::RelyingParty.new(
-        origin: "https://#{request.headers['X-Original-Host']}",
+        # origin: "https://#{request.headers['X-Original-Host']}" ,
+         origin: "http://localhost:5173",
         name: "aitechs",
-        id: request.headers['X-Original-Host']
+        id: 'localhost'
+        # id: request.headers['X-Original-Host']
       )
 
       options =  relying_party.options_for_registration(
@@ -467,14 +507,26 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 def create_webauthn
   begin
     Rails.logger.info "Received params: #{params.inspect}"
 
     relying_party = WebAuthn::RelyingParty.new(
-      origin: "https://#{request.headers['X-Original-Host']}",
+      # origin: "https://#{request.headers['X-Original-Host']}",
+      origin: "http://localhost:5173",
       name: "aitechs",
-      id: request.headers['X-Original-Host']
+      # id: request.headers['X-Original-Host']
+      id: "localhost"
     )
 
     challenge = params[:credential][:challenge]
@@ -518,6 +570,30 @@ def create_webauthn
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def authenticate_webauthn
   # "id": ""AdVZRNnFYkuE-z2ExPy7YNCjTEbBPiGqJHJ0DSMW8d_3H63vtT5dcjFWa_QUp5bNTimc5J3_SSXIeFVuUeAbxTo",
   # "5TR0TJqgdKRNuqsDhDQV6L7ccHct5B_xGUJ1HJWp0G4" =>  chalenge,
@@ -525,9 +601,11 @@ def authenticate_webauthn
 
 
   relying_party = WebAuthn::RelyingParty.new(
-    origin: "https://#{request.headers['X-Original-Host']}",
+    # origin: "https://#{request.headers['X-Original-Host']}",
+    origin: "http://localhost:5173",
     name: "aitechs",
-    id: request.headers['X-Original-Host']
+    # id: request.headers['X-Original-Host']
+    id: "localhost"
   )
 
   if admin.present?
@@ -558,9 +636,11 @@ end
 def verify_webauthn
   # Initialize the Relying Party with the appropriate origin and name
   relying_party = WebAuthn::RelyingParty.new(
-    origin: "https://#{request.headers['X-Original-Host']}",
+    # origin: "https://#{request.headers['X-Original-Host']}",
+    origin: "http://localhost:5173",
     name: "aitechs",
-    id: request.headers['X-Original-Host']
+    id: "localhost"
+    # id: request.headers['X-Original-Host']
   )
 
 
@@ -635,6 +715,7 @@ end
 
 
 
+
 def verify_otp
 
   # admin.update_column(:inactive, false)
@@ -660,13 +741,7 @@ end
 
 
 def logout
-#  delete =  session.delete :admin_id
-#  if delete
-#   head :no_content
 
-#  else
-#   render json: {error: 'failed to logout'}
-#  end
  cookies.delete(:jwt)
 head :no_content
   
@@ -694,6 +769,43 @@ end
     end
   
   end
+
+
+
+
+
+
+
+
+
+
+
+  def create_sys_admins
+    @admin = Admin.new(admin_params)
+  
+    # Manually apply your custom validations
+    validate_admin_data
+  
+    if @admin.errors.empty?
+      @admin.date_registered = Time.now.strftime('%Y-%m-%d %I:%M:%S %p')
+      
+      if @admin.save
+        render json: { admin: AdminSerializer.new(@admin) }, status: :created
+      else
+        render json: { errors: @admin.errors }, status: :unprocessable_entity
+      end
+    else
+      render json: { errors: @admin.errors}, status: :unprocessable_entity
+    end
+  
+  end
+
+
+
+
+
+
+
 
   def update_user
 admin = find_user
@@ -789,9 +901,9 @@ admin = find_user
     def find_or_initialize_user(user_name)
   # Admin.new(email: email, user_name: user_name)  
   # && Admin.find_by(email: email, user_name: user_name) 
+  Admin.find_by(user_name: user_name)
   
-  
-    Admin.find_or_initialize_by(user_name: user_name)
+    # Admin.find_or_initialize_by(user_name: user_name)
 
     end
     
@@ -800,6 +912,19 @@ admin = find_user
     end
 
 
+
+    def find_or_initialize_user_sys_admin(email)
+      # Admin.new(email: email, user_name: user_name)  
+      # && Admin.find_by(email: email, user_name: user_name) 
+      Admin.find_by(email: email)
+      
+        # Admin.find_or_initialize_by(user_name: user_name)
+    
+        end
+
+    def find_passkey_user_sys_admin(email)
+      Admin.find_by(email: email)
+    end
 
 
     def send_otp(phone_number, otp, user_name)
@@ -993,7 +1118,9 @@ end
 def validate_admin_passkey_user_name
   # Check user_name presence
   if params[:user_name].blank? || params[:user_name] == ''
-    @the_admin.errors.add(:user_name, "can't be blank")
+    @the_admin&.errors.add(:user_name, "can't be blank")
+
+    
   end
 
 
@@ -1004,7 +1131,34 @@ end
 
 
 
+def generate_secure_password(length = 12)
+  raise ArgumentError, 'Length must be at least 8' if length < 8
 
+  # Define the character sets
+  lowercase = ('a'..'z').to_a
+  uppercase = ('A'..'Z').to_a
+  digits = ('0'..'9').to_a
+  symbols = %w[! @ # $ % ^ & * ( ) - _ = + { } [ ] | : ; " ' < > , . ? /]
+
+  # Combine all character sets
+  all_characters = lowercase + uppercase + digits + symbols
+
+  # Ensure the password contains at least one character from each set
+  password = []
+  password << lowercase.sample
+  password << uppercase.sample
+  password << digits.sample
+  password << symbols.sample
+
+  # Fill the rest of the password length with random characters from all sets
+  (length - 4).times { password << all_characters.sample }
+
+  # Shuffle the password to ensure randomness
+  password.shuffle!
+
+  # Join the array into a string
+  password.join
+end
 
 
     def validate_admin_data
@@ -1017,7 +1171,8 @@ end
       # Check password presence and complexity
       if params[:password].present?
         unless params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/)
-          @admin.errors.add(:password, "must include at least one lowercase letter, one uppercase letter, one digit, and be at least 12 characters long.")
+          @admin.errors.add(:password, "must include at least 
+          one lowercase letter, one uppercase letter, one digit, and be at least 12 characters long.")
         end
       
     

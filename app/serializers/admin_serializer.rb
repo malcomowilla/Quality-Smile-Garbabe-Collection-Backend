@@ -10,7 +10,7 @@ class AdminSerializer < ActiveModel::Serializer
   :can_manage_settings, :can_manage_payment, :can_read_payment, :can_manage_sms_templates,
   :can_manage_sms, :can_read_sms_templates, :can_read_sms, :can_manage_tickets,
   :can_read_tickets ,:last_activity_active, :formatted_last_activity_active,
-:profile_image,:can_manage_calendar,
+:can_manage_calendar,
 :can_read_calendar
   
 

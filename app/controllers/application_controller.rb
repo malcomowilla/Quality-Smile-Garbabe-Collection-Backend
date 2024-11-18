@@ -5,25 +5,22 @@ class ApplicationController < ActionController::Base
     skip_before_action :verify_authenticity_token
 
     helper_method :current_user, :current_admin, :current_service_provider,
-     :current_customer, :current_store_manager
+     :current_customer, :current_store_manager, :current_sys_admin
 
      
 
      
 
-     
      def set_tenant
-      Rails.logger.debug "Full Request Host: #{request.host}"
-      Rails.logger.debug "Original Host Header: #{request.headers['X-Original-Host']}"
- 
-      @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
-
-Rails.logger.info "my tenant account  #{@account.subdomain} <=>   #{@account.domain}"
-@admin = Admin.first
-Rails.logger.info "My tenant account: #{@admin.inspect}" # Log the first admin 
-Rails.logger.info "Request Subdomain: #{request.subdomain}"  
-      set_current_tenant(@account)
-    
+      @account = Account.find_by(subdomain: request.headers['X-Original-Host']
+      )
+  
+      if @account
+        ActsAsTenant.current_tenant = @account
+      else
+        # Handle the case where the account is not found
+        render json: { error: 'Tenant not found' }, status: :not_found
+      end
     end
 
 
@@ -81,6 +78,48 @@ def current_store_manager
     end
   end
 end
+
+
+
+
+
+
+
+def current_sys_admin
+  sys_admin_token = cookies.encrypted.signed[:jwt_sys_admin]
+  if sys_admin_token 
+    begin
+
+     
+
+
+
+      if sys_admin_token
+        decoded_sys_admin = JWT.decode(sys_admin_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
+        sys_admin_id = decoded_sys_admin[0]['admin_id']
+        
+        @current_sys_admin = SystemAdmin.find_by(id: sys_admin_id)
+        
+        return  @current_sys_admin if  @current_sys_admin
+      end
+
+
+
+     
+
+
+
+      # Rails.logger.info "Enqueuing SomeWorker with params: #{safe_params}"
+      # CurrentUserWorker.perform_async(safe_params)
+    rescue JWT::DecodeError, JWT::ExpiredSignature => e
+      Rails.logger.error "JWT Decode Error: #{e}"
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+    end
+  end
+  
+  
+end
+
 
 
 def current_customer
@@ -183,6 +222,14 @@ end
 #   raise CanCan::AccessDenied
 # end
 # end
+
+def current_sys_admin_ability
+  if current_sys_admin.present?
+    @current_ability ||= Ability.new(current_service_provider)
+  else
+    raise CanCan::AccessDenied
+  end
+end
 
 
 def current_service_provider_ability

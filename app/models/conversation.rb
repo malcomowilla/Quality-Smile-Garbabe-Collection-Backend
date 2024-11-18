@@ -3,6 +3,7 @@ class Conversation < ApplicationRecord
 
   # belongs_to :sender, class_name: 'Customer'
   # belongs_to :receiver, class_name: 'Admin'
+  has_many :chat_messages, dependent: :destroy
 
   belongs_to :customer
   belongs_to :admin

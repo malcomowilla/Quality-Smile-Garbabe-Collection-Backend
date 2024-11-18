@@ -19,10 +19,10 @@ class CompanySettingsController < ApplicationController
     @company_settings = @account.company_setting
     # render json: @company_settings
     render json: {
-      company_name: @company_settings.company_name,
-      contact_info: @company_settings.contact_info,
-      email_info: @company_settings.email_info,
-      logo_url: @company_settings.logo.attached? ? url_for(@company_settings.logo) : nil
+      company_name: @company_settings&.company_name,
+      contact_info: @company_settings&.contact_info,
+      email_info: @company_settings&.email_info,
+      logo_url: @company_settings&.logo&.attached? ? url_for(@company_settings.logo) : nil
       }
   end
 

@@ -29,7 +29,7 @@ class MailtrapServiceStoreManager
   end
 
   def send_template_email(to:, template_uuid:, template_variables:, from: { email: "mailtrap@aitechsent.net", name: 
-  "store manager" }, subject: "
+  "store manager" }, subject:"
 manager number")
     mail = Mailtrap::Mail::FromTemplate.new(
       from: from,

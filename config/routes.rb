@@ -2,12 +2,29 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
+  # resources :system_admins
   resources :sms_settings
   resources :contact_requests
   resources :accounts
   resources :finances_and_accounts
-  mount ActionCable.server => '/cable'
+  # mount ActionCable.server => '/cable'
   # mount Sidekiq::Web => '/sidekiq'
+
+
+post '/invite_client', to: 'system_admins#invite_company_super_admins'
+get '/get_all_clients', to: 'accounts#index'
+
+post '/login_system_admin_email', to: 'system_admins#login_email'
+post '/login_system_admin_password', to: 'system_admins#login_email_password'
+post '/webauthn/register_system_admin', to: 'system_admins#register_webauthn_system_admin'
+  post '/webauthn/create_register_system_admin', to: 'system_admins#create_webauthn_sys_admin'
+  post '/webauthn/authenticate_register_system_admin', to: 'system_admins#authenticate_webauthn_system_admin'
+  post '/webauthn/verify_register_system_admin', to: 'system_admins#verify_webauthn_sys_admin'
+get '/check_passkey_status', to: 'system_admins#check_passkey_status'
+get '/check_email_already_verified', to: 'system_admins#check_email_already_verified'
+get '/current_system_admin', to: 'system_admins#sys_admin'
+delete '/logout_system_admin', to: 'system_admins#logout_system_admin'
+
 
   get '/get_email_templates', to: 'email_templates#index'
   post '/email_template', to: 'email_templates#create'

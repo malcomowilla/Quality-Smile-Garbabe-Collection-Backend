@@ -6,7 +6,7 @@ class Admin < ApplicationRecord
     has_many :conversations, counter_cache: true
 acts_as_tenant(:account)
    
-
+# has_secure_password
     # has_many :prefix_and_digits_for_ticket_numbers, dependent: :destroy
 has_many :credentials
 
@@ -22,6 +22,7 @@ has_many :credentials
 # encrypts :email, :password,   :fcm_token,  deterministic: true
 enum :role,  [:super_administrator, :store_manager, :customer, :service_provider,
  :customer_support,  :administrator, :agent]
+ 
  has_many :conversations, dependent: :destroy
 
 
@@ -81,6 +82,8 @@ def generate_password_reset_token(admin)
     admin.update_column(:reset_password_sent_at, Time.now)
 
 end
+
+
 def reset_password(password, admin)
     admin.update(password: password)
     admin.update(reset_password_token: nil)

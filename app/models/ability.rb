@@ -18,6 +18,12 @@ class Ability
       can :read, :all
       
 
+      
+    elsif admin.role == 'system_administrator'
+    can :manage, :all
+    can :read, :all
+
+
       Rails.logger.info "Super administrator can manage and read all"
     elsif admin.role == 'administrator'  
       can :manage, Payment
