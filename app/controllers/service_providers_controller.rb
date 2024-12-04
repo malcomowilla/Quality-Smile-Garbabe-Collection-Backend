@@ -1,8 +1,8 @@
 class ServiceProvidersController < ApplicationController
-  before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_collected, :confirm_delivered]
+  # before_action :set_admin, except: [ :login, :verify_otp, :logout, :confirm_collected, :confirm_delivered]
 
 # before_action :authenticate_service_provider, except: [:index, :create, :update, :destroy, :login, :verify_otp ]
-before_action :current_user, only: [:confirm_collected, :confirm_delivered]
+# before_action :current_user, only: [:confirm_collected, :confirm_delivered]
 
 before_action :update_last_activity, except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered] 
 load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered]
@@ -26,13 +26,13 @@ def get_current_service_provider
 end
 
 
-  def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  # def set_tenant
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
   
-    set_current_tenant(@account)
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Invalid tenant' }, status: :not_found
-  end
+  #   set_current_tenant(@account)
+  # rescue ActiveRecord::RecordNotFound
+  #   render json: { error: 'Invalid tenant' }, status: :not_found
+  # end
 
   def update_last_activity
     if current_user.instance_of?(Admin)
@@ -160,7 +160,7 @@ end
       if @service_provider.save
      
        
-          @prefix_and_digits = PrefixAndDigitsForServiceProvider.first
+          @prefix_and_digits =  ServiceProviderSetting.first
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i

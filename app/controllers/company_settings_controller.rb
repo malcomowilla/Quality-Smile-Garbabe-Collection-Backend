@@ -4,18 +4,18 @@ class CompanySettingsController < ApplicationController
   # before_action :set_tenant 
   # set_current_tenant_through_filter
 
-  def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  # def set_tenant
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
   
-    set_current_tenant(@account)
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Invalid tenant' }, status: :not_found
-  end
+  #   set_current_tenant(@account)
+  # rescue ActiveRecord::RecordNotFound
+  #   render json: { error: 'Invalid tenant' }, status: :not_found
+  # end
 
   # GET /company_settings or /company_settings.json
   def index
     # @company_settings = CompanySetting.first
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+    @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
     @company_settings = @account.company_setting
     # render json: @company_settings
     render json: {
@@ -24,6 +24,12 @@ class CompanySettingsController < ApplicationController
       email_info: @company_settings&.email_info,
       logo_url: @company_settings&.logo&.attached? ? url_for(@company_settings.logo) : nil
       }
+
+
+      # ActsAsTenant.with_tenant(ActsAsTenant.current_tenant) do
+
+
+      # end
   end
 
   # 

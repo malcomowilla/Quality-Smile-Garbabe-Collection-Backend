@@ -1,7 +1,7 @@
 class SystemAdmin < ApplicationRecord
 has_secure_password
-has_many :credentials
-
+# has_many :credentials
+has_many :system_admin_credentials
 def generate_email_verification_token(admin)
   # SecureRandom.urlsafe_base64
   # self.reset_password_token = generate_token

@@ -18,19 +18,19 @@ before_action :update_last_activity
   #  end
 
 
-  def set_tenant
+  # def set_tenant
   
   
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
     
-    if @account.nil?
-      Rails.logger.error "No account found for subdomain: #{request.headers['X-Original-Host']}"
-      render json: { error: 'Invalid tenant' }, status: :not_found
-      return
-    end
+  #   if @account.nil?
+  #     Rails.logger.error "No account found for subdomain: #{request.headers['X-Original-Host']}"
+  #     render json: { error: 'Invalid tenant' }, status: :not_found
+  #     return
+  #   end
   
-    set_current_tenant(@account)
-  end
+  #   set_current_tenant(@account)
+  # end
 
   # def set_tenant
   #   @account = Account.find_or_create_by(subdomain: request.subdomain)
@@ -53,12 +53,11 @@ before_action :update_last_activity
   # end
 
 
+  ActsAsTenant.with_tenant(ActsAsTenant.current_tenant) do
 
 
   # GET /locations or /locations.json
   def index
-    Rails.logger.info " Debugging Current user: #{current_user.inspect}"
-    Rails.logger.info "Current abilities: #{current_user_ability.inspect}"
     
     @locations = Location.all
     render json: @locations
@@ -117,6 +116,6 @@ before_action :update_last_activity
       params.require(:location).permit(:location_name, :sub_location, :location_code, :category)
     end
 
-
+  end
 
 end

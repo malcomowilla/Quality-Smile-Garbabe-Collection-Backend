@@ -1,13 +1,13 @@
 class SmsSettingsController < ApplicationController
-  before_action :set_tenant
+  # before_action :set_tenant
 
-  set_current_tenant_through_filter
+  # set_current_tenant_through_filter
 
 
 
 
   def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+    @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
   
     set_current_tenant(@account)
   rescue ActiveRecord::RecordNotFound

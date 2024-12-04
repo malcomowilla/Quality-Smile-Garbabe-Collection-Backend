@@ -65,7 +65,14 @@ Sidekiq.configure_server do |config|
       'inactivity_check_job' => {
         'class' => 'InactivityCheckJob',
         'cron' => "*/3 * * * * *", # Runs every 3 hours
-      }
+      },
+
+'check_subscription_status_job' => {
+        'class' => 'CheckSubscriptionStatusJob',
+        'cron' => "0 0 * * *", # Runs daily at midnight
+
+      },
+
     }
     Sidekiq::Scheduler.reload_schedule!
   end

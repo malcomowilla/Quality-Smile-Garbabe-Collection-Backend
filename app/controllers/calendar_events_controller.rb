@@ -12,7 +12,7 @@ require 'onesignal'
 
 
 def set_tenant
-  @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
 
 
   set_current_tenant(@account)

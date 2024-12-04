@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -231,6 +231,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "system_admin_id"
+    t.integer "account_id"
+  end
+
+  create_table "customer_payments", force: :cascade do |t|
+    t.string "payment_code"
+    t.string "phone_number"
+    t.string "name"
+    t.string "amount_paid"
+    t.string "total"
+    t.string "remaining_amount"
+    t.string "status"
+    t.integer "account_id"
+    t.string "currency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "customer_settings", force: :cascade do |t|
@@ -265,6 +280,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.datetime "request_date"
     t.string "otp"
     t.integer "account_id"
+    t.integer "total_requests", default: 0
+    t.integer "total_confirmations", default: 0
   end
 
   create_table "email_settings", force: :cascade do |t|
@@ -357,6 +374,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.string "remaining_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "subscription_id"
+    t.string "payment_method"
+    t.integer "amount_cents"
+    t.string "currency", default: "KES"
+    t.string "status"
+    t.string "transaction_reference"
+    t.string "mpesa_phone_number"
+    t.string "mpesa_receipt_number"
+    t.jsonb "payment_details"
+    t.integer "account_id"
+    t.index ["mpesa_receipt_number"], name: "index_payments_on_mpesa_receipt_number", unique: true
+    t.index ["subscription_id"], name: "index_payments_on_subscription_id"
+    t.index ["transaction_reference"], name: "index_payments_on_transaction_reference", unique: true
   end
 
   create_table "prefix_and_digits", force: :cascade do |t|
@@ -413,6 +443,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "service_provider_locations", force: :cascade do |t|
+    t.decimal "latitude"
+    t.decimal "longitude"
+    t.string "address"
+    t.bigint "service_provider_id", null: false
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_service_provider_locations_on_account_id"
+    t.index ["service_provider_id"], name: "index_service_provider_locations_on_service_provider_id"
+  end
+
   create_table "service_provider_settings", force: :cascade do |t|
     t.string "prefix"
     t.string "minimum_digits"
@@ -422,6 +464,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.boolean "send_email_for_provider"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "service_providers", force: :cascade do |t|
@@ -541,6 +584,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.integer "account_id"
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "status"
+    t.datetime "next_billing_date"
+    t.integer "amount_cents"
+    t.string "currency", default: "KES"
+    t.datetime "last_payment_date"
+    t.string "payment_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "plan_name", default: "Enterprise"
+    t.text "features", default: [], array: true
+    t.string "renewal_period", default: "monthly"
+    t.index ["account_id"], name: "index_subscriptions_on_account_id"
+  end
+
   create_table "support_tickets", force: :cascade do |t|
     t.string "issue_description"
     t.string "status"
@@ -563,6 +622,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.integer "account_id"
   end
 
+  create_table "system_admin_credentials", force: :cascade do |t|
+    t.string "webauthn_id"
+    t.string "public_key"
+    t.integer "system_admin_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "sign_count"
+  end
+
   create_table "system_admins", force: :cascade do |t|
     t.string "user_name"
     t.string "password_digest"
@@ -577,6 +645,37 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
     t.jsonb "webauthn_authenticator_attachment"
   end
 
+  create_table "theme_settings", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "primary_color", null: false
+    t.string "secondary_color", null: false
+    t.string "background_color", null: false
+    t.string "text_color", null: false
+    t.string "sidebar_color", null: false
+    t.string "header_color", null: false
+    t.string "accent_color", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "success"
+    t.string "warning"
+    t.string "error"
+    t.string "sidebar_menu_items_background_color_active", null: false
+    t.index ["account_id"], name: "index_theme_settings_on_account_id", unique: true
+  end
+
+  create_table "work_sessions", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.date "date", null: false
+    t.datetime "last_active_at"
+    t.integer "total_time_seconds", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "started_at"
+    t.integer "account_id"
+    t.index ["admin_id", "date"], name: "index_work_sessions_on_admin_id_and_date", unique: true
+    t.index ["admin_id"], name: "index_work_sessions_on_admin_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "appointments", "accounts"
@@ -587,4 +686,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_17_011734) do
   add_foreign_key "conversations", "accounts"
   add_foreign_key "conversations", "admins"
   add_foreign_key "conversations", "customers"
+  add_foreign_key "payments", "subscriptions"
+  add_foreign_key "service_provider_locations", "accounts"
+  add_foreign_key "service_provider_locations", "service_providers"
+  add_foreign_key "subscriptions", "accounts"
+  add_foreign_key "theme_settings", "accounts"
+  add_foreign_key "work_sessions", "admins"
 end

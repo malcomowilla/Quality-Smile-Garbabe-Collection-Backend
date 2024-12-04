@@ -413,7 +413,7 @@ DEPENDENCIES
   dotenv-rails
   fcm
   hiredis
-  image_processing (>= 1.2)
+  image_processing (~> 1.2)
   importmap-rails
   jbuilder
   jwt

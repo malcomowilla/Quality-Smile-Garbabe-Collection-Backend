@@ -6,72 +6,106 @@ class PaymentsController < ApplicationController
   require "base64"
 
 
-  load_and_authorize_resource
+  # load_and_authorize_resource
 
   # GET /payments or /payments.json
   def index
     @payments = Payment.all
   end
 
-  def make_mpesa_payment
-    url = URI("https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl")
 
-    https = Net::HTTP.new(url.host, url.port)
-    https.use_ssl = true
 
-    request = Net::HTTP::Post.new(url)
-    request["Content-Type"] = "application/json"
-    request["Authorization"] = "Bearer #{get_access_token}"
 
-    request.body = {
-      "ShortCode": '',
-      "ValidationURL": 'https://quality-smile-garbabe-collection-backend-1jcd.onrender.com/validate',
-      "ConfirmationURL": 'https://quality-smile-garbabe-collection-backend-1jcd.onrender.com/confirm',
-      "ResponseType": "Completed"
-    }.to_json
+  def create
+    @subscription = current_user.account.subscription
+    
+    payment = @subscription.payments.new(
+      amount_cents: @subscription.amount_cents, # Use subscription amount
+      currency: @subscription.currency,
+      payment_method: params[:payment_method],
+      mpesa_phone_number: params[:phone_number],
+      status: 'pending'
+    )
 
-    response = Net::HTTP.start(url.hostname, url.port) do |http|
-      https.request(request)
-    end
+    if payment.save
+      if payment.payment_method == 'mpesa'
+        # Initiate M-Pesa STK Push
+        result = MpesaService.stk_push(
+          phone_number: payment.mpesa_phone_number,
+          amount: payment.amount,
+          reference: "SUB-#{@subscription.id}",
+          description: "Aitechs Subscription Payment"
+        )
 
-    if response.is_a?(Net::HTTPSuccess)
-      render json: { message: "Registered URL successfully", response: response.body }
+        if result[:success]
+          render json: {
+            message: 'Please check your phone to complete the payment',
+            checkout_request_id: result[:checkout_request_id]
+          }
+        else
+          payment.update(status: 'failed')
+          render json: { error: 'Failed to initiate payment' }, status: :unprocessable_entity
+        end
+      else
+        # Handle card payment (implement card payment gateway integration)
+        render json: { redirect_url: '/card-payment' }
+      end
     else
-      puts "Failed to register URL2: #{response.code} - #{response.message}"
-      render json: { error: "Failed to register URL: #{response.code} - #{response.message}" }, status: :unprocessable_entity
+      render json: { errors: payment.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def validate
-    Rails.logger.info "Validating payment: #{request.body.read}"
-    render json: { message: "Validating payment: #{request.body.read}" }
+
+  def mpesa_callback
+    # Handle M-Pesa callback
+    payment = Payment.find_by(transaction_reference: params[:CheckoutRequestID])
+    
+    if payment && params[:ResultCode] == '0'
+      payment.update(
+        status: 'completed',
+        mpesa_receipt_number: params[:MpesaReceiptNumber],
+        payment_details: params
+      )
+      
+      # Subscription activation is now handled by Payment model callback
+      
+      # Notify admin of successful payment
+      AdminMailer.payment_successful(payment).deliver_later
+    else
+      payment&.update(
+        status: 'failed',
+        payment_details: params
+      )
+    end
+
+    head :ok
   end
 
-  def confirm
-    Rails.logger.info "Transaction confirmation received: #{request.body.read}"
-    render json: { message: "Transaction confirmation received: #{request.body.read}" }
+
+
+
+  def payment_status
+    payment = Payment.find(params[:id])
+    render json: {
+      status: payment.status,
+      message: payment_status_message(payment)
+    }
   end
 
   private
 
-  def get_access_token
-    consumer_key = 'SWDOWGEOKiIGze0vKFccwv9PQcO337UuGAnAAdVPH3J0QOzh'
-    consumer_secret = 'crjxwBMtgE6dJk8rtrnYUfFZSsGS3T1jJQy5yn5P2AlqWgWL7l5S7soJjATxNte2'
-    uri = URI("https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials")
 
-    https = Net::HTTP.new(uri.host, uri.port)
-    https.use_ssl = true
 
-    request = Net::HTTP::Get.new(uri)
-    request["Authorization"] = "Basic #{Base64.strict_encode64("#{consumer_key}:#{consumer_secret}")}"
-
-    response = https.request(request)
-
-    if response.is_a?(Net::HTTPSuccess)
-      data = JSON.parse(response.body)
-      data['access_token']
+  def payment_status_message(payment)
+    case payment.status
+    when 'completed'
+      'Payment completed successfully! Your subscription is now active.'
+    when 'pending'
+      'Waiting for payment confirmation'
+    when 'failed'
+      'Payment failed. Please try again'
     else
-      raise "Failed to get access token: #{response.code} - #{response.message}"
+      'Unknown payment status'
     end
   end
 

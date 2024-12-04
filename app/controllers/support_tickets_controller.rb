@@ -1,11 +1,11 @@
 class SupportTicketsController < ApplicationController
   before_action :set_support_ticket, only: %i[ show edit update destroy ]
   before_action :update_last_activity
-before_action :set_tenant 
+# before_action :set_tenant 
 
   load_and_authorize_resource
 
-set_current_tenant_through_filter
+# set_current_tenant_through_filter
 
 
 
@@ -18,13 +18,13 @@ set_current_tenant_through_filter
 
 
 
-def set_tenant
-  @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+# def set_tenant
+#   @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
 
-  set_current_tenant(@account)
-rescue ActiveRecord::RecordNotFound
-  render json: { error: 'Invalid tenant' }, status: :not_found
-end
+#   set_current_tenant(@account)
+# rescue ActiveRecord::RecordNotFound
+#   render json: { error: 'Invalid tenant' }, status: :not_found
+# end
 
   # def set_tenant
   #   if current_user.present? && current_user.account.present?
@@ -70,42 +70,42 @@ end
     customer_email = customer_by_name.email
     customers_code = customer_by_name.customer_code
 
-
-# Rails.logger.info "support ticket info#{customer_email}"
-      if @support_ticket.save
-        @prefix_and_digits = PrefixAndDigitsForTicketNumber.first
-        if  @prefix_and_digits.present?
-          found_prefix = @prefix_and_digits.prefix
-          found_digits = @prefix_and_digits.minimum_digits.to_i
-        else
-          Rails.logger.error "prefix and digit not found"
-          render json: { error: "prefix and digit not found
-           for the account" }, status: :unprocessable_entity
-        return
-        end 
-
-
- 
- 
-auto_generated_number = @support_ticket.ticket_number =
- "#{found_prefix}#{@support_ticket.sequence_number.to_s.rjust(found_digits, '0')}" if
-found_digits && found_prefix 
-@support_ticket.update(ticket_number: auto_generated_number,
- date_of_creation: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
+    if @support_ticket.valid?
+      account_tenant = ActsAsTenant.current_tenant
+      @prefix_and_digits = account_tenant&.prefix_and_digits_for_ticket_number
+      
+      if @prefix_and_digits.present?
+        found_prefix = @prefix_and_digits.prefix
+        found_digits = @prefix_and_digits.minimum_digits.to_i
+        
+        @support_ticket.save!
+        Rails.logger.info "support ticket info after save: #{@support_ticket.inspect}"
+        
+        auto_generated_number = "#{found_prefix}#{@support_ticket.sequence_number.to_s.rjust(found_digits, '0')}"
+        @support_ticket.update!(
+          ticket_number: auto_generated_number,
+          date_of_creation: Time.now.strftime('%Y-%m-%d %I:%M:%S %p')
+        )
+        
 ticket_created_at = @support_ticket.date_of_creation.strftime('%Y-%m-%d %I:%M:%S %p')
+customer_portal = request.headers['X-Original-Host']
+
 
  CustomerTicketMailer.customer_ticket_mailer(@support_ticket.ticket_number,
  ticket_created_at,customer_email, @support_ticket.issue_description, @support_ticket.status,
- @support_ticket.priority, customers_code).deliver_now
-
-#  customer_ticket_mailer( ticket_number, ticket_created_at, 
-#  customer_email, issue_description, ticket_status, ticket_priority)
-
-        render  json: @support_ticket, status: :created
+ @support_ticket.priority, customers_code, customer_portal).deliver_now
+        render json: @support_ticket, status: :created
       else
-         render json: @support_ticket.errors, status: :unprocessable_entity 
+        render json: { error: "Prefix and digit not found for the account" }, 
+               status: :unprocessable_entity
       end
+    else
+      render json: @support_ticket.errors, status: :unprocessable_entity 
+    end
     
+
+
+
   end
 
   def update

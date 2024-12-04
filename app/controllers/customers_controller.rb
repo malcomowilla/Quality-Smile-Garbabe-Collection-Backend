@@ -23,13 +23,19 @@ require 'message_template'
 
 
 
-  def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  # def set_tenant
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
   
-    set_current_tenant(@account)
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Invalid tenant' }, status: :not_found
-  end
+    
+  #   if @account
+  #     ActsAsTenant.current_tenant = @account
+  #     # set_current_tenant(@account)
+  #   else
+  #     # Handle the case where the account is not found
+  #     render json: { error: 'Tenant not found' }, status: :not_found
+  #   end
+ 
+  # end
 
 
 
@@ -148,7 +154,8 @@ end
 
 
   def login
-    @customer = Customer.find_by(customer_code: params[:customer_code]) || Customer.find_by(customer_code: params[:my_customer_code
+    @customer = Customer.find_by(customer_code:
+     params[:customer_code]) || Customer.find_by(customer_code: params[:my_customer_code
   ])
 
     if @customer
@@ -201,7 +208,7 @@ end
 
   def create
     @customer = Customer.new(customer_params)
-      if @customer.save
+      if @customer.valid?
           # @prefix_and_digits = Admin.prefix_and_digits.first
           @prefix_and_digits = CustomerSetting.first
 if  @prefix_and_digits.present?
@@ -259,36 +266,43 @@ end
 
 
   def confirm_bag
-    customer_confirm =  current_customer.update(bag_confirmed: true, 
-       confirmation_date: Time.current.strftime('%Y-%m-%d %I:%M:%S %p'),
-       confirm_request: false)
+    customer_confirm = current_customer.with_lock do
+      current_customer.update(
+        bag_confirmed: true, 
+        confirmation_date: Time.current.strftime('%Y-%m-%d %I:%M:%S %p'),
+        confirm_request: false,
+        total_confirmations: (current_customer.total_confirmations || 0) + 1
+      )
+    end
+
     if customer_confirm
-      
-      # Rails.logger.info "current customer =>#{current_customer.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p')}"
-       ActionCable.server.broadcast "requests_channel", 
-       {request: CustomerSerializer.new(current_customer).as_json}
-      render json: { message: 'Bag confirmed successfully.'}, status: :ok
+      ActionCable.server.broadcast "requests_channel", 
+        {request: CustomerSerializer.new(current_customer).as_json}
+      render json: { message: current_customer.total_confirmations }, status: :ok
     else
       render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
     end
-
-
   end
 
 
 
   def confirm_request
-
-customer_request = current_customer.update(confirm_request: true, request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
-bag_confirmed: false)
+    customer_request = current_customer.with_lock do
+      current_customer.update(
+        confirm_request: true, 
+        request_date: Time.now.strftime('%Y-%m-%d %I:%M:%S %p'),
+        bag_confirmed: false,
+        total_requests: (current_customer.total_requests || 0) + 1
+      )
+    end
 
     if customer_request 
       Rails.logger.info "customer_request=>#{customer_request}" 
-       ActionCable.server.broadcast "requests_channel", 
-       {request: CustomerSerializer.new(current_customer).as_json}
-      render json: { message: 'Bag confirmed successfully.' }, status: :ok
+      ActionCable.server.broadcast "requests_channel", 
+        {request: CustomerSerializer.new(current_customer).as_json}
+      render json: { message: current_customer.total_requests }, status: :ok
     else
-      render json: { error: 'Failed to confirm bag.' }, status: :unprocessable_entity
+      render json: { error: 'Failed to confirm request.' }, status: :unprocessable_entity
     end
   end
 
@@ -303,6 +317,24 @@ bag_confirmed: false)
 
    head :no_content
   end
+
+  def stats
+    total_stats = {
+      total_requests: Customer.sum(:total_requests),
+      total_confirmations: Customer.sum(:total_confirmations)
+    }
+
+    customer_stats = Customer.select(:id, :name, :email, :total_requests, :total_confirmations)
+                           .where.not(total_requests: nil)
+                           .or(Customer.where.not(total_confirmations: nil))
+                           .order(total_requests: :desc)
+
+    render json: {
+      total_stats: total_stats,
+      customer_stats: customer_stats
+    }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_customer

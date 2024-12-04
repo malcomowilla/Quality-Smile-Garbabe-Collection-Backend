@@ -6,10 +6,6 @@ class ContactRequestsController < ApplicationController
     @contact_requests = ContactRequest.all
   end
 
-  # GET /contact_requests/1 or /contact_requests/1.json
-  def show
-  end
-
 
   def create
     @contact_request = ContactRequest.new(contact_request_params)

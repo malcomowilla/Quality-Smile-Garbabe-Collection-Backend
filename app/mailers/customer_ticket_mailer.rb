@@ -1,5 +1,3 @@
-
-
 class CustomerTicketMailer < ApplicationMailer
  
 
@@ -11,7 +9,7 @@ class CustomerTicketMailer < ApplicationMailer
 
 def customer_ticket_mailer(ticket_number, ticket_created_at, 
   customer_email, issue_description, ticket_status, ticket_priority,
-  customer_code)
+  customer_code, customer_portal_link)
 
 
   @ticket_priority = ticket_priority
@@ -21,7 +19,7 @@ def customer_ticket_mailer(ticket_number, ticket_created_at,
   @ticket_created_at = ticket_created_at
   @issue_description = issue_description
   @customer_code = customer_code
-
+  @customer_portal_link = customer_portal_link
 
 
   template_uuid = ENV['MAIL_TRAP_CUSTOMER_TICKETS']
@@ -41,47 +39,35 @@ end
        "issue_description" => @issue_description,
        "ticket_status" => @ticket_status,
        "ticket_priority" => @ticket_priority,
-       "customer_portal_link" => "https://aitechs-sas-garbage-solution.onrender.com/customer_role?my_customer_code=#{@customer_code}"
+       "customer_portal_link" => "https://#{@customer_portal_link}/customer_role?my_customer_code=#{@customer_code}"
       
     }
   )
 end
+
+  def send_individual_email(to:, subject:, message:)
+    @message = message
+    
+    template_uuid = ENV['MAIL_TRAP_INDIVIDUAL_EMAIL']
+    
+    if template_uuid.nil?
+      Rails.logger.error "Individual email template uuid is nil"
+      return
+    end
+    
+    variables = {
+      message: @message
+    }
+    
+    MailtrapService.send_email(
+      to: to,
+      template_uuid: template_uuid,
+      variables: variables,
+      subject: subject
+    )
+  end
+
+
+
+  
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,6 @@
 class SmSerializer < ActiveModel::Serializer
-  attributes :id, :user, :message, :status, :formatted_date, :admin_user, :system_user
+  attributes :id, :user, :message, :status, :formatted_date, :admin_user, :system_user,
+  :account_id
 
 
   def formatted_date

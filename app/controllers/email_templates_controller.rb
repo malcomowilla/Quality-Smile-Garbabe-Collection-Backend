@@ -1,18 +1,18 @@
 class EmailTemplatesController < ApplicationController
 
-  before_action :set_tenant 
-  set_current_tenant_through_filter
+  # before_action :set_tenant 
+  # set_current_tenant_through_filter
 
      
 
 
-  def set_tenant
-    @account = Account.find_or_create_by(subdomain: request.headers['X-Original-Host'])
+  # def set_tenant
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
   
-    set_current_tenant(@account)
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Invalid tenant' }, status: :not_found
-  end
+  #   set_current_tenant(@account)
+  # rescue ActiveRecord::RecordNotFound
+  #   render json: { error: 'Invalid tenant' }, status: :not_found
+  # end
 
   
   # GET /email_templates or /email_templates.json

@@ -8,10 +8,8 @@ class AccountsController < ApplicationController
   end
 
   # GET /accounts/1 or /accounts/1.json
-  def show
-  end
+ 
 
-  # GE
 
 
   # POST /accounts or /accounts.json

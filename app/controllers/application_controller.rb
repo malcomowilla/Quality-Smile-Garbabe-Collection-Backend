@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
     include ActionController::Cookies
     set_current_tenant_through_filter
-    before_action :set_tenant
+before_action :set_tenant
     skip_before_action :verify_authenticity_token
 
     helper_method :current_user, :current_admin, :current_service_provider,
@@ -12,8 +12,11 @@ class ApplicationController < ActionController::Base
      
 
      def set_tenant
-      @account = Account.find_by(subdomain: request.headers['X-Original-Host']
-      )
+    
+      @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+      ActsAsTenant.current_tenant = @account
+      # @account = Account.find_by(subdomain: request.headers['X-Original-Host']
+      # )
   
       if @account
         ActsAsTenant.current_tenant = @account
@@ -21,6 +24,8 @@ class ApplicationController < ActionController::Base
         # Handle the case where the account is not found
         render json: { error: 'Tenant not found' }, status: :not_found
       end
+
+      Rails.logger.info "My Current Tenant: #{ActsAsTenant.current_tenant.inspect}"
     end
 
 

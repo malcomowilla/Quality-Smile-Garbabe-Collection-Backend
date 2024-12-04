@@ -11,7 +11,6 @@ gem "auto_increment"
 gem 'onesignal', '~> 1.0.1'
 gem 'twilio-ruby', '~> 7.2.0'
 gem 'rack-cors'
-gem "image_processing", ">= 1.2"
 gem "aws-sdk-s3", require: false
 
 # Use postgresql as the database for Active Record
@@ -53,9 +52,8 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem 'securerandom'
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 gem 'net-http', '~> 0.4.1'
-
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

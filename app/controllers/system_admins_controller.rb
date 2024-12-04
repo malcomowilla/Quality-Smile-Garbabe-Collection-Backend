@@ -5,14 +5,13 @@ class SystemAdminsController < ApplicationController
 
 
 
+  ActsAsTenant.without_tenant do
 
-
-    # ... existing methods ...
   
     def check_passkey_status
       admin = SystemAdmin.find_by(email: session[:admin_email])
       if admin
-        render json: { passkeyExists: admin.credentials.any? }, status: :ok
+        render json: { passkeyExists: admin.system_admin_credentials.any? }, status: :ok
       else
         render json: { error: 'SystemAdmin not found.' }, status: :not_found
       end
@@ -62,12 +61,14 @@ end
   
         options =  relying_party.options_for_registration(
           user: { id: Base64.urlsafe_encode64(@the_admin.webauthn_id), name: @the_admin.user_name || @the_admin.email },
-          exclude: @the_admin.credentials.map(&:webauthn_id)
+          # exclude: @the_admin.credentials.map(&:webauthn_id)
+          exclude: @the_admin.system_admin_credentials.map(&:webauthn_id)
         )
   
         # Set the challenge in the session
         session[:webauthn_registration] = options.challenge
-        Rails.logger.info "Challenge during registration: #{session[:webauthn_registration]}"
+        Rails.logger.info "Challenge during registration:
+         #{session[:webauthn_registration]}"
   
         render json: options, status: :ok
       else  
@@ -86,7 +87,6 @@ end
 
   def validate_invite_super_admin
     # Initialize @my_admin if it hasn't been initialized yet
-    @my_admin ||= Admin.new
   
 
 
@@ -113,7 +113,7 @@ end
     validate_invite_super_admin
   
     # Initialize @my_admin with the provided parameters
-    @my_admin = Admin.create(
+    @my_admin = Admin.find_or_create_by(
       user_name: params[:user_name],
       email: params[:email],
       phone_number: params[:phone_number]
@@ -276,7 +276,10 @@ def create_webauthn_sys_admin
     # Verify the credential
     # webauthn_credential.verify(session[:webauthn_registration])
     # webauthn_credential.verify(challenge)
-    sys_admin.credentials.create!(
+
+    # sys_admin.credentials.create
+
+    sys_admin.system_admin_credentials.create!(
       webauthn_id: webauthn_credential.id,
       public_key: webauthn_credential.public_key,
       sign_count: webauthn_credential.sign_count
@@ -313,7 +316,7 @@ def authenticate_webauthn_system_admin
 
   if admin.present?
     options = relying_party.options_for_authentication(allow: 
-    admin.credentials.map { |c| c.webauthn_id })
+    admin.system_admin_credentials.map { |c| c.webauthn_id })
     # admin_credentials = admin.credentials.map do |credential|
     #   {  id: Base64.urlsafe_encode64(credential.webauthn_id) }
     # end
@@ -343,74 +346,76 @@ end
 
 
 def verify_webauthn_sys_admin
-  # Initialize the Relying Party with the appropriate origin and name
-  relying_party = WebAuthn::RelyingParty.new(
-    # origin: "https://#{request.headers['X-Original-Host']}",
-    origin: "http://localhost:5173",
-    name: "aitechs",
-    id: "localhost"
-    # id: request.headers['X-Original-Host']
-  )
-
-
-  public_key_credential = params[:credential]
-  if public_key_credential.nil?
-    Rails.logger.warn "PublicKeyCredential is missing from the request"
-    render json: { error: "PublicKeyCredential is missing" }, status: :unprocessable_entity
-    return
-  end
-
-  # Find the admin user based on the provided username
-  admin = find_passkey_user_sys_admin(params[:email])
-
-  # Extract the challenge from the incoming credential
-  challenge = params[:credential][:challenge]
-
-  # Check if the challenge is present
-  if challenge.blank?
-    Rails.logger.warn "Challenge is missing from the request"
-    render json: { error: "Challenge is missing" }, status: :unprocessable_entity
-    return
-  end 
-
   begin
-    # Find the stored credential for the admin
-    # stored_credential = admin.credentials.find_by(webauthn_id: params[:credential][:id])
+    # Initialize the Relying Party with the appropriate origin and name
+    relying_party = WebAuthn::RelyingParty.new(
+      origin: "http://localhost:5173",
+      name: "aitechs",
+      id: "localhost"
+    )
 
+    public_key_credential = params[:credential]
+    if public_key_credential.nil?
+      Rails.logger.warn "PublicKeyCredential is missing from the request"
+      return render json: { error: "PublicKeyCredential is missing" }, status: :unprocessable_entity
+    end
 
+    # Find the admin user based on the provided username
+    admin = find_passkey_user_sys_admin(params[:email])
+    unless admin
+      Rails.logger.warn "Admin not found for email: #{params[:email]}"
+      return render json: { error: "Admin not found" }, status: :not_found
+    end
+
+    # Extract and verify the challenge
+    challenge = params[:credential][:challenge]
+    if challenge.blank?
+      Rails.logger.warn "Authentication challenge is missing from session"
+      return render json: { error: "Authentication challenge is missing" }, status: :unprocessable_entity
+    end
+
+    # Verify the credential and get the stored credential
     webauthn_credential, stored_credential = relying_party.verify_authentication(
       public_key_credential,
       challenge
-    ) do |webauthn_credential|
-      # Find the stored credential based on the external ID
-      admin.credentials.find_by(webauthn_id: webauthn_credential.id)
+    ) { |credential| admin.system_admin_credentials.find_by(webauthn_id: credential.id) }
+
+    unless stored_credential
+      Rails.logger.warn "No matching credential found for admin: #{admin.email}"
+      return render json: { error: "Invalid credential" }, status: :unauthorized
     end
-    Rails.logger.info "Stored credentials for #{admin.email}: #{stored_credential.inspect}"
 
-    # webauthn_credential = WebAuthn::Credential.from_get(params[:credential])
-
-
-    # # Verify the credential using the relying party
-    # relying_party.verify_authentication(
-    #   challenge,
-    #   # params[:credential],
-    #   webauthn_credential
-    # )
-
-  
-    # Generate a token 
-
-    token = generate_token(admin_id: admin.id) # Assuming you have a method to generate a token
-    cookies.encrypted.signed[:jwt_sys_admin] = { value: token, httponly: true, secure: true, exp: 24.hours.from_now.to_i, sameSite: 'strict' }
-    
-admin.update(role: 'system_administrator')
-    # Update the sign count for the stored credential
+    # Update the sign count and generate authentication token
     stored_credential.update!(sign_count: webauthn_credential.sign_count)
+    
+    token = generate_token(admin_id: admin.id)
+    cookies.encrypted.signed[:jwt_sys_admin] = {
+      value: token,
+      httponly: true,
+      secure: true,
+      expires: 24.hours.from_now,
+      same_site: :strict
+    }
 
-    render json: { message: 'WebAuthn authentication successful' }, status: :ok
+    admin.update(role: 'system_administrator')
+    
+    render json: { 
+      message: 'WebAuthn authentication successful',
+      user: {
+        email: admin.email,
+        role: admin.role
+      }
+    }, status: :ok
+
   rescue WebAuthn::Error => e
     Rails.logger.error "WebAuthn Error: #{e.message}"
     render json: { error: e.message }, status: :unprocessable_entity
+  rescue StandardError => e
+    Rails.logger.error "Unexpected error during WebAuthn verification: #{e.message}"
+    render json: { error: "An unexpected error occurred" }, status: :internal_server_error
+  ensure
+    # Clear the challenge from session after verification attempt
+    session.delete(:authentication_challenge)
   end
 end
 
@@ -519,6 +524,6 @@ def logout_system_admin
 
 
 
-  
+  end
 
 end

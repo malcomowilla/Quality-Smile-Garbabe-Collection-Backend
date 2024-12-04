@@ -6,8 +6,7 @@ class GeneralSettingsController < ApplicationController
 
    
   # def set_tenant
-  #   random_name = "Tenant-#{SecureRandom.hex(4)}"
-  #   @account = Account.find_or_create_by(domain:request.domain, subdomain: request.subdomain, name: random_name)
+  #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
       
   #   set_current_tenant(@account)
    

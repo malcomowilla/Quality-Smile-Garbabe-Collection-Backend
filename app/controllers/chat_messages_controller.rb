@@ -14,7 +14,8 @@ class ChatMessagesController < ApplicationController
   #     yesterday: @messages.where(created_at: 1.day.ago.beginning_of_day..1.day.ago.end_of_day)
   #   }
   # end
-  # 
+  ActsAsTenant.with_tenant(ActsAsTenant.current_tenant) do
+
   def index
     @conversation = if current_customer
       Conversation.find_by(customer_id: current_customer.id)
@@ -100,6 +101,8 @@ class ChatMessagesController < ApplicationController
     }, status: :unprocessable_entity
   end
 
+
+end
   private
 
   def broadcast_message

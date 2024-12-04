@@ -243,6 +243,8 @@ class CheckInactivity
 
   def call(env)
     request = ActionDispatch::Request.new(env)
+    Rails.logger.info "Request object: #{request.inspect}"
+
     Rails.logger.info "Skipping inactivity check for non-admin path: #{request.path.split('/').reject(&:empty?)[0]}"
 
     # Skip WebSocket connections
@@ -294,9 +296,12 @@ class CheckInactivity
 
 
     unless admin_sensitive_paths.include?(target_path)
+      Rails.logger.info "Request object: #{request.inspect}"
+
       Rails.logger.info "Skipping inactivity check for non-admin path: #{target_path}"
       return @app.call(env)
     end
+    Rails.logger.info "Request object: #{request.inspect}"
 
     Rails.logger.info "Checking inactivity for admin path: #{request.path}"
 

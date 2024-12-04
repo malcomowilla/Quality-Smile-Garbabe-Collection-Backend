@@ -2,6 +2,7 @@ require_relative "boot"
 
 require "rails/all"
 require_relative '../app/middleware/check_inactivity'
+require_relative '../app/middleware/set_tenant'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -33,7 +34,10 @@ module QualitySmilesBackend
     config.autoload_lib(ignore: %w(assets tasks))
     # rack attack middleware
     # # config/application.rb
+
+config.middleware.use SetTenant
 config.middleware.use CheckInactivity
+
 config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Attack
