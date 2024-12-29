@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_26_080419) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -129,6 +129,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.datetime "last_heartbeat"
     t.string "email"
     t.string "fcm_token"
+    t.boolean "locked_account", default: false
+    t.boolean "can_manage_customer_stats"
+    t.boolean "can_read_customer_stats"
+    t.boolean "can_manage_service_provider_stats"
+    t.boolean "can_read_service_provider_stats"
+    t.boolean "can_manage_individual_email"
+    t.boolean "can_read_individual_email"
+    t.boolean "can_manage_monitor_service_provider"
+    t.boolean "can_read_monitor_service_provider"
+    t.boolean "can_manage_chats"
+    t.boolean "can_read_chats"
+    t.boolean "can_read_user"
+    t.boolean "can_manage_user"
+    t.string "device_verification_token"
+    t.datetime "device_verification_token_sent_at"
   end
 
   create_table "appointments", force: :cascade do |t|
@@ -168,6 +183,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.integer "customer_sender_id"
     t.bigint "receiver_id"
     t.bigint "conversation_id"
+    t.string "admin_username"
+    t.integer "admin_sender_id"
     t.index ["conversation_id"], name: "index_chat_messages_on_conversation_id"
   end
 
@@ -190,6 +207,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.datetime "updated_at", null: false
     t.integer "account_id"
     t.string "logo"
+    t.string "customer_support_email"
+    t.string "agent_email"
+    t.string "customer_support_phone_number"
   end
 
   create_table "contact_requests", force: :cascade do |t|
@@ -216,6 +236,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.integer "messages_count", default: 0
     t.datetime "last_message_at"
     t.bigint "account_id", null: false
+    t.string "admin_username"
     t.index ["account_id"], name: "index_conversations_on_account_id"
     t.index ["admin_id"], name: "index_conversations_on_admin_id"
     t.index ["customer_id", "admin_id"], name: "index_conversations_on_customer_id_and_admin_id", unique: true
@@ -261,6 +282,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.integer "sequence_value"
   end
 
+  create_table "customer_wallet_payments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -282,6 +308,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.integer "account_id"
     t.integer "total_requests", default: 0
     t.integer "total_confirmations", default: 0
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.string "os"
+    t.string "ip_address"
+    t.string "device_token"
+    t.datetime "last_seen_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "device_name"
+    t.string "device_fingerprint"
+    t.boolean "verified"
+    t.string "device_verification_token"
+    t.datetime "device_verification_token_sent_at"
+    t.index ["admin_id"], name: "index_devices_on_admin_id"
   end
 
   create_table "email_settings", force: :cascade do |t|
@@ -472,7 +514,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.string "name"
     t.string "email"
     t.string "provider_code"
-    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "date_registered"
@@ -492,6 +533,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.decimal "on_time_delivery_rate", precision: 5, scale: 2, default: "0.0"
     t.boolean "active_status", default: true
     t.datetime "last_active_at"
+    t.integer "total_delivered_confirmation", default: 0
+    t.integer "total_collection_confirmation", default: 0
+    t.string "longitude"
+    t.string "latitude"
+    t.string "availability", default: "not_available"
+    t.string "status", default: "not_available"
   end
 
   create_table "sms", force: :cascade do |t|
@@ -631,6 +678,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
     t.integer "sign_count"
   end
 
+  create_table "system_admin_email_settings", force: :cascade do |t|
+    t.string "smtp_host"
+    t.string "smtp_username"
+    t.string "sender_email"
+    t.string "smtp_password"
+    t.string "api_key"
+    t.string "domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "system_admins", force: :cascade do |t|
     t.string "user_name"
     t.string "password_digest"
@@ -686,6 +744,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_161058) do
   add_foreign_key "conversations", "accounts"
   add_foreign_key "conversations", "admins"
   add_foreign_key "conversations", "customers"
+  add_foreign_key "devices", "admins"
   add_foreign_key "payments", "subscriptions"
   add_foreign_key "service_provider_locations", "accounts"
   add_foreign_key "service_provider_locations", "service_providers"

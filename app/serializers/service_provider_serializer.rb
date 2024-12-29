@@ -1,6 +1,8 @@
 class ServiceProviderSerializer < ActiveModel::Serializer
   attributes :id, :phone_number, :name, :email, :provider_code, :status, :date_registered,  :delivered, :collected,
-    :formatted_delivered_date ,:formatted_collected_date, :location
+    :formatted_delivered_date ,:formatted_collected_date, :location,
+    :total_delivered_confirmation, :total_collection_confirmation
+
 
 
 

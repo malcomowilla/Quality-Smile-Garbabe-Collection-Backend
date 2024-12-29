@@ -3,6 +3,8 @@ require_relative "boot"
 require "rails/all"
 require_relative '../app/middleware/check_inactivity'
 require_relative '../app/middleware/set_tenant'
+require_relative '../app/middleware/validate_ip'
+
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -23,6 +25,13 @@ module QualitySmilesBackend
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     config.api_only = true
+# For Rails 6 and 7
+# config.action_dispatch.trusted_proxies = [
+#   # Add your proxy's IP range here (e.g., local network or Nginx)
+#   '127.0.0.1',        # Localhost
+#   '::1',              # IPv6 localhost
+#   /192\.168\.\d+\.\d+/ # Example for private network
+# ]
 
    
     config.action_cable.disable_request_forgery_protection = true
@@ -37,6 +46,7 @@ module QualitySmilesBackend
 
 config.middleware.use SetTenant
 config.middleware.use CheckInactivity
+# config.middleware.use ValidateIp
 
 config.active_job.queue_adapter = :sidekiq
 

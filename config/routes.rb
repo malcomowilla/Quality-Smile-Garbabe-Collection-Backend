@@ -2,14 +2,17 @@ require 'sidekiq/web'
 
 
 Rails.application.routes.draw do
+  resources :customer_wallet_payments
+  resources :devices
   resources :customer_payments
   # resources :system_admins
   resources :sms_settings
   resources :contact_requests
   resources :accounts
   resources :finances_and_accounts
-  # mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
   # mount Sidekiq::Web => '/sidekiq'
+
 
 
 post '/create_theme_settings', to: 'theme_settings#create'
@@ -19,8 +22,8 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
 
 
   
-  get '/customers/stats', to: 'customers#stats'
-
+  get '/customers/stats', to: 'customer_stats#customer_stats'
+  get '/service_providers/stats', to: 'service_provider_stats#service_provider_stats'
   post '/reset-password', to: 'password_resets#create'
   get '/app/stats', to: 'stats#app_stats'
   post '/invite_client', to: 'system_admins#invite_company_super_admins'
@@ -35,8 +38,10 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
   get '/check_passkey_status', to: 'system_admins#check_passkey_status'
   get '/check_email_already_verified', to: 'system_admins#check_email_already_verified'
   get '/current_system_admin', to: 'system_admins#sys_admin'
+  get '/get_system_admin_email_settings', to: 'system_admins#get_system_admin_email_settings'
+  post '/create_system_admin_email_settings', to: 'system_admins#create_system_admin_email_settings'
   delete '/logout_system_admin', to: 'system_admins#logout_system_admin'
-
+  
 
   get '/get_email_templates', to: 'email_templates#index'
   post '/email_template', to: 'email_templates#create'
@@ -65,8 +70,12 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
 
 
   # get '/current_chat', to: 'chat_rooms#current'
-  post '/send_chat_message', to: 'chat_messages#create'
-  get '/chat_messages', to: 'chat_messages#index'
+  post '/send_chat_message', to: 'chat_messages#create_chat_message'
+  get '/chat_messages', to: 'chat_messages#get_chat_messages'
+  get '/conversations', to: 'chat_messages#conversations'
+
+# get '/allow_get_chat_messages', to: 'chat_messages#allow_get_chat_messages'
+# post '/allow_send_chat_message', to: 'chat_messages#allow_create_chat_message'
 
 
   post '/update_customer_settings', to: 'general_settings#create_for_customer'
@@ -142,6 +151,7 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
   post '/verify_store_manager_otp', to: 'store_managers#verify_otp'
   post '/confirm_deivered_bags_from_store', to: 'store_managers#confirm_delivered'
   post '/confirm_bag_received_from_customer', to: 'store_managers#confirm_received'
+  delete '/logout_store_manager', to: 'store_managers#logout'
 
 
   post '/create_location', to: 'locations#create'
@@ -154,6 +164,7 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
 
 
 
+  get '/total_customers', to: 'customers#total_customers'
 
   delete '/logout_customer', to: 'customers#logout' 
   post '/customer_login', to: 'customers#login'
@@ -180,6 +191,10 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
   patch '/update_service_provider/:id', to: 'service_providers#update'
   delete '/delete_service_providers/:id', to: 'service_providers#destroy'
   get '/get_current_service_provider', to: 'service_providers#get_current_service_provider'
+get '/total_service_providers', to: 'service_providers#total_service_providers'
+post '/update_availability', to: 'service_providers#update_availability'
+get '/get_current_status', to: 'service_providers#get_current_status'
+get '/assign_service_provider', to: 'service_providers#my_current_service_provider'
 
 
 
@@ -187,10 +202,11 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
 
 
   get '/get_calendar_events', to: 'calendar_events#index'
+  get '/get_calendar_events_for_customer', to: 'calendar_events#allow_get_calendar_events_for_customer'
   post '/create_calendar_event', to: 'calendar_events#create'
   patch '/update_calendar_event/:id', to: 'calendar_events#update'
   delete '/delete_calendar_event/:id', to: 'calendar_events#destroy'
-
+get '/total_calendar_events', to: 'calendar_events#total_calendar_events'
 
 
   post 'webauthn/register', to: 'admins#register_webauthn'
@@ -215,7 +231,13 @@ get '/get_theme_settings', to: 'theme_settings#get_theme_settings'
   post '/save_fcm_token', to: 'admins#create_fcm_token'
   get '/updated_admin', to: 'admins#user'
   post 'check_passkey_status', to: 'admins#check_passkey_status'
+post '/lock_admin_account', to: 'admins#lock_admin_account'
+post '/unlock_admin_account', to: 'admins#unlock_admin_account'
+get '/total_users', to: 'admins#total_users'
+post '/verify_device', to: 'admins#verify_device'
 
+
+get '/total_tickets', to: 'support_tickets#total_tickets'
   get '/get_tickets', to: 'support_tickets#index'
   post '/create_ticket', to: 'support_tickets#create'
   patch '/update_ticket/:id', to: 'support_tickets#update'

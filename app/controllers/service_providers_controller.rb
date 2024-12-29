@@ -5,7 +5,8 @@ class ServiceProvidersController < ApplicationController
 # before_action :current_user, only: [:confirm_collected, :confirm_delivered]
 
 before_action :update_last_activity, except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered] 
-load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered]
+load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_collected, :confirm_delivered, 
+:my_current_service_provider]
 # before_action :set_tenant 
 # set_current_tenant_through_filter
 
@@ -15,6 +16,94 @@ load_and_authorize_resource except: [:login, :logout, :verify_otp, :confirm_coll
     render json: @service_providers
   end
 
+
+
+  def my_current_service_provider
+    if current_service_provider
+  
+      service_provider_name = current_service_provider.name
+      support_ticket = SupportTicket.find_by(agent: service_provider_name)
+  
+      render json: [support_ticket], status: :ok
+    else
+      render json: {customer_error_message: "service provider not found"}, status: :not_found
+    end
+  end
+
+
+  def update_availability
+
+@availability_updated = current_service_provider.update(status: params[:status])
+  if @availability_updated
+    render json: {message: current_service_provider.status}, status: :ok
+  else
+    render json: {error: 'Availability updated failed'}, status: :unprocessable_entity
+  end
+end
+
+  def get_current_status
+    if current_service_provider
+      render json: {status: current_service_provider.status}, status: :ok
+    else
+      render json: {error: 'no service provider logged in'}, status: :unauthorized
+    end
+    
+
+end
+#   def available_providers
+#     # Find providers who are:
+#     # 1. Currently online (active in last 5 minutes)
+#     # 2. Not currently assigned to another request
+#     # 3. Within reasonable distance of customer
+# @providers = ServiceProvider.where(status: 'available')
+#                               .where('last_activity_at > ?', 5.minutes.ago)
+#                               .where('ST_DWithin(location, ST_SetSRID(ST_MakePoint(?, ?), 4326), ?)',
+
+#                                     params[:longitude],
+#                                     params[:latitude],
+#                                     .limit(5) # Limit to 5 providers
+#                                         5000) # 5km radius
+    
+#     render json: @providers
+#   end
+
+
+
+  def total_service_providers
+    # current_account = ActsAsTenant.current_tenant
+    total_service_providers = ServiceProvider.count
+    render json: { total_service_providers: total_service_providers }
+  end
+
+
+  # def stats
+  #   total_stats = {
+  #     total_delivered_confirmation: ServiceProvider.sum(:total_delivered_confirmation),
+  #     total_collection_confirmation: ServiceProvider.sum(:total_collection_confirmation)
+  #   }
+
+  #   service_provider_stats = ServiceProvider.select(:id, :name, :email,
+  #    :total_delivered_confirmation,
+  #    :total_collection_confirmation, :provider_code, :date_collected, 
+  #    :date_delivered,)
+  #                          .where.not(total_delivered_confirmation: nil)
+  #                          .or(ServiceProvider.where.not(
+  #                           total_collection_confirmation: nil))
+  #                          .order(total_delivered_confirmation: :desc)
+  #                          .map do |service_provider|
+  #     service_provider.as_json.merge(
+  #       date_delivered: service_provider.formatted_delivered_date,
+  #       date_collected: service_provider.formatted_collected_date,
+  #       last_delivered_date: service_provider.formatted_delivered_date,
+  #       last_collected_date: service_provider.formatted_collected_date
+  #     )
+  #   end
+
+  #   render json: {
+  #     total_stats: total_stats,
+  #     service_provider_stats: service_provider_stats
+  #   }
+  # end
 
      
 def get_current_service_provider
@@ -113,6 +202,8 @@ end
   def confirm_collected
     if current_service_provider.update(collected: true, date_collected: 
       Time.current.strftime('%Y-%m-%d %I:%M:%S %p'), delivered: false,
+      total_collection_confirmation: 
+      (current_service_provider.total_collection_confirmation || 0) + 1
                  ) 
 
   ActionCable.server.broadcast "requests_channel", 
@@ -133,6 +224,8 @@ end
 
     if  current_service_provider.update(delivered: true,  date_delivered:
        Time.current.strftime('%Y-%m-%d %I:%M:%S %p'), collected: false,
+       total_delivered_confirmation: 
+       (current_service_provider.total_delivered_confirmation || 0) + 1
       )
       
   ActionCable.server.broadcast "requests_channel", 
@@ -164,6 +257,8 @@ end
 if  @prefix_and_digits.present?
   found_prefix = @prefix_and_digits.prefix
   found_digits = @prefix_and_digits.minimum_digits.to_i
+  @service_provider.save!
+
 else
   Rails.logger.error "prefix and digit not found"
   render json: { error: "prefix and digit not found

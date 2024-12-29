@@ -66,6 +66,8 @@ require 'message_template'
   # end
   
   # GET /customers or /customers.json
+
+
   def index
     @customers = Customer.all
     render json: @customers
@@ -113,6 +115,8 @@ if current_user.instance_of?(Admin)
 
 
   def logout
+    session[:my_current_customer] = current_customer  
+
     cookies.delete(:customer_jwt)
     head :no_content
     # render json: { message: 'Logout successful' }, status: :ok
@@ -154,6 +158,7 @@ end
 
 
   def login
+
     @customer = Customer.find_by(customer_code:
      params[:customer_code]) || Customer.find_by(customer_code: params[:my_customer_code
   ])
@@ -166,7 +171,8 @@ end
         @customer.generate_otp
         render json: {customer:  @customer.customer_code}, status: :ok
       if params[:send_email] == true || params[:send_email] == 'true'
-        CustomerOtpMailer.customers_otp(@customer).deliver_now
+        company_name = ActsAsTenant.current_tenant.company_setting.company_name
+        CustomerOtpMailer.customers_otp(@customer, company_name).deliver_now
       end
 
       if params[:send_sms_and_email] == true || params[:send_sms_and_email] == 'true'
@@ -177,6 +183,8 @@ end
         token = generate_token(customer_id:  @customer.id)
       cookies.encrypted.signed[:customer_jwt] = { value: token, httponly: true,
        secure: true , exp: 24.hours.from_now.to_i , }
+
+      
       end
       
       
@@ -266,6 +274,8 @@ end
 
 
   def confirm_bag
+    session[:my_current_customer] = current_customer  
+
     customer_confirm = current_customer.with_lock do
       current_customer.update(
         bag_confirmed: true, 
@@ -287,6 +297,8 @@ end
 
 
   def confirm_request
+    session[:my_current_customer] = current_customer  
+
     customer_request = current_customer.with_lock do
       current_customer.update(
         confirm_request: true, 
@@ -307,7 +319,11 @@ end
   end
 
 
-
+  def total_customers
+    # current_account = ActsAsTenant.current_tenant
+    total_customers = Customer.count
+    render json: { total_customers: total_customers }
+  end
 
 
 
@@ -318,22 +334,31 @@ end
    head :no_content
   end
 
-  def stats
-    total_stats = {
-      total_requests: Customer.sum(:total_requests),
-      total_confirmations: Customer.sum(:total_confirmations)
-    }
+  # def stats
+  #   total_stats = {
+  #     total_requests: Customer.sum(:total_requests),
+  #     total_confirmations: Customer.sum(:total_confirmations)
+  #   }
 
-    customer_stats = Customer.select(:id, :name, :email, :total_requests, :total_confirmations)
-                           .where.not(total_requests: nil)
-                           .or(Customer.where.not(total_confirmations: nil))
-                           .order(total_requests: :desc)
+  #   customer_stats = Customer.select(:id, :name, :email, :total_requests,
+  #    :total_confirmations, :customer_code, :request_date, :confirmation_date)
+  #                          .where.not(total_requests: nil)
+  #                          .or(Customer.where.not(total_confirmations: nil))
+  #                          .order(total_requests: :desc)
+  #                          .map do |customer|
+  #     customer.as_json.merge(
+  #       request_date: customer.formatted_request_date,
+  #       confirmation_date: customer.formatted_confirmation_date,
+  #       last_request: customer.formatted_request_date,
+  #       last_confirmation: customer.formatted_confirmation_date
+  #     )
+  #   end
 
-    render json: {
-      total_stats: total_stats,
-      customer_stats: customer_stats
-    }
-  end
+  #   render json: {
+  #     total_stats: total_stats,
+  #     customer_stats: customer_stats
+  #   }
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

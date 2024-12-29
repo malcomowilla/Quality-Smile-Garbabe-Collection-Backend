@@ -28,7 +28,7 @@ mail(
   from: tenant_sender_email,
   to: customer.email,
   subject: 'Your Customer Code',
-  category: 'Test category',
+  category: 'Customer Code',
  
 )
 

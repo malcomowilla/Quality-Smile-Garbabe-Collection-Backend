@@ -11,7 +11,18 @@ class AdminSerializer < ActiveModel::Serializer
   :can_manage_sms, :can_read_sms_templates, :can_read_sms, :can_manage_tickets,
   :can_read_tickets ,:last_activity_active, :formatted_last_activity_active,
 :can_manage_calendar,
-:can_read_calendar
+:can_read_calendar, :locked_account,
+:can_read_customer_stats,
+:can_read_service_provider_stats,
+:can_manage_individual_email,
+:can_manage_chats,
+:can_read_chats,
+:can_manage_monitor_service_provider,
+:can_read_monitor_service_provider,
+:can_read_user,
+:can_manage_user
+
+
   
 
 # def initialize(object, options = {})

@@ -1,0 +1,2 @@
+class CustomerWalletPayment < ApplicationRecord
+end

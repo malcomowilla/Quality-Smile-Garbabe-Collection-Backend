@@ -14,6 +14,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 end
 
+
 # class ApplicationMailer < ActionMailer::Base
 # layout "mailer"
 

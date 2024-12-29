@@ -9,6 +9,7 @@ acts_as_tenant(:account)
 # has_secure_password
     # has_many :prefix_and_digits_for_ticket_numbers, dependent: :destroy
 has_many :credentials
+has_many :devices
 
 
 # has_many :messages

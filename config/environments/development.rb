@@ -1,5 +1,4 @@
 require "active_support/core_ext/integer/time"
-
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -13,7 +12,13 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'http://localhost:4000' }
 
 
-
+  # config.action_dispatch.trusted_proxies = [
+  #   '127.0.0.1',
+  #   '::1',
+  #   /192\.168\.\d+\.\d+/,
+  #   /10\.\d+\.\d+\.\d+/, # Add any private IP ranges used by your proxy
+  #   /172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+/ # Private IPs in 172.16.0.0/12 range
+  # ]
 
 
 
@@ -28,22 +33,29 @@ Rails.application.configure do
 
 
   # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.mailtrap_settings
-  config.action_mailer.delivery_method = :mailtrap
-  # config.action_mailer.raise_delivery_errors = true
-  # 
+#   config.action_mailer.mailtrap_settings
+#   config.action_mailer.delivery_method = :mailtrap
+#   # config.action_mailer.raise_delivery_errors = true
+#   # 
   
-  config.action_mailer.mailtrap_settings= {
-  # :user_name => ENV['MAIL_TRAP_USERNAME'],
-  # :password => ENV['MAIL_TRAP_PASSWORD'],
-  # :address => 'live.smtp.mailtrap.io',
-  # :domain => 'aitechsent.net',
-  # :port => '587',
-  # :authentication => :plain,
+#   config.action_mailer.mailtrap_settings= {
+#   # :user_name => ENV['MAIL_TRAP_USERNAME'],
+#   # :password => ENV['MAIL_TRAP_PASSWORD'],
+#   # :address => 'live.smtp.mailtrap.io',
+#   # :domain => 'aitechsent.net',
+#   # :port => '587',
+#   # :authentication => :plain,
 
-  # :enable_starttls_auto => true   
-  api_key: 'f17620673c51e537ef268dea49025da8',
-}
+#   # :enable_starttls_auto => true   
+#   api_key: 'f17620673c51e537ef268dea49025da8',
+# }
+
+# # config/environments/development.rb
+# Rails.application.config.to_prepare do
+#   EmailSettingsConfigurator.configure
+# end
+
+
   config.enable_reloading = true
   # config.action_mailer.perform_deliveries = true
   # Do not eager load code on boot.
@@ -58,7 +70,7 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
-    config.action_controller.perform_caching = true
+    config.action_controller.perform_caching = false
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store

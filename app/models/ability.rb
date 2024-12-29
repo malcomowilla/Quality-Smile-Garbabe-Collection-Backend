@@ -8,10 +8,11 @@ class Ability
     
 
 
-    
+    # can :read, :get_chat_messages if admin.can_read_chats == true
+    # can :manage, :create_chat_message if admin.can_manage_chats == true
 
 
-    
+    assign_permissions_based_on_flags(admin)
     
     if admin.role == 'super_administrator'
       can :manage, :all
@@ -51,8 +52,12 @@ class Ability
         can :manage, CalendarEvent  
         can :read, CalendarEvent
 
+      elsif admin.role == 'customer_support'
+        can :manage, SupportTicket
+        can :read, SupportTicket
+        # can :read, Customer
 
-        assign_permissions_based_on_flags(admin)
+        
 
     #     cannot :read, :get_settings_for_store_manager 
     # cannot :read, :get_settings_for_store 
@@ -95,8 +100,14 @@ class Ability
     can :read, :get_sms_balance if admin.can_manage_sms
     can :read, :get_all_sms if admin.can_read_sms
     can :read, :get_calendar_settings if admin.can_read_settings
-    
+    can :read, :get_chat_messages if admin.can_read_chats 
+    can :read, :get_chat_messages if admin.can_manage_chats 
+    can :manage, :create_chat_message if admin.can_manage_chats 
 
+can :read, :customer_stats if admin.can_read_customer_stats
+
+can :read, :service_provider_stats if admin.can_read_service_provider_stats
+can :manage, :send_individual if admin.can_manage_individual_email
 
 
     can :read, :get_calendar_settings if admin.can_manage_settings
@@ -135,8 +146,11 @@ class Ability
 can :manage, CalendarEvent if admin.can_manage_calendar
 can :read, CalendarEvent if admin.can_read_calendar
 
+ 
 
 
+    can :manage, Admin if admin.can_manage_user
+    can :read, Admin if admin.can_read_user
 
     can :manage, GeneralSetting if admin.can_manage_settings
 

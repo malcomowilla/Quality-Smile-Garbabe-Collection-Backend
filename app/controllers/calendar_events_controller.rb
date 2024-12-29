@@ -1,9 +1,9 @@
 class CalendarEventsController < ApplicationController
   # before_action :set_calendar_event, only: %i[ show edit update destroy ]
-  # before_action :set_tenant 
+  before_action :set_tenant 
 
   # set_current_tenant_through_filter
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:allow_get_calendar_events_for_customer]
 require 'rest-client'
 require 'json'
 require 'googleauth'
@@ -43,6 +43,20 @@ end
   def index
     @calendar_events = CalendarEvent.all
     render json: @calendar_events
+  end
+
+
+  def allow_get_calendar_events_for_customer
+    @calendar_events = CalendarEvent.all
+    render json: @calendar_events
+
+  end
+
+  def total_calendar_events
+
+    @total_calendar_events = CalendarEvent.count
+    render json: { total_calendar_events: @total_calendar_events }, status: :ok if @total_calendar_events
+
   end
 
   def create

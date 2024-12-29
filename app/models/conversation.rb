@@ -7,7 +7,7 @@ class Conversation < ApplicationRecord
 
   belongs_to :customer
   belongs_to :admin
-  has_many :chat_messages, dependent: :destroy
+  # has_many :chat_messages, dependent: :destroy
   # Ensure that each user-pair has only one conversation between them
 
   validates :customer_id, presence: true

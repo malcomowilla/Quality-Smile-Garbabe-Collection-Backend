@@ -17,7 +17,7 @@ class PresenceChannel < ApplicationCable::Channel
 
   def unsubscribed
     current_user.update(
-      online: false,
+      # online: false,
       last_seen: Time.current
     )
     broadcast_status
@@ -36,7 +36,7 @@ class PresenceChannel < ApplicationCable::Channel
       while connection.present?
         sleep HEARTBEAT_INTERVAL
         if Time.current - current_user.last_heartbeat > OFFLINE_THRESHOLD.seconds
-          current_user.update(online: false, last_seen: current_user.last_heartbeat)
+          current_user.update(last_seen: current_user.last_heartbeat)
           broadcast_status
           break
         end

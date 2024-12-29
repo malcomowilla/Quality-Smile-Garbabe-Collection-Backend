@@ -8,6 +8,37 @@ class SystemAdminsController < ApplicationController
   ActsAsTenant.without_tenant do
 
   
+
+
+
+    def get_system_admin_email_settings
+      @email_settings = SystemAdminEmailSetting.all
+      render json: @email_settings
+  end
+
+
+
+
+
+  def create_system_admin_email_settings
+    @email_setting = SystemAdminEmailSetting.first_or_initialize(
+      smtp_host: params[:smtp_host],
+      smtp_username: params[:smtp_username],
+      sender_email: params[:sender_email],
+      smtp_password: params[:smtp_password],
+      api_key: params[:api_key],
+      domain: params[:domain]
+      
+    )
+
+if @email_setting.save
+  render json: @email_setting, status: :ok
+else
+  render json: {error: @email_setting.errors }, status: :unprocessable_entity
+
+end
+  end
+
     def check_passkey_status
       admin = SystemAdmin.find_by(email: session[:admin_email])
       if admin
@@ -393,7 +424,7 @@ def verify_webauthn_sys_admin
       value: token,
       httponly: true,
       secure: true,
-      expires: 24.hours.from_now,
+      # expires: 24.hours.from_now,
       same_site: :strict
     }
 

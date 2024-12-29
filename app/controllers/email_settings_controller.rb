@@ -24,6 +24,8 @@ class EmailSettingsController < ApplicationController
   end
 
 
+
+
   # POST /email_settings or /email_settings.json
   def create
     @email_setting = EmailSetting.first_or_initialize(email_setting_params)
@@ -38,6 +40,9 @@ else
 
 end
   end
+
+
+
 
 
   # DELETE /email_settings/1 or /email_settings/1.json

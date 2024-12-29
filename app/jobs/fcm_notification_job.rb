@@ -6,14 +6,22 @@ require 'rest-client'
 require 'json'
 
 
+
   def perform(event_id, fcm_token)
     @calendar_event = CalendarEvent.find_by(id: event_id)
+    # scopes = ['https://www.googleapis.com/auth/firebase.messaging']
     scopes = ['https://www.googleapis.com/auth/firebase.messaging']
-      
+ 
+    encoded_credentials = ENV['FIREBASE_CREDENTIALS_BASE64']
+    credentials_data = Base64.decode64(encoded_credentials)
+    json_key_io = StringIO.new(credentials_data)
+     # json_key_io: File.open('/home/malc0m0willa/Downloads/quality-smiles-firebase-adminsdk-w53uj-aba4a2b4a5.json'),
+      #  ENV['FIREBASE_CREDENTIALS_BASE64']&.gsub(/\n/, "") || "",
     # Load the credentials
     credentials = Google::Auth::ServiceAccountCredentials.make_creds(
-      json_key_io: File.open('/home/malc0m0willa/Downloads/quality-smiles-firebase-adminsdk-w53uj-aba4a2b4a5.json'),
-      
+     
+
+      json_key_io: json_key_io,
       scope: scopes
     )
     event_start_time = @calendar_event.start.in_time_zone

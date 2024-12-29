@@ -64,7 +64,7 @@ class PaymentsController < ApplicationController
       payment.update(
         status: 'completed',
         mpesa_receipt_number: params[:MpesaReceiptNumber],
-        payment_details: params
+        # payment_details: params
       )
       
       # Subscription activation is now handled by Payment model callback

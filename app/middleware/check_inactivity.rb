@@ -243,7 +243,7 @@ class CheckInactivity
 
   def call(env)
     request = ActionDispatch::Request.new(env)
-    Rails.logger.info "Request object: #{request.inspect}"
+    # Rails.logger.info "current tenant in middleware#{ActsAsTenant.current_tenant}"
 
     Rails.logger.info "Skipping inactivity check for non-admin path: #{request.path.split('/').reject(&:empty?)[0]}"
 
@@ -321,18 +321,19 @@ class CheckInactivity
             admin_settings = AdminSettings.first
             
             if admin_settings
-              admin.update_columns(
-                enable_inactivity_check: admin_settings.check_is_inactive == true,
-                enable_inactivity_check_hours: admin_settings.check_is_inactivehrs == true,
-                enable_inactivity_check_minutes: admin_settings.check_is_inactiveminutes == true
-              )
+              # admin.update_columns(
+              #   enable_inactivity_check: admin_settings.check_is_inactive == true,
+              #   enable_inactivity_check_hours: admin_settings.check_is_inactivehrs == true,
+              #   enable_inactivity_check_minutes: admin_settings.check_is_inactiveminutes == true
+              # )
 
-              if (admin.enable_inactivity_check || 
-                  admin.enable_inactivity_check_hours || 
-                  admin.enable_inactivity_check_minutes) && admin.inactive == true
+
+               
+                  
+                  if admin_settings.check_is_inactive == true && admin.inactive == true
                 Rails.logger.info "Inactivity check triggered for admin: #{admin.id}"
                 # Clear the JWT cookie
-                request.cookie_jar.delete(:jwt)
+                # request.cookie_jar.delete(:jwt)
                 
                 # Return unauthorized with a clear message
                 response = Rack::Response.new

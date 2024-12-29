@@ -10,6 +10,16 @@ class Customer < ApplicationRecord
     # validates :name, presence: true
     acts_as_tenant(:account)
 
+
+    def formatted_request_date
+        request_date.strftime('%Y-%m-%d %I:%M:%S %p') if request_date.present?
+    end
+    
+    def formatted_confirmation_date
+        confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p') if confirmation_date.present?
+    end
+
+
     def generate_otp
         self.otp = rand(100000..999999).to_s
         # self.password = SecureRandom.base64(8)
@@ -17,6 +27,14 @@ class Customer < ApplicationRecord
     end
 
 
+    # def formatted_request_date
+    #     object.request_date.strftime('%Y-%m-%d %I:%M:%S %p') if object.request_date.present?
+    #   end
+    
+    
+    #   def formatted_confirmation_date
+    #     object.confirmation_date.strftime('%Y-%m-%d %I:%M:%S %p') if object.confirmation_date.present?
+    #   end
 
     def verify_otp(submitted_otp)
         self.otp == submitted_otp

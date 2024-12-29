@@ -1,19 +1,22 @@
-
- class AdminsController < ApplicationController
+class AdminsController < ApplicationController
 
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
   require 'message_template'
   require 'webauthn'
   
-  
   # before_action :update_last_activity, only: [:create_admins, :logout ]
-  
+  load_and_authorize_resource only: [ :index, :create_admins, :update_user, :delete_user]
   
   def update_last_activity
       current_user&.update_column(:last_activity_active, Time.now.strftime('%Y-%m-%d %I:%M:%S %p'))
   
   end
       
+
+  def total_users
+total_users = Admin.count
+    render json: { total_users: total_users }
+  end
   
   # def login
   #   # Replace with your own admin credentials check
@@ -58,7 +61,19 @@
   # end
   
   
+  
           def index
+            # company_name = ActsAsTenant.current_tenant.company_setting.company_name
+            #  Rails.logger.info "company name=>#{company_name}"
+
+            forwarded_for = request.headers['X-Forwarded-For']
+  remote_ip = forwarded_for ? forwarded_for.split(',').first.strip : request.remote_ip
+            Rails.logger.info "Headers: #{remote_ip}"
+
+
+            # browser = Browser.new(request.user_agent)
+
+            # Rails.logger.info "user agent=>#{browser.platform}"
             @admins = Admin.all
             render json: @admins, each_serializer: AdminSerializer
           end
@@ -159,7 +174,17 @@
                 can_manage_payment: params[:can_manage_payment],
                 can_read_payment: params[:can_read_payment],
                 can_manage_calendar: params[:can_manage_calendar],
-                can_read_calendar: params[:can_read_calendar]
+                can_read_calendar: params[:can_read_calendar],
+                can_read_customer_stats: params[:can_read_customer_stats],
+                can_read_service_provider_stats: params[:can_read_service_provider_stats],
+                can_manage_individual_email: params[:can_manage_individual_email],
+                can_manage_chats: params[:can_manage_chats],
+                can_read_chats: params[:can_read_chats],
+                can_manage_monitor_service_provider: params[:can_manage_monitor_service_provider],
+                can_read_monitor_service_provider: params[:can_read_monitor_service_provider],
+                can_manage_user: params[:can_manage_user],
+                can_read_user: params[:can_read_user]
+
               )
   
               # webauthn_options = WebAuthn::Credential.options_for_create(
@@ -173,7 +198,7 @@
   
   
   
-              
+              company_subdomain = request.headers['X-Original-Host']
               
               
               if params[:send_password_via_sms] == true || params[:send_password_via_sms] == 'true'
@@ -181,7 +206,7 @@
               end
   
               if params[:send_password_via_email] == true || params[:send_password_via_email] == 'true'
-                AdminPasswordMailer.admins_password(@my_admin).deliver_now
+                AdminPasswordInvitationMailer.admins_password_invitation(@my_admin, company_subdomain).deliver_now
               end
   
               if params[:login_with_web_auth] == true ||  params[:login_with_web_auth] == 'true'
@@ -263,8 +288,58 @@
   
     # reset_password(password, admin)
   
+
+
+    def verify_device
+      user = Admin.find_by(email: params[:user_email])
+      # return [404, { 'Content-Type' => 'application/json' }, [{ error: 'User not found' }.to_json]] unless user
+    
+      # if user.device_verification_token == params[:verification_token] &&
+      #    user.device_verification_token_sent_at > 10.minutes.ago
+    
+      #   # Mark the device as recognized
+      #   user.devices.create!(
+      #     device_token: request.cookies['device_token'],
+      #     device_name: request.headers['User-Agent'],
+      #     last_seen_at: Time.current,
+      #     ip_address: request.remote_ip,
+      #     device_fingerprint: params[:device_fingerprint]
+      #   )
+    
+      #   # Clear the verification token
+      #   user.update!(device_verification_token: nil, device_verification_token_sent_at: nil)
+    
+      #   return [200, { 'Content-Type' => 'application/json' }, [{ message: 'Device verified successfully. Please log in again.' }.to_json]]
+      # else
+      #   return [401, { 'Content-Type' => 'application/json' }, [{ error: 'Invalid or expired verification token.' }.to_json]]
+      # end
+
+
+      # device_verification_token_sent_at
+  
+      if user 
+        device = user.devices.find_by(device_verification_token: params[:verification_token])
+
+      if device && device.device_verification_token_sent_at > 20.minutes.ago
+
+        
+        device.update(verified: true, device_verification_token: nil)
+        render json: {message: device.verified }, status: :ok
+      else
+        render json: {  error: 'Invalid or expired token' }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'Email not found' }, status: :not_found
+    end
+    
+  end
+
+
+
+
+
     def reset_password
-      @admin = Admin.find_by(reset_password_token: params[:token])
+      @admin = Admin.find_by(reset_password_token: params[:token]) 
       if params[:password] == params[:password_confirmation]
         if params[:password].match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/) 
       if @admin&.password_token_valid?
@@ -301,7 +376,7 @@
         # ActionCable.server.broadcast(current_user, { user: current_user.user_name })
         # CurrentUserChannel.broadcast_to(current, { user: current_user.user_name })
         
-        render json: { user: current_user }, status: :ok
+        render json: { user: AdminSerializer.new(current_user).as_json }, status: :ok
       else
         render json: { error: 'Unauthorized' }, status: :unauthorized
       end
@@ -311,78 +386,117 @@
     
     
   def login
+
+
     Rails.logger.info "My Current Tenant in docker: #{ActsAsTenant.current_tenant.inspect}"
     #  request.headers['X-Original-Host'])
     ActsAsTenant.with_tenant(ActsAsTenant.current_tenant) do
+
+      
     admin = Admin.find_by(email: params[:email]) 
-  
-  
-    if params[:enable_2fa_for_admin] == true || params[:enable_2fa_for_admin] == 'true' 
-      if admin&.authenticate(params[:password])
-      
-      #  admin.update_column(inactive: false)
-      if params[:login_with_otp] == true  || params[:login_with_otp] == 'true'
-        admin.generate_otp(admin)
-  
-        send_otp(admin.phone_number, admin.otp, admin.user_name)
-      end
-          render json: {message: 'sms sent'}, status: :ok
-          # token = generate_token(admin_id: admin.id)
-  
-          # cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
-          # sameSite: 'strict'}
-  
-            #  admin.update_column(:last_login_at, Time.current)
-  
-            #  render json:  admin, serializer: AdminSerializer,   status: :accepted
-      else
-    
-        render json: {error: 'Invalid  Email Or Password' }, status: :unauthorized
-        return
-      end
-    if params[:login_with_otp_email] == true || params[:login_with_otp_email] == ''
-  
-       admin.generate_otp(admin)
-      #  token = generate_token(admin_id: admin.id)
-      #  cookies.signed[:jwt] = { value: token, httponly: true, secure: true,
-      # sameSite: 'strict'}
+    # device_fingerprint = params[:device_fingerprint]
+      result = log_device(admin)
+
+      if result[:status] == :ok && admin.devices.where(verified: true).exists?
+    if admin.locked_account == false 
+
+      if params[:enable_2fa_for_admin] == true || params[:enable_2fa_for_admin] == 'true' 
+        if admin&.authenticate(params[:password])
+         
+
         
-  admin.update_column(:inactive, false)
-  admin.update_column(:last_activity_active, Time.zone.now)
-       AdminOtpMailer.admins_otp(admin).deliver_now
-      
-            #  admin.update(last_login_at: Time.current)
-  
-  # render json:  admin, serializer: AdminSerializer,   status: :accepted
-     
-    end
-    else
-      Rails.logger.info "subdomain during login => #{request.domain}"
-      account = Account.find_by(subdomain: request.headers['X-Original-Host'])
-  
-      if admin && admin.account == account # Ensure the admin belongs to the current tenant
-  
-  if admin&.authenticate(params[:password])
+        #  admin.update_column(inactive: false)
+        if params[:login_with_otp] == true  || params[:login_with_otp] == 'true'
+          admin.generate_otp(admin)
     
-    # session[:admin_id] = @admin.id
-    token = generate_token(admin_id: admin.id)
-    cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
-   sameSite: 'strict'}
-    admin.update_column(:last_login_at, Time.now)
-    # admin.update_column(:inactive, false)
-    admin.update_column(:last_activity_active, Time.zone.now)
+          send_otp(admin.phone_number, admin.otp, admin.user_name)
+        end
+            render json: {message: 'sms sent'}, status: :ok
+            # token = generate_token(admin_id: admin.id)
+    
+            # cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
+            # sameSite: 'strict'}
+    
+              #  admin.update_column(:last_login_at, Time.current)
+    
+              #  render json:  admin, serializer: AdminSerializer,   status: :accepted
+        else
+
+          
+      
+          render json: {error: 'Invalid  Email Or Password' }, status: :unauthorized
+          return
+        end
+
+        
+      if params[:login_with_otp_email] == true || params[:login_with_otp_email] == ''
+    
+         admin.generate_otp(admin)
+        #  token = generate_token(admin_id: admin.id)
+        #  cookies.signed[:jwt] = { value: token, httponly: true, secure: true,
+        # sameSite: 'strict'}
+        company_name = ActsAsTenant.current_tenant.company_setting.company_name
+
     admin.update_column(:inactive, false)
-    # admin.update_column(:last_activity_active, Time.zone.now )
-    render json:  admin, serializer: AdminSerializer,   status: :accepted
+    admin.update_column(:last_activity_active, Time.zone.now)
+         AdminOtpMailer.admins_otp(admin,company_name).deliver_now
+        
+              #  admin.update(last_login_at: Time.current)
+    
+    # render json:  admin, serializer: AdminSerializer,   status: :accepted
+       
+      end
+      else
+        Rails.logger.info "subdomain during login => #{request.domain}"
+        account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+    
+        if admin && admin.account == account # Ensure the admin belongs to the current tenant
+    
+    if admin&.authenticate(params[:password])
+      
+      # session[:admin_id] = @admin.id
+      token = generate_token(admin_id: admin.id)
+      
+      cookies.encrypted.signed[:jwt] = { value: token, httponly: true, secure: true,
+     sameSite: 'strict'}
+
+
+
+     
+      admin.update_column(:last_login_at, Time.now)
+      # admin.update_column(:inactive, false)
+      admin.update_column(:last_activity_active, Time.zone.now)
+      admin.update_column(:inactive, false)
+      current_user.update(online: true)
+      # admin.update_column(:last_activity_active, Time.zone.now )
+      render json:  admin, serializer: AdminSerializer,   status: :accepted
+    
+    else
+      render json: {error: 'Invalid Email Or Password' }, status: :unauthorized
+        end
+      else
+        render json: { error: 'Unauthorized: Admin does not belong to this tenant' }, status: :unauthorized
+      end
+    end
   
   else
-    render json: {error: 'Invalid Email Or Password' }, status: :unauthorized
-      end
-    else
-      render json: { error: 'Unauthorized: Admin does not belong to this tenant' }, status: :unauthorized
+    render json: {error: 'Your Account Has Been Locked'}, status: :unauthorized
     end
+
+  else
+      # old_devices.each { |device| send_device_notification(device) }
+      verification_device_token = SecureRandom.base64(16)
+      admin.devices.order(created_at:  :desc).update!(device_verification_token: verification_device_token, 
+      device_verification_token_sent_at: Time.current)
+      verification_url = `http://localhost:5173/verify_device?verification_token=#{verification_device_token}`
+      # Optionally, send an email to the user
+       company_name = ActsAsTenant.current_tenant.company_setting.company_name
+      NotifyLoginMailer.notify_login(admin, verification_device_token, verification_url,
+      request.remote_ip, request.headers['User-Agent'],company_name).deliver_now
+    render json: {error: 'New Device is trying to login. Please confirm from one of your registered devices, also check your email,
+    we have sent a verification token to verify your device' }, status: :unauthorized
   end
-end
+  end 
   end
   
   
@@ -531,36 +645,12 @@ end
       render json: @the_admin&.errors, status: :unprocessable_entity
     end
   end
+
   
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   
   
@@ -619,27 +709,7 @@ end
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    
   
   
   
@@ -651,7 +721,7 @@ end
   def authenticate_webauthn
     # "id": ""AdVZRNnFYkuE-z2ExPy7YNCjTEbBPiGqJHJ0DSMW8d_3H63vtT5dcjFWa_QUp5bNTimc5J3_SSXIeFVuUeAbxTo",
     # "5TR0TJqgdKRNuqsDhDQV6L7ccHct5B_xGUJ1HJWp0G4" =>  chalenge,
-    admin = find_passkey_user(params[:user_name])
+    admin = find_passkey_user(params[:user_name]) || Admin.find_by(email: params[:email_passkey])
   
   
     relying_party = WebAuthn::RelyingParty.new(
@@ -690,7 +760,8 @@ end
   def verify_webauthn
     begin
       # Find the admin user first
-      admin = find_passkey_user(params[:user_name])
+      admin = find_passkey_user(params[:user_name]) || Admin.find_by(email: params[:email_passkey])
+  
       unless admin
         render json: { error: "User not found" }, status: :not_found
         return
@@ -799,28 +870,7 @@ end
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   def verify_otp
   
@@ -845,9 +895,47 @@ end
   
   
   
-  
+  def lock_admin_account
+    account = Account.find_by(subdomain: params[:subdomain])
+
+    if account.nil?
+      render json: { error: 'Account not found' }, status: :not_found
+      return
+    end
+    admins = account.admin
+admins_locked = admins.update_all(locked_account: params[:locked_account])
+    if admins_locked
+      render json: { message: 'Admin lock settings saved' }, status: :ok
+    else
+      render json: { errors: 'Admin not locked' }, status: :unprocessable_entity
+    end
+  end
+
+
+
+
+
+
+  def get_customer_data
+    customers = Customer.all.map do |customer|
+      last_request = customer.requests.order(created_at: :desc).first
+      last_confirmation = customer.confirmations.order(created_at: :desc).first
+      
+      customer.as_json.merge(
+        total_requests: customer.requests.count,
+        total_confirmations: customer.confirmations.count,
+        last_request_time: last_request&.created_at&.strftime("%Y-%m-%d %H:%M:%S"),
+        last_confirmation_time: last_confirmation&.created_at&.strftime("%Y-%m-%d %H:%M:%S")
+      )
+    end
+    
+    render json: customers
+  end
+
+
   def logout_admin
-  
+    reset_work_session
+   current_user.update(online: false)
    cookies.delete(:jwt)
   head :no_content
     
@@ -877,36 +965,10 @@ end
     end
   
   
+
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+    
     def create_sys_admins
       @admin = Admin.new(admin_params)
     
@@ -966,7 +1028,17 @@ end
         can_manage_tickets: params[:can_manage_tickets],
         can_read_tickets: params[:can_read_tickets], 
         can_manage_calendar: params[:can_manage_calendar],
-                can_read_calendar: params[:can_read_calendar]
+                can_read_calendar: params[:can_read_calendar],
+                can_read_customer_stats: params[:can_read_customer_stats],
+                can_read_service_provider_stats: params[:can_read_service_provider_stats],
+                can_manage_individual_email: params[:can_manage_individual_email],
+                can_manage_chats: params[:can_manage_chats],
+                can_read_chats: params[:can_read_chats],
+                can_manage_monitor_service_provider: params[:can_manage_monitor_service_provider],
+                can_read_monitor_service_provider: params[:can_read_monitor_service_provider],
+
+                can_manage_user: params[:can_manage_user],
+                can_read_user: params[:can_read_user]
       )
         render json: admin, status: :ok
       else
@@ -977,15 +1049,16 @@ end
     # PATCH/PUT /admins/1 or /admins/1.json
     def update_admin
       @admin = current_user
-      
+      filtered_params = admin_params.except(:password, :password_confirmation) if admin_params[:password].blank?
+
       # Skip password validation if set to true
       # @admin.skip_password_validation = true
     
-      if @admin.update(admin_params)
+      if @admin.update(filtered_params || admin_params)
         render json: {
           id: @admin.id,
           user_name: @admin.user_name,
-          profile_image_url: @admin.profile_image.attached? ? url_for(@admin.profile_image) : nil,
+          # profile_image_url: @admin.profile_image.attached? ? url_for(@admin.profile_image) : nil,
           email: @admin.email,
           phone_number: @admin.phone_number
         }
@@ -1195,7 +1268,18 @@ end
           :can_manage_payment,
           :can_read_payment,
           :can_manage_calendar,
-          :can_read_calendar
+          :can_read_calendar,
+          :can_read_customer_stats,
+          :can_read_service_provider_stats,
+          :can_manage_individual_email,
+          :can_read_individual_email,
+          :can_manage_monitor_service_provider,
+          :can_read_monitor_service_provider,
+          :can_manage_user,
+          :can_read_user,
+          :can_manage_chats,
+          :can_read_chats
+
         )
       end
       
@@ -1217,7 +1301,16 @@ end
           :can_read_calendar,
         :can_read_sms,
           :can_manage_sms,
-          :profile_image
+          :profile_image,
+          :can_manage_individual_email,
+          :can_read_customer_stats,
+          :can_read_service_provider_stats,
+          :can_manage_chats,
+          :can_read_chats,
+          :can_manage_monitor_service_provider,
+          :can_read_monitor_service_provider,
+          :can_manage_user,
+          :can_read_user
         )
   
       end
@@ -1323,12 +1416,111 @@ end
         end
       end
     end
+
+
+
+
+
+
+def log_device(user)
+  # request.cookie_jar.delete(:device_token)
+  # browser = Browser.new(request.user_agent)
+  device_token = request.cookies['device_token'] 
+  user_agent = request.user_agent # Get the user agent
+  os = extract_os(user_agent)
+  # device_fingerprint = generate_device_fingerprint(user_agent, os)
+  unless device_token
+    cookies[:device_token] = {
+      value: params[:device_fingerprint],
+      expires: 1.year.from_now,
+      secure: true,
+      httponly: true,
+    }
+    device_token = cookies[:device_token]
+  end
+
+    # Find existing device
+    existing_device = user.devices.find_by(device_fingerprint: params[:device_fingerprint]) ||
+    user.devices.find_by(device_fingerprint: device_token)
+
+    if existing_device
+      # Update the existing device
+      existing_device.update(last_seen_at: Time.current)
+      # return [200, { 'Content-Type' => 'application/json' }, [{ message: 'Device recognized' }.to_json]]
+       return { status: :ok, message: 'Device recognized' }  # Return a hash with status
+
+
+  else
+    # Handle unrecognized devices
+    # old_devices = user.devices.where.not(device_fingerprint: device_fingerprint, )
+    user_agent = request.headers['User-Agent'] # Get the user agent
+    os = extract_os(user_agent)
+    device_fingerprint = generate_device_fingerprint(user_agent, os)
+     @new_user = user.devices.create_or_find_by!(
+        # device_token: device_token,
+        device_name: user_agent,  
+        os: os,
+        last_seen_at: Time.current,
+        ip_address: request.remote_ip,
+        device_fingerprint: params[:device_fingerprint],
+      )
+      @new_user.update!(
+     verified: false
+    )
+
+    # Notify old devices
+    # old_devices.each { |device| send_device_notification(device) }
+    # verification_device_token = generate_token(12)
+    # user.update!(device_verification_token: verification_device_token, device_verification_token_sent_at: Time.current)
+    # verification_url = `http://#{request.headers['X-Original-Host']}/verify_device?verification_token=#{verification_device_token}&device_fingerprint=#{device_fingerprint}`
+    # # Optionally, send an email to the user
+    # NotifyLoginMailer.notify_login(user, verification_device_token, verification_url,
+    # request.remote_ip, request.headers['User-Agent']).deliver_now
+    # return [401, { 'Content-Type' => 'application/json' }, [{ 
+    #   error: 'Login attempt from an unrecognized device. A verification code has been sent to your registered email.'
+    # }.to_json]]
+
+    # return { status: :unauthorized, error: 'Login attempt from an unrecognized device. A verification code has been sent to your registered email.' }
+
+    return { status: :forbidden, error: 'Login attempt from an unrecognized device. A verification code has been sent to your registered email.' }
+
+  end
+end
     end
   
   
   
+    def reset_work_session
+      work_session =  WorkSession.today.for_admin(current_user.id).first
+
+
+      if work_session
+        work_session.update!(
+          started_at: nil,
+          last_active_at: nil,
+          total_time_seconds: 0
+        )
+      end
+    end
   
   
+  
+def extract_os(user_agent)
+  case user_agent
+  when /Windows/i
+    'Windows'
+  when /Mac OS/i
+    'MacOS'
+  when /Linux/i
+    'Linux'
+  when /Android/i
+    'Android'
+  when /iPhone|iOS/i
+    'iOS'
+  else
+    'Unknown'
+  end
+end
   
   
   

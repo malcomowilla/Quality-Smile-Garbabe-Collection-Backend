@@ -3,33 +3,77 @@ class ApplicationController < ActionController::Base
     set_current_tenant_through_filter
 before_action :set_tenant
     skip_before_action :verify_authenticity_token
+    require 'digest'
 
     helper_method :current_user, :current_admin, :current_service_provider,
      :current_customer, :current_store_manager, :current_sys_admin
 
      
 
-     
 
-     def set_tenant
+    #  def set_tenant
     
-      @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
-      ActsAsTenant.current_tenant = @account
-      # @account = Account.find_by(subdomain: request.headers['X-Original-Host']
-      # )
+    #   @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+    #   ActsAsTenant.current_tenant = @account
+    #   EmailSettingsConfigurator.configure(@account)
+    #   @qr_png = RQRCode::QRCode.new(`https://#{request.headers['X-Original-Host']}/signin`, size: 10)
+    #   @qr_png.as_png(offset: 0, color: '000000', shape_rendering: 'crispEdges', module_size: 10)
+    #   send_data png_data, type: 'image/png', disposition: 'inline'  
+    #   # @account = Account.find_by(subdomain: request.headers['X-Original-Host']
+    #   # )
   
-      if @account
-        ActsAsTenant.current_tenant = @account
+    #   # if @account
+    #   #   ActsAsTenant.current_tenant = @account
+    #   # else
+    #   #   # Handle the case where the account is not found
+    #   #   render json: { error: 'Tenant not found' }, status: :not_found
+    #   # end
+
+    #   Rails.logger.info "My Current Tenant: #{ActsAsTenant.current_tenant.inspect}"
+    # end
+
+    def set_tenant
+      
+      # @account = Account.find_by(subdomain: request.headers['X-Original-Host'])
+
+      # if !@account
+      #   render json: { error: 'Tenant not found' }, status: :not_found
+      #   return
+      # end
+      # ActsAsTenant.current_tenant = @account
+      @current_account = ActsAsTenant.current_tenant
+      EmailSettingsConfigurator.configure(@current_account)
+      # Define the directory for storing QR codes
+      qr_codes_dir = Rails.root.join('public', 'qr_codes')
+      
+      # Sanitize the subdomain to ensure valid filenames
+      safe_subdomain =@current_account.subdomain.gsub(/[^\w\-]/, '_')  # Replace invalid characters in the subdomain
+      qr_code_path = qr_codes_dir.join("#{safe_subdomain}_qr_code.png")
+    
+      # Create the directory if it does not exist
+      FileUtils.mkdir_p(qr_codes_dir) unless Dir.exist?(qr_codes_dir)
+    
+      # Check if the QR code file already exists
+      if File.exist?(qr_code_path)
+        Rails.logger.info "QR code for #{@current_account.subdomain} already exists."
+        # No need to generate a new QR code, just return
+        @qr_code_url = "/qr_codes/#{safe_subdomain}_qr_code.png"
       else
-        # Handle the case where the account is not found
-        render json: { error: 'Tenant not found' }, status: :not_found
+        # Generate the QR code
+        qr_png = RQRCode::QRCode.new("https://#{request.headers['X-Original-Host']}/signin", size: 10)
+        png_data = qr_png.as_png(offset: 0, color: '000000', shape_rendering: 'crispEdges', module_size: 10)
+    
+        # Save the PNG image to the file system
+        File.open(qr_code_path, 'wb') do |file|
+          file.write(png_data)
+        end
+    
+        # Optionally, store the URL for the frontend
+        @qr_code_url = "/qr_codes/#{safe_subdomain}_qr_code.png"
+        Rails.logger.info "QR Code saved to #{qr_code_path}"
       end
-
-      Rails.logger.info "My Current Tenant: #{ActsAsTenant.current_tenant.inspect}"
     end
-
-
-
+    
     rescue_from CanCan::AccessDenied do |exception|
         render json: { error: 'Access Denied' }, status: :forbidden
       end
@@ -52,7 +96,7 @@ before_action :set_tenant
       end
 
      
-  
+     
     private
 
 def current_store_manager
@@ -90,6 +134,11 @@ end
 
 
 
+
+
+
+
+
 def current_sys_admin
   sys_admin_token = cookies.encrypted.signed[:jwt_sys_admin]
   if sys_admin_token 
@@ -102,7 +151,6 @@ def current_sys_admin
       if sys_admin_token
         decoded_sys_admin = JWT.decode(sys_admin_token, ENV['JWT_SECRET'], true, algorithm: 'HS256')
         sys_admin_id = decoded_sys_admin[0]['admin_id']
-        
         @current_sys_admin = SystemAdmin.find_by(id: sys_admin_id)
         
         return  @current_sys_admin if  @current_sys_admin
@@ -160,9 +208,80 @@ def current_customer
 end
 
 
+# def log_device(user, device_fingerprint)
+#   # request.cookies.delete('device_token')
+#   # request.cookie_jar.delete(:device_token)
+#   browser = Browser.new(request.user_agent)
+#   device_token = request.cookies['device_token'] 
+#   device_fingerprint = device_fingerprint
+#   # Get the device fingerprint from the request body
+#   user_agent = request.headers['User-Agent']  # Get the user agent
+
+
+#   unless request.cookies['device_token']
+#     cookies[:device_token] = {
+#       value: generate_token(12),
+#       expires: 1.year.from_now,
+#       secure: true,
+#       httponly: true,
+#     }
+#   end
+
+
+#   # Find or create the device based on the device_token
+#   existing_device = user.devices.find_by(device_token: device_token, device_fingerprint: device_fingerprint)
+
+#   if existing_device
+#     # Update the existing device
+#     existing_device.update(device_name: user_agent, last_seen_at: Time.current)
+#   else
+#     old_devices = user.devices.where.not(device_fingerprint: device_fingerprint)
+#     # Create a new device entry
+#     user.devices.create(
+#       device_token: device_token,
+#       # os: browser.platform,
+#       device_name: user_agent,
+#       last_seen_at: Time.current,
+#       ip_address: request.remote_ip,
+#       device_fingerprint: device_fingerprint
+#     )
+
+#     old_devices.each do |device|
+#       send_device_notification(device)
+#     end
+  
+#     # Optionally, send an email to the user
+#     UserMailer.new_device_notification(user, new_device).deliver_later
+#       response.status = :unauthorized
+#   response.body = "Login attempt from an unrecognized device. Please confirm the login from one of your registered devices."
+#   end
+
+# end
 
 
 
+def generate_device_fingerprint(user_agent, os)
+  raw_data = "#{user_agent} #{os}"
+  Digest::SHA256.hexdigest(raw_data)
+end
+
+
+def extract_os(user_agent)
+  case user_agent
+  when /Windows/i
+    'Windows'
+  when /Mac OS/i
+    'MacOS'
+  when /Linux/i
+    'Linux'
+  when /Android/i
+    'Android'
+  when /iPhone|iOS/i
+    'iOS'
+  else
+    'Unknown'
+  end
+end
 
 
 
@@ -262,6 +381,44 @@ def current_user_ability
     raise CanCan::AccessDenied
   end
 end
+
+
+
+def generate_token()
+  generate_secure_password(length = 12)
+
+end
+
+  
+def generate_secure_password(length = 12)
+  raise ArgumentError, 'Length must be at least 8' if length < 8
+
+  # Define the character sets
+  lowercase = ('a'..'z').to_a
+  uppercase = ('A'..'Z').to_a
+  digits = ('0'..'9').to_a
+  symbols = %w[! @ # $ % ^ & * ( ) - _ = + { } [ ] | : ; " ' < > , . ? /]
+
+  # Combine all character sets
+  all_characters = lowercase + uppercase + digits + symbols
+
+  # Ensure the password contains at least one character from each set
+  password = []
+  password << lowercase.sample
+  password << uppercase.sample
+  password << digits.sample
+  password << symbols.sample
+
+  # Fill the rest of the password length with random characters from all sets
+  (length - 4).times { password << all_characters.sample }
+
+  # Shuffle the password to ensure randomness
+  password.shuffle!
+
+  # Join the array into a string
+  password.join
+end
+
 
     # def current_ability
 

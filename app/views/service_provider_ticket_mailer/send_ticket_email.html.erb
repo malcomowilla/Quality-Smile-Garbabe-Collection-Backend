@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Required: Customer Ticket Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            background-color: #008000;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .email-body {
+            padding: 20px;
+            color: #333;
+        }
+        .email-footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f4f9;
+            font-size: 12px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            background-color: #008000;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #008000;
+        }
+        .contact-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Action Required: Customer Ticket Update</h1>
+        </div>
+        <div class="email-body">
+            <p><strong>Ticket Number:</strong> <span class="highlight"><%= @ticket_number %></span></p>
+            <p><strong>Date Created:</strong> <span class="highlight"><%= @ticket_created_at %></span></p>
+            <p><strong>Customer Email:</strong> <span class="highlight"><%= @customer_email %></span></p>
+            <p><strong>Issue Summary:</strong> <span class="highlight"><%= @issue_description %></span></p>
+
+            <p>Hello <strong><%= @service_provider_name %></strong>,</p>
+            <p>
+                You have been assigned a new customer issue to resolve. Please review the details above and take the necessary actions 
+                to address the issue promptly. Ensure that the ticket status is updated accordingly to keep the customer informed.
+            </p>
+            <p>
+                For more information or to update the ticket, please log into your service dashboard using the button below.
+            </p>
+            <div style="text-align: center;">
+                <a href="<%= @tracking_url %>" class="button">Access Ticket Details</a>
+            </div>
+            <p>
+                If you have any questions or need additional details, please reach out to our support team using the contact 
+                information below. We appreciate your prompt attention to this matter.
+            </p>
+            <p>Thank you,</p> 
+            <p>The <span class="highlight"><%= @company_name %></span> Team</p>
+            <div class="contact-info">
+                Contact us at: <a href="mailto:<%= @customer_support_email %>"><%= @customer_support_email %></a> 
+                | <a href="tel:<%= @customer_support_phone_number %>"><%= @customer_support_phone_number %></a>
+            </div>
+        </div>
+        <div class="email-footer">
+            <p>&copy; <%= Time.current.year %> <%= @company_name %>. All rights reserved.</p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

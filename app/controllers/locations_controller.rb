@@ -113,7 +113,7 @@ before_action :update_last_activity
 
     # Only allow a list of trusted parameters through.
     def location_params
-      params.require(:location).permit(:location_name, :sub_location, :location_code, :category)
+      params.permit(:location_name, :sub_location, :location_code, :category)
     end
 
   end

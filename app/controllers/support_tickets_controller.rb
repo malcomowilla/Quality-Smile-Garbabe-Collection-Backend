@@ -1,6 +1,16 @@
 class SupportTicketsController < ApplicationController
   before_action :set_support_ticket, only: %i[ show edit update destroy ]
   before_action :update_last_activity
+
+  before_action :set_email_settings
+
+
+
+
+  def set_email_settings
+    @current_account = ActsAsTenant.current_tenant
+    EmailSettingsConfigurator.configure(@current_account)
+  end
 # before_action :set_tenant 
 
   load_and_authorize_resource
@@ -52,6 +62,11 @@ class SupportTicketsController < ApplicationController
   end
 
   
+
+  def total_tickets
+    total_tickets = SupportTicket.count
+    render json: { total_tickets: total_tickets }
+  end
     
   
 
@@ -66,7 +81,11 @@ end
   def create
     @support_ticket = SupportTicket.new(support_ticket_params)
     customer_name = @support_ticket.customer
+    service_provider_name = @support_ticket.agent
+    service_provider_by_name = ServiceProvider.find_by(name: service_provider_name)
     customer_by_name = Customer.find_by(name: customer_name)
+    service_provider_email = service_provider_by_name.email
+
     customer_email = customer_by_name.email
     customers_code = customer_by_name.customer_code
 
@@ -90,10 +109,25 @@ end
 ticket_created_at = @support_ticket.date_of_creation.strftime('%Y-%m-%d %I:%M:%S %p')
 customer_portal = request.headers['X-Original-Host']
 
+company_name = ActsAsTenant.current_tenant.company_setting.company_name 
+customer_support_email = ActsAsTenant.current_tenant.company_setting.customer_support_email 
+
+
+# service_provider,
+#     ticket_number, ticket_created_at, 
+#     customer_email, issue_description, ticket_status, ticket_priority,
+#     customer_code, customer_portal_link, company_name,
+#     customer_support_email
+
+ServiceProviderTicketMailer.send_ticket_email(@support_ticket.agent ,@support_ticket.ticket_number,
+ticket_created_at,customer_email, @support_ticket.issue_description, @support_ticket.status,
+@support_ticket.priority, customers_code, customer_portal, company_name, customer_support_email,
+service_provider_email).deliver_now
 
  CustomerTicketMailer.customer_ticket_mailer(@support_ticket.ticket_number,
  ticket_created_at,customer_email, @support_ticket.issue_description, @support_ticket.status,
- @support_ticket.priority, customers_code, customer_portal).deliver_now
+ @support_ticket.priority, customers_code, customer_portal, company_name, customer_support_email).deliver_now
+
         render json: @support_ticket, status: :created
       else
         render json: { error: "Prefix and digit not found for the account" }, 
